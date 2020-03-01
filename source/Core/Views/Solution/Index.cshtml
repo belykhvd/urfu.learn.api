@@ -1,0 +1,190 @@
+﻿@model object
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            html, body {
+                background-color: rgb(30, 30, 30);
+            }
+            
+     circle {
+        transition: stroke-dashoffset 0.35s;
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+      }
+
+            .solution_summary {
+                display: table;
+                box-shadow: 0 0 3px 0 rgb(80, 80, 80);
+            }
+
+            .solution_summary_body {
+                width: 700px;
+                height: 100px;
+                border: 1px solid rgb(70, 70, 70);
+                background-color: rgb(48, 48, 48);
+                display: table-cell;
+            }
+
+            .solution_summary_header {
+                padding: 3px;
+                color: rgb(120, 120, 120);
+                cursor: default;
+            }
+
+            .solution_summary_header:hover {
+                color: rgb(255, 140, 0);
+            }
+
+            ~.solution_rate {
+                width: 100px;
+                height: 100px;
+                border: 1px solid rgb(70, 70, 70);
+                background-color: rgb(48, 48, 48);
+                display: table-cell;
+            }
+
+            .mentor_photo {
+                width: 20px;
+                height: 20px;
+                ~border-radius: 20px;
+                position: absolute;
+                top: 5px;
+                left: 5px;
+                background-color: rgb(0, 100, 200);
+            }
+
+            .mentor_name {
+                color: white;
+                position: absolute;
+                top: 7px;
+                left: 27px;
+                font-family: monospace;
+            }
+
+            .rater_header {
+                ~position: relative;
+                ~top: 0;
+                ~left: 0;
+                ~height: 10px;
+                ~width: 100px;
+            }
+
+            .circle_progress {
+                position: relative;
+                box-shadow: 0 0 4px 0 rgb(0, 255, 255);
+                border-radius: 73px;
+                width: 73px;
+                height: 73px;
+            }
+
+            .circle_progress_internal {
+                position: absolute;
+                top: 4px;
+                left: 4px;
+                box-shadow: 0 0 4px 0 rgb(0, 255, 255);
+                border-radius: 65px;
+                width: 65px;
+                height: 65px;
+            }
+
+            .rate_value {
+                position: absolute;
+                width: 30px;
+                height: 30px;
+                top: 20px;
+                left: 17px;
+                color: rgb(0, 240, 0);
+                font-size: 20pt;
+                font-family: fantasy;
+            }
+
+            .solution_download {
+                display: table-cell;
+                color: white;
+                font-family: monospace;
+                padding: 2px;
+            }
+
+            .solution_download a {
+                text-decoration-line: none;
+                font-weight: bold;
+                color: rgb(0, 180, 255);
+                text-align: center;
+            }
+
+            .solution_rate {
+                display: table-cell;
+                text-align: center;
+                vertical-align: middle;
+            }
+
+            .solution_rate span {
+                text-align: center;
+                vertical-align: middle;
+            }
+
+            .e-upload:before {
+                content: '\ec0b';
+                font-family: icons;
+            }
+
+            .solution_download_filename {
+                ~text-decoration: none;
+
+            }
+        </style>
+
+        <script>
+        </script>
+    </head>
+
+    <body>
+<!--         <div class="solution_summary">
+            <div class="solution_summary_body">
+                <div class="solution_summary_header">Суббота, 22.02.2020 12:27</div>
+            </div>
+            <div class="solution_rate"></div>
+
+        </div> -->
+
+<!--         <svg width="100" height="100">
+            <circle cx="50" cy="50" r="40" fill="transparent" stroke="white" stroke-width="2"></circle>
+            <path d=" M 50 10 A 40 40 0 1 1 31 15" />
+        </svg> -->
+
+ <!-- border-bottom: 1px solid rgb(0, 255, 255); box-shadow: 0 0 3px 0 rgb(80, 80, 80); -->
+        <div style="display: table;">
+            <div class="solution_download">
+                <span class="solution_download_filename">
+                    <a href="http://localhost:5000/solution/download?solutionId=642c36f9-20c7-4095-876a-5a6c20ee4149">
+                        Kazakov.one.more.time.zip
+                    </a>
+                </span>
+                <div><span class="e-upload"></span><a href="#">14 mb</a></div>
+            </div>
+
+            <div class="solution_rate">
+                <!-- <div class="rater_header">
+                    <div class="mentor_photo">
+                        <img src="samoon.jpg" height="30px" />
+                    </div>
+                    <div class="mentor_name">Виктор Самунь</div>
+                </div> -->
+
+                <div class="circle_progress">
+                    <div class="circle_progress_internal"></div>
+                    <div class="rate_value">74%</div>
+                    <svg style="stroke:rgb(0, 240, 0); fill:none; stroke-width:2" width="73" height="73">
+                        <path d=" M 37 2 A 35 35 0 1 1 5.542208379529164 52.342990137617726"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

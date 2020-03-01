@@ -1,0 +1,15 @@
+[Bb]in
+[Oo]bj
+build
+packages
+.vs
+.vscode
+.idea
+_ReSharper*
+*.user
+*.suo
+*.cache
+*.log
+*.userprefs
+*.sln.DotSettings
+desktop.ini
