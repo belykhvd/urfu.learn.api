@@ -7,6 +7,9 @@ namespace Contracts.Services
     public interface ICourseService
     {
         Task Create(Course course);
+        
+        
+        
 
         Task SelectUserCourses(Guid userId, int? lastLoadedIndex, int limit);
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.Solution;
+using Core.Repo;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
@@ -30,7 +31,7 @@ namespace Core.Services
                 @"select data from solution where id = @Id limit 1",
                 new {Id = solutionId}).ConfigureAwait(false);
 
-            return solution.ContentBase64 != null
+            return solution?.ContentBase64 != null
                 ? Convert.FromBase64String(solution.ContentBase64)
                 : null;
         }

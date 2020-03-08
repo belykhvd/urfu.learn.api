@@ -2,15 +2,16 @@
 using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.User;
+using Core.Repo;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 
 namespace Core.Services
 {
-    public class UserService : PgRepo, IUserService
+    public class UserService : CrudRepo<Profile>, IUserService
     {
-        public UserService(IConfiguration config) : base(config)
+        public UserService(IConfiguration config) : base(config, "profile")
         {
         }
 
@@ -28,8 +29,8 @@ namespace Core.Services
             await using var conn = new NpgsqlConnection(ConnectionString);
             await conn.ExecuteAsync(
                 @"insert into profile (user_id, data)
-                      values (@UserId, @Profile)
-                      on conflict do update set data = @Profile", new {userId, profile}).ConfigureAwait(false);
+                      values (@UserId, @Profile::jsonb)
+                      on conflict (user_id) do update set data = @Profile::jsonb", new {userId, profile}).ConfigureAwait(false);
         }
 
         #endregion

@@ -3,30 +3,34 @@ using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.Common;
 using Contracts.Types.Group;
-using Dapper;
+using Core.Repo;
 using Microsoft.Extensions.Configuration;
-using Npgsql;
 
 namespace Core.Services
 {
-    public class GroupService : PgRepo, IGroupService
+    public class GroupService : CrudRepo<Group>, IGroupService
     {
-        protected GroupService(IConfiguration config) : base(config)
+        protected GroupService(IConfiguration config) : base(config, @"""group""")
         {
         }
 
-        public Task<GroupSummary[]> SearchGroup(string prefix, int? limit)
+        public Task<OperationStatus> Include(Guid groupId, Guid userId)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<MemberSummary[]> SelectMemberSummaries(Guid groupId, SelectParameters parameters)
+        public Task<OperationStatus> Exclude(Guid groupId, Guid userId)
         {
-            await using var conn = new NpgsqlConnection(ConnectionString);
-            await conn.QueryAsync(
-                @"select user_id
-                      from ").ConfigureAwait(false);
-            
+            throw new NotImplementedException();
+        }
+
+        public Task<StudentDescription[]> GetMembers(Guid groupId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GroupDescription[]> Search(string prefix, int? limit)
+        {
             throw new NotImplementedException();
         }
     }

@@ -3,6 +3,7 @@ using Contracts.Types.Solution;
 using Contracts.Types.User;
 using Core.Services;
 using Dapper;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,10 +15,20 @@ namespace Core
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            //options => options.EnableEndpointRouting = false
+            services.AddCors(options => options.AddPolicy(DefaultCorsPolicy, builder =>
+            {
+                builder.WithOrigins("http://localhost:4200")
+                       .AllowAnyMethod()
+                       .AllowAnyHeader()
+                       .AllowCredentials();
+            }));
+
             services.AddMvc();
             services.AddControllers();
-            services.AddCors();
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                    .AddCookie();
+            services.AddAuthorization();
 
             services.AddSingleton<IAuthService, AuthService>();
             services.AddSingleton<IUserService, UserService>();
@@ -31,22 +42,15 @@ namespace Core
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
-            {
                 app.UseDeveloperExceptionPage();
-            }
 
-            app.UseCors(builder => builder
-                .AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-            );
-
+            app.UseCors(DefaultCorsPolicy);
             app.UseRouting();
-            //app.UseMvc();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
+
+        private const string DefaultCorsPolicy = nameof(DefaultCorsPolicy);
     }
 }

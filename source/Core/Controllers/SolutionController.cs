@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.Solution;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Core.Controllers
@@ -21,6 +22,7 @@ namespace Core.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            Response.Cookies.Append("auth", "123", new CookieOptions {HttpOnly = true});
             return View();
         }
         

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Contracts.Repo;
 using Contracts.Types.Common;
 using Contracts.Types.User;
 
 namespace Contracts.Services
 {
-    public interface IUserService
+    public interface IUserService : ICrudRepo<Profile>
     {
         #region Profile
 

@@ -8,10 +8,7 @@ namespace Contracts.Services
 {
     public interface IAuthService
     {
-        Task<Result<Guid>> SignUp(RegistrationData registrationData);
-        Task<Result<string>> SignIn(AuthData authData);
-        Task<bool> SignOut(string token);
-
-        Task<Guid?> Authenticate(string token);
+        Task<OperationStatus<Guid>> SignUp(RegistrationData registrationData);
+        Task<Guid?> TryGetUserId(AuthData authData);
     }
 }
