@@ -10,7 +10,7 @@ namespace Core.Services
 {
     public class GroupService : CrudRepo<Group>, IGroupService
     {
-        protected GroupService(IConfiguration config) : base(config, @"""group""")
+        public GroupService(IConfiguration config) : base(config, @"""group""")
         {
         }
 

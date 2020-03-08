@@ -33,7 +33,7 @@ namespace Core.Controllers
         }
 
         [HttpGet]
-        [Route("{groupId}")]
+        [Route("get/{groupId}")]
         public async Task<IActionResult> Get(Guid groupId)
         {
             if (!User.Identity.IsAuthenticated)

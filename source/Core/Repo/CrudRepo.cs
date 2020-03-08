@@ -25,7 +25,7 @@ namespace Core.Repo
 
                 await using var conn = new NpgsqlConnection(ConnectionString);
                 await conn.ExecuteAsync(
-                    $@"insert into {relationName} (id, deleted, revision, data)
+                    $@"insert into {relationName} (id, deleted, version, data)
                            values (@Id, false, 0, @Data::jsonb)", new {data.Id, data}).ConfigureAwait(false);
 
                 return OperationStatus<Guid>.Success(data.Id);
