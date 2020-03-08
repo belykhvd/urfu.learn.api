@@ -12,7 +12,7 @@ namespace Contracts.Services
 
         Task<OperationStatus> Include(Guid groupId, Guid userId);
         Task<OperationStatus> Exclude(Guid groupId, Guid userId);
-        Task<StudentDescription[]> GetMembers(Guid groupId);
+        Task<OperationStatus<StudentDescription[]>> GetMembers(Guid groupId);
 
         #endregion
 

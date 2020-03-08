@@ -15,26 +15,6 @@ namespace Core.Services
         {
         }
 
-        #region Profile
-
-        public async Task<Profile> GetProfile(Guid userId)
-        {
-            await using var conn = new NpgsqlConnection(ConnectionString);
-            return await conn.QuerySingleOrDefaultAsync<Profile>(
-                @"select data from profile where user_id = @UserId limit 1", new {userId}).ConfigureAwait(false);
-        }
-
-        public async Task SaveProfile(Guid userId, Profile profile)
-        {
-            await using var conn = new NpgsqlConnection(ConnectionString);
-            await conn.ExecuteAsync(
-                @"insert into profile (user_id, data)
-                      values (@UserId, @Profile::jsonb)
-                      on conflict (user_id) do update set data = @Profile::jsonb", new {userId, profile}).ConfigureAwait(false);
-        }
-
-        #endregion
-
         #region Profile photo
 
         public async Task<string> GetProfilePhoto(Guid userId)

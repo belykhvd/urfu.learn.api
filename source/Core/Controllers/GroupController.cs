@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Contracts.Services;
+using Contracts.Types.Common;
 using Contracts.Types.Group;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +19,8 @@ namespace Core.Controllers
             this.groupService = groupService;
         }
 
+        
+        
         #region CRUD
 
         [HttpPost]
@@ -66,17 +70,41 @@ namespace Core.Controllers
 
         #region MEMBERSHIP
 
-        // [HttpPost]
-        // [Route("{groupId}/include")]
-        // public async Task<IActionResult> Include([FromRoute] Guid groupId, [FromQuery] Guid userId)
-        // {
-        //     if (!User.Identity.IsAuthenticated)
-        //         return Unauthorized();
-        //
-        //     // authorization
-        //
-        //     await groupService.Include()
-        // }
+        [HttpPost]
+        [Route("{groupId}/include")]
+        public async Task<IActionResult> Include([FromRoute] Guid groupId, [FromQuery] Guid userId)
+        {
+            if (!User.Identity.IsAuthenticated)
+                return Unauthorized();
+
+            // authorization
+
+            return (await groupService.Include(groupId, userId).ConfigureAwait(false)).ActionResult();
+        }
+
+        [HttpPost]
+        [Route("{groupId}/exclude")]
+        public async Task<IActionResult> Exclude([FromRoute] Guid groupId, [FromQuery] Guid userId)
+        {
+            if (!User.Identity.IsAuthenticated)
+                return Unauthorized();
+
+            // authorization
+
+            return (await groupService.Exclude(groupId, userId).ConfigureAwait(false)).ActionResult();
+        }
+
+        [HttpGet]
+        [Route("{groupId}/getMembers")]
+        public async Task<IActionResult> GetMembers([FromRoute] Guid groupId)
+        {
+            if (!User.Identity.IsAuthenticated)
+                return Unauthorized();
+
+            // authorization
+
+            return (await groupService.GetMembers(groupId).ConfigureAwait(false)).ActionResult();
+        }
 
         #endregion
     }

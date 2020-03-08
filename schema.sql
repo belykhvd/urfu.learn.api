@@ -19,8 +19,8 @@ create table if not exists "group"
 
 create table if not exists group_membership
 (
-	group_id uuid primary key,
-	user_id  uuid not null
+	user_id  uuid primary key,
+	group_id uuid not null
 );
 -------------------------------------------
 create table if not exists course
@@ -45,5 +45,11 @@ create table if not exists profile
 	deleted  bool  not null,
 	version  int   not null,
 	data     jsonb not null
+);
+
+create table if not exists profile_index
+(
+	id       uuid primary key,
+	fullname text not null
 );
 -------------------------------------------
