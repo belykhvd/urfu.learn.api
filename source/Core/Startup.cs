@@ -1,4 +1,5 @@
 using Contracts.Services;
+using Contracts.Types.Course;
 using Contracts.Types.Group;
 using Contracts.Types.Solution;
 using Contracts.Types.User;
@@ -34,12 +35,14 @@ namespace Core
             services.AddSingleton<IAuthService, AuthService>();
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IGroupService, GroupService>();
+            services.AddSingleton<ICourseService, CourseService>();
             services.AddSingleton<ISolutionService, SolutionService>();
 
             DefaultTypeMap.MatchNamesWithUnderscores = true;
             SqlMapper.AddTypeHandler(typeof(Profile), new DapperTypeHandler());
             SqlMapper.AddTypeHandler(typeof(Solution), new DapperTypeHandler());
             SqlMapper.AddTypeHandler(typeof(Group), new DapperTypeHandler());
+            SqlMapper.AddTypeHandler(typeof(Course), new DapperTypeHandler());
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
