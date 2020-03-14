@@ -6,9 +6,9 @@ namespace Contracts.Repo
 {
     public interface ICrudRepo<TEntity>
     {
-        Task<OperationStatus<Guid>> Create(TEntity data);
-        Task<OperationStatus> Update(TEntity data);
-        Task<OperationStatus<TEntity>> Read(Guid id);
-        Task<OperationStatus> Delete(Guid id);
+        Task<Result<Guid>> Save(TEntity data);
+        Task<Result> Update(Guid id, TEntity data);
+        Task<Result<TEntity>> Read(Guid id);
+        Task<Result> Delete(Guid id);
     }
 }

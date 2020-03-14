@@ -16,11 +16,11 @@ namespace Core.Services
     {
         public GroupService(IConfiguration config) : base(config, PgSchema.Group){}
 
-        public async Task<OperationStatus> Include(Guid groupId, Guid userId) => await Try(IncludeInternal(groupId, userId), $"{nameof(Group)}.{nameof(Include)}").ConfigureAwait(false);
-        public async Task<OperationStatus> Exclude(Guid groupId, Guid userId) => await Try(ExcludeInternal(groupId, userId), $"{nameof(Group)}.{nameof(Exclude)}").ConfigureAwait(false);
-        public async Task<OperationStatus<StudentDescription[]>> GetMembers(Guid groupId) => await Try(GetMembersInternal(groupId), $"{nameof(Group)}.{nameof(GetMembers)}").ConfigureAwait(false);
+        public async Task<Result> Include(Guid groupId, Guid userId) => await Try(IncludeInternal(groupId, userId), $"{nameof(Group)}.{nameof(Include)}").ConfigureAwait(false);
+        public async Task<Result> Exclude(Guid groupId, Guid userId) => await Try(ExcludeInternal(groupId, userId), $"{nameof(Group)}.{nameof(Exclude)}").ConfigureAwait(false);
+        public async Task<Result<StudentDescription[]>> GetMembers(Guid groupId) => await Try(GetMembersInternal(groupId), $"{nameof(Group)}.{nameof(GetMembers)}").ConfigureAwait(false);
 
-        private async Task<OperationStatus> IncludeInternal(Guid groupId, Guid userId)
+        private async Task<Result> IncludeInternal(Guid groupId, Guid userId)
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
 
@@ -31,25 +31,25 @@ namespace Core.Services
                        returning group_id", new {groupId, userId}).ConfigureAwait(false);
 
             return conflicted == null || conflicted.Value == groupId
-                ? OperationStatus.Success
-                : OperationStatus.Fail(OperationStatusCode.Conflict,
+                ? Result.Success
+                : Result.Fail(OperationStatusCode.Conflict,
                     "Студент уже числится в другой академической группе. Сначала исключите его из нее.");
         }
 
-        private async Task<OperationStatus> ExcludeInternal(Guid groupId, Guid userId)
+        private async Task<Result> ExcludeInternal(Guid groupId, Guid userId)
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
             await conn.ExecuteAsync(
                 $@"delete from {PgSchema.GroupMembership}
                          where user_id = @UserId
                            and group_id = @GroupId", new {userId, groupId}).ConfigureAwait(false);
-            return OperationStatus.Success;
+            return Result.Success;
         }
 
-        private async Task<OperationStatus<StudentDescription[]>> GetMembersInternal(Guid groupId)
+        private async Task<Result<StudentDescription[]>> GetMembersInternal(Guid groupId)
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
-            return OperationStatus<StudentDescription[]>.Success(
+            return Result<StudentDescription[]>.Success(
                 (await conn.QueryAsync<StudentDescription>(
                 $@"select gm.user_id, pi.fullname
 	                   from {PgSchema.GroupMembership} gm
@@ -62,7 +62,7 @@ namespace Core.Services
             throw new NotImplementedException();
         }
 
-        protected async Task<OperationStatus> Try(Task<OperationStatus> task, string path)
+        protected async Task<Result> Try(Task<Result> task, string path)
         {
             try
             {
@@ -77,11 +77,11 @@ namespace Core.Services
             catch (Exception e)
             {
                 Console.WriteLine(e);  // logging
-                return OperationStatus.Fail(OperationStatusCode.InternalServerError);
+                return Result.Fail(OperationStatusCode.InternalServerError);
             }
         }
 
-        protected async Task<OperationStatus<T>> Try<T>(Task<OperationStatus<T>> task, string path)
+        protected async Task<Result<T>> Try<T>(Task<Result<T>> task, string path)
         {
             try
             {
@@ -96,7 +96,7 @@ namespace Core.Services
             catch (Exception e)
             {
                 Console.WriteLine(e);  // logging
-                return OperationStatus<T>.Fail(OperationStatusCode.InternalServerError);
+                return Result<T>.Fail(OperationStatusCode.InternalServerError);
             }
         }
     }

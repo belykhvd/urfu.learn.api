@@ -17,7 +17,7 @@ namespace Core.Services
         {
         }
 
-        public async Task<OperationStatus<Guid>> SignUp(RegistrationData registrationData)
+        public async Task<Result<Guid>> SignUp(RegistrationData registrationData)
         {
             // TODO
             var profile = new Profile {Surname = registrationData.Surname, FirstName = registrationData.FirstName, SecondName = registrationData.SecondName, Group = registrationData.Group};
@@ -42,16 +42,16 @@ namespace Core.Services
 
                 await transaction.CommitAsync().ConfigureAwait(false);
 
-                return OperationStatus<Guid>.Success(profile.Id);
+                return Result<Guid>.Success(profile.Id);
             }
             catch (PostgresException e) when (e.SqlState == "23505")
             {
-                return OperationStatus<Guid>.Fail(OperationStatusCode.Conflict, "User with such email already exists");
+                return Result<Guid>.Fail(OperationStatusCode.Conflict, "User with such email already exists");
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);  // TODO logging
-                return OperationStatus<Guid>.Fail(OperationStatusCode.InternalServerError);
+                return Result<Guid>.Fail(OperationStatusCode.InternalServerError);
             }
         }
 

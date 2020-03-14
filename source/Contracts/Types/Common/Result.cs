@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Contracts.Types.Common
 {
-    public class OperationStatus
+    public class Result
     {
         public bool IsSuccess { get; set; }
         public string ErrorMessage { get; set; }
@@ -23,19 +23,19 @@ namespace Contracts.Types.Common
             };
         }
 
-        public static OperationStatus Success => new OperationStatus {IsSuccess = true};
-        public static OperationStatus Fail(OperationStatusCode statusCode, string errorMessage = null)
-               => new OperationStatus {IsSuccess = false, StatusCode = statusCode, ErrorMessage = errorMessage};
+        public static Result Success => new Result {IsSuccess = true};
+        public static Result Fail(OperationStatusCode statusCode, string errorMessage = null)
+               => new Result {IsSuccess = false, StatusCode = statusCode, ErrorMessage = errorMessage};
     }
     
-    public class OperationStatus<T> : OperationStatus
+    public class Result<T> : Result
     {
         public T Value { get; set; }
 
         public new IActionResult ActionResult() => IsSuccess ? new OkObjectResult(Value) : ActionResultOnFail();
 
-        public new static OperationStatus<T> Success(T value) => new OperationStatus<T> {IsSuccess = true, Value = value};
-        public new static OperationStatus<T> Fail(OperationStatusCode statusCode, string errorMessage = null)
-                   => new OperationStatus<T> {IsSuccess = false, StatusCode = statusCode, ErrorMessage = errorMessage};
+        public new static Result<T> Success(T value) => new Result<T> {IsSuccess = true, Value = value};
+        public new static Result<T> Fail(OperationStatusCode statusCode, string errorMessage = null)
+                   => new Result<T> {IsSuccess = false, StatusCode = statusCode, ErrorMessage = errorMessage};
     }
 }

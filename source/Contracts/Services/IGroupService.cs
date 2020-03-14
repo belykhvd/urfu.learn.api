@@ -10,9 +10,9 @@ namespace Contracts.Services
     {
         #region MEMBERSHIP
 
-        Task<OperationStatus> Include(Guid groupId, Guid userId);
-        Task<OperationStatus> Exclude(Guid groupId, Guid userId);
-        Task<OperationStatus<StudentDescription[]>> GetMembers(Guid groupId);
+        Task<Result> Include(Guid groupId, Guid userId);
+        Task<Result> Exclude(Guid groupId, Guid userId);
+        Task<Result<StudentDescription[]>> GetMembers(Guid groupId);
 
         #endregion
 

@@ -8,7 +8,7 @@ namespace Contracts.Services
 {
     public interface IAuthService
     {
-        Task<OperationStatus<Guid>> SignUp(RegistrationData registrationData);
+        Task<Result<Guid>> SignUp(RegistrationData registrationData);
         Task<Guid?> TryGetUserId(AuthData authData);
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Contracts.Services;
+using Contracts.Types.Common;
 using Contracts.Types.User;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Core.Controllers
@@ -26,13 +28,20 @@ namespace Core.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("profile/update")]
-        public async Task<IActionResult> SaveProfile([FromBody] Profile profile)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProfile([FromBody] Profile profile)
         {
-            if (!User.Identity.IsAuthenticated)
-                return Unauthorized();
+            if (!Guid.TryParse(User.Identity.Name, out var userId) || profile.Id != userId)
+                return Unauthorized($"Нет прав на изменение профиля с ID {profile.Id}");
 
-            return (await userService.Update(profile).ConfigureAwait(false)).ActionResult();
+            profile.Sanitize(); // 500
+            var validationStatus = profile.Validate(); // 500
+            if (!validationStatus.IsSuccess)
+                return Result<Guid>.Fail(OperationStatusCode.ValidationError, validationStatus.ErrorMessage).ActionResult();
+
+            return (await userService.Update(userId, profile).ConfigureAwait(false)).ActionResult();
         }
 
         #endregion

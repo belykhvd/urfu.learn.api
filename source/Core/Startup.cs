@@ -1,5 +1,7 @@
 using Contracts.Services;
+using Contracts.Types.Challenge;
 using Contracts.Types.Course;
+using Contracts.Types.CourseTask;
 using Contracts.Types.Group;
 using Contracts.Types.Solution;
 using Contracts.Types.User;
@@ -17,7 +19,7 @@ namespace Core
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options => options.AddPolicy(DefaultCorsPolicy, builder =>
+            services.AddCors(options => options.AddDefaultPolicy(builder =>
             {
                 builder.WithOrigins("http://localhost:4200")
                        .AllowAnyMethod()
@@ -36,13 +38,14 @@ namespace Core
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IGroupService, GroupService>();
             services.AddSingleton<ICourseService, CourseService>();
+            services.AddSingleton<IChallengeService, ChallengeService>();
             services.AddSingleton<ISolutionService, SolutionService>();
 
             DefaultTypeMap.MatchNamesWithUnderscores = true;
-            SqlMapper.AddTypeHandler(typeof(Profile), new DapperTypeHandler());
-            SqlMapper.AddTypeHandler(typeof(Solution), new DapperTypeHandler());
-            SqlMapper.AddTypeHandler(typeof(Group), new DapperTypeHandler());
-            SqlMapper.AddTypeHandler(typeof(Course), new DapperTypeHandler());
+
+            var dbStorableTypes = new[] {typeof(Profile), typeof(Group), typeof(Course), typeof(Challenge), typeof(Solution)};
+            foreach (var type in dbStorableTypes)
+                SqlMapper.AddTypeHandler(type, new DapperTypeHandler());
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -50,13 +53,11 @@ namespace Core
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
 
-            app.UseCors(DefaultCorsPolicy);
+            app.UseCors();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
-
-        private const string DefaultCorsPolicy = nameof(DefaultCorsPolicy);
     }
 }

@@ -19,13 +19,6 @@ namespace Core.Controllers
             this.solutionService = solutionService;
         }
 
-        [HttpGet]
-        public IActionResult Index()
-        {
-            Response.Cookies.Append("auth", "123", new CookieOptions {HttpOnly = true});
-            return View();
-        }
-        
         [HttpPost]
         [Route("upload")]
         public async Task<ActionResult<Guid>> Upload([FromBody] Solution solution)

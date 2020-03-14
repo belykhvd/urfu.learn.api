@@ -8,7 +8,7 @@ using Npgsql;
 
 namespace Core.Repo
 {
-    public class CrudRepo<TEntity> : PgRepo, ICrudRepo<TEntity> where TEntity : DbEntity
+    public class CrudRepo<TEntity> : PgRepo, ICrudRepo<TEntity>
     {
         private readonly string relationName;
 
@@ -17,116 +17,60 @@ namespace Core.Repo
             this.relationName = relationName;
         }
 
-        public async Task<OperationStatus<Guid>> Create(TEntity data)
+        public async Task<Result<Guid>> Save(TEntity data)
         {
             try
             {
-                data.InitAsFresh();
+                var entityId = Guid.NewGuid();
 
                 await using var conn = new NpgsqlConnection(ConnectionString);
                 await conn.ExecuteAsync(
-                    $@"insert into {relationName} (id, deleted, version, data)
-                           values (@Id, false, 0, @Data::jsonb)", new {data.Id, data}).ConfigureAwait(false);
+                    $@"insert into {relationName} (id, data)
+                           values (@Id, @Data::jsonb)", new {Id = entityId, data}).ConfigureAwait(false);
 
-                return OperationStatus<Guid>.Success(data.Id);
+                return Result<Guid>.Success(entityId);
             }
             catch (PostgresException e) when (e.SqlState == "23505")
             {
-                return OperationStatus<Guid>.Fail(OperationStatusCode.Conflict, "Entity with such ID already exists");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);  // TODO logging
-                return OperationStatus<Guid>.Fail(OperationStatusCode.InternalServerError);
+                return Result<Guid>.Fail(OperationStatusCode.Conflict, "Entity with such ID already exists");
             }
         }
 
-        public async Task<OperationStatus<TEntity>> Read(Guid id)
+        public async Task<Result<TEntity>> Read(Guid id)
         {
-            try
-            {
-                await using var conn = new NpgsqlConnection(ConnectionString);
-                var data = await conn.QuerySingleOrDefaultAsync<TEntity>(
-                    $@"select data
-                           from {relationName}
-                           where id = @Id
-                             and not deleted
-                           limit 1", new {id}).ConfigureAwait(false);
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            var data = await conn.QuerySingleOrDefaultAsync<TEntity>(
+                $@"select data
+                       from {relationName}
+                       where id = @Id
+                       limit 1", new {id}).ConfigureAwait(false);
 
-                return data != null
-                    ? OperationStatus<TEntity>.Success(data)
-                    : OperationStatus<TEntity>.Fail(OperationStatusCode.NotFound);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);  // TODO logging
-                return OperationStatus<TEntity>.Fail(OperationStatusCode.InternalServerError);
-            }
+            return data == null
+                ? Result<TEntity>.Fail(OperationStatusCode.NotFound, "Entity with such ID does not exists")
+                : Result<TEntity>.Success(data);
         }
 
-        public async Task<OperationStatus> Update(TEntity data)
+        public async Task<Result> Update(Guid id, TEntity data)
         {
-            try
-            {
-                await using var conn = new NpgsqlConnection(ConnectionString);
+            await using var conn = new NpgsqlConnection(ConnectionString);
 
-                var version = await conn.QuerySingleOrDefaultAsync<int?>(
-                    $@"select version
-                          from {relationName}
-                          where id = @Id
-                            and not deleted
-                          limit 1", new {data.Id}).ConfigureAwait(false);
+            var updated = await conn.QuerySingleOrDefaultAsync<bool?>(
+                $@"update {relationName}
+                      set data = @Data::jsonb                              
+                      where id = @Id                                                        
+                      returning true", new {id, data}).ConfigureAwait(false);
 
-                if (version == null)
-                    return OperationStatus.Fail(OperationStatusCode.NotFound);
-
-                if (data.Version != version)
-                    return OperationStatus.Fail(OperationStatusCode.Conflict, "Your data version is outdated");
-
-                data.Version = version.Value + 1;
-
-                var updated = await conn.QuerySingleOrDefaultAsync<bool?>(
-                    $@"update {relationName}
-                          set data = @Data::jsonb,
-                              version = version + 1
-                          where id = @Id
-                            and not deleted
-                            and version = @Version
-                          returning true", new {data.Id, version, data}).ConfigureAwait(false);
-                
-                if (updated == null)
-                    return OperationStatus.Fail(OperationStatusCode.Conflict, "Your data version is outdated");
-
-                return OperationStatus.Success;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);  // TODO logging
-                return OperationStatus.Fail(OperationStatusCode.InternalServerError);
-            }
+            return updated == null 
+                ? Result.Fail(OperationStatusCode.NotFound, "Entity with such ID does not exists")
+                : Result.Success;
         }
 
-        public async Task<OperationStatus> Delete(Guid id)
+        public async Task<Result> Delete(Guid id)
         {
-            try
-            {
-                await using var conn = new NpgsqlConnection(ConnectionString);
-                var deleted = await conn.QuerySingleOrDefaultAsync<bool?>(
-                    $@"update {relationName}
-                          set deleted = true
-                          where id = @Id
-                          returning true", new {id}).ConfigureAwait(false);
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            await conn.ExecuteAsync($@"delete from {relationName} where id = @Id", new {id}).ConfigureAwait(false);
 
-                if (deleted == null)
-                    return OperationStatus.Fail(OperationStatusCode.NotFound);
-
-                return OperationStatus.Success;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);  // TODO logging
-                return OperationStatus.Fail(OperationStatusCode.InternalServerError);
-            }
+            return Result.Success;
         }
     }
 }

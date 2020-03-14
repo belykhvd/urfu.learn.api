@@ -1,67 +1,105 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Contracts.Services;
+using Contracts.Types.Challenge;
 using Contracts.Types.Course;
+using Contracts.Types.CourseTask;
+using Core.IControllers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Core.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class CourseController : ControllerBase
+    public class CourseController : ControllerBase, ICourseController
     {
         private readonly ICourseService courseService;
+        private readonly IChallengeService challengeService;
 
-        public CourseController(ICourseService courseService)
+        public CourseController(ICourseService courseService, IChallengeService challengeService)
         {
             this.courseService = courseService;
-        }
-
-        #region CRUD
-
-        [HttpPost]
-        [Route("add")]
-        public async Task<IActionResult> Add([FromBody] Course course)
-        {
-            if (!User.Identity.IsAuthenticated)
-                return Unauthorized();
-
-            // TODO authorization
-            // TODO preprocessing and validation
-
-            return (await courseService.Create(course).ConfigureAwait(false)).ActionResult();
+            this.challengeService = challengeService;
         }
 
         [HttpGet]
-        [Route("get/{courseId}")]
-        public async Task<IActionResult> Get(Guid courseId)
+        [Route("courses")]
+        public async Task<IEnumerable<CourseDescription>> SelectCourses()
         {
-            if (!User.Identity.IsAuthenticated)
-                return Unauthorized();
-
-            return (await courseService.Read(courseId).ConfigureAwait(false)).ActionResult();
+            return await courseService.SelectCourses().ConfigureAwait(false);
         }
 
         [HttpPost]
-        [Route("update")]
-        public async Task<IActionResult> Update([FromBody] Course course)
+        [Route("courses/add")]
+        public async Task<IActionResult> Add([FromBody] Course course)
         {
-            if (!User.Identity.IsAuthenticated)
-                return Unauthorized();
-
-            return (await courseService.Update(course).ConfigureAwait(false)).ActionResult();
+            return (await courseService.Save(course).ConfigureAwait(false)).ActionResult();
         }
 
         [HttpPost]
-        [Route("delete")]
+        [Authorize]
+        [Route("courses/delete")]
         public async Task<IActionResult> Delete([FromQuery] Guid courseId)
         {
-            if (!User.Identity.IsAuthenticated)
-                return Unauthorized();
-
             return (await courseService.Delete(courseId).ConfigureAwait(false)).ActionResult();
         }
 
-        #endregion
+        [HttpGet]
+        [Route("course/{courseId}")]
+        public async Task<IActionResult> Get([FromRoute] Guid courseId)
+        {
+            return (await courseService.Read(courseId).ConfigureAwait(false)).ActionResult();
+        }
+
+        [HttpGet]
+        [Route("course/{courseId}/challenges")]
+        public async Task<IEnumerable<ChallengeDescription>> SelectChallenges([FromRoute] Guid courseId)
+        {
+            return await courseService.SelectChallenges(courseId).ConfigureAwait(false);
+        }
+
+        [HttpPost]
+        [Route("course/{courseId}/enroll")]
+        public async Task<IActionResult> Enroll([FromRoute] Guid courseId)
+        {
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("course/{courseId}/leave")]
+        public async Task<IActionResult> Leave(Guid courseId)
+        {
+            return Ok();
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("course/{courseId}/update")]
+        public async Task<IActionResult> Update([FromQuery] Guid courseId, [FromBody] Course course)
+        {
+            return (await courseService.Update(courseId, course).ConfigureAwait(false)).ActionResult();
+        }
+
+        [HttpPost]
+        [Route("challenges/add")]
+        public async Task<IActionResult> AddChallenge([FromBody] Challenge challenge)
+        {
+            return (await challengeService.Save(challenge).ConfigureAwait(false)).ActionResult();
+        }
+
+        [HttpGet]
+        [Route("challenge/{challengeId}")]
+        public async Task<IActionResult> GetChallenge([FromRoute] Guid challengeId)
+        {
+            return (await challengeService.Read(challengeId).ConfigureAwait(false)).ActionResult();
+        }
+
+        [HttpPost]
+        [Route("challenge/{challengeId}/update")]
+        public async Task<IActionResult> UpdateChallenge([FromRoute] Guid challengeId, [FromBody] Challenge challenge)
+        {
+            return (await challengeService.Update(challengeId, challenge).ConfigureAwait(false)).ActionResult();
+        }
     }
 }

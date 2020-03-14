@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Contracts.Services;
-using Contracts.Types.Common;
 using Contracts.Types.Group;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,7 +31,7 @@ namespace Core.Controllers
             // TODO authorization
             // TODO preprocessing and validation
 
-            return (await groupService.Create(group).ConfigureAwait(false)).ActionResult();
+            return (await groupService.Save(group).ConfigureAwait(false)).ActionResult();
         }
 
         [HttpGet]
@@ -48,12 +46,12 @@ namespace Core.Controllers
 
         [HttpPost]
         [Route("update")]
-        public async Task<IActionResult> Update([FromBody] Group group)
+        public async Task<IActionResult> Update(Guid groupId, [FromBody] Group group)
         {
             if (!User.Identity.IsAuthenticated)
                 return Unauthorized();
 
-            return (await groupService.Update(group).ConfigureAwait(false)).ActionResult();
+            return (await groupService.Update(groupId, group).ConfigureAwait(false)).ActionResult();
         }
 
         [HttpPost]
