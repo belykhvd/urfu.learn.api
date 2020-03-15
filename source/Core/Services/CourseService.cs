@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Contracts.Services;
+using Contracts.Types.Challenge;
 using Contracts.Types.Common;
 using Contracts.Types.Course;
-using Contracts.Types.CourseTask;
 using Core.Repo;
 using Dapper;
 using Microsoft.Extensions.Configuration;

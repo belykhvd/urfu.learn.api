@@ -5,7 +5,8 @@
         public const string Course = "course";
         public const string CourseIndex = "course_index";
 
-        public const string Challenge = "challenge"; 
+        public const string Challenge = "challenge";
+        public const string ChallengeAccomplishment = "challenge_accomplishment";
 
         public const string Group = "\"group\"";
         public const string GroupMembership = "group_membership";

@@ -56,7 +56,7 @@ namespace Core.Controllers
 
         [HttpGet]
         [Route("student/summaries")]
-        public async Task<ActionResult<IEnumerable<SolutionStudentSummary>>> SelectStudentSummaries(Guid taskId, int lastLoadedIndex)
+        public async Task<ActionResult<IEnumerable<SolutionDescription>>> SelectStudentSummaries(Guid taskId, int lastLoadedIndex)
         {
             return Ok(await solutionService.SelectStudentSummaries(taskId, lastLoadedIndex, 10).ConfigureAwait(false));
         }

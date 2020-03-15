@@ -1,7 +1,6 @@
 using Contracts.Services;
 using Contracts.Types.Challenge;
 using Contracts.Types.Course;
-using Contracts.Types.CourseTask;
 using Contracts.Types.Group;
 using Contracts.Types.Solution;
 using Contracts.Types.User;
@@ -43,7 +42,7 @@ namespace Core
 
             DefaultTypeMap.MatchNamesWithUnderscores = true;
 
-            var dbStorableTypes = new[] {typeof(Profile), typeof(Group), typeof(Course), typeof(Challenge), typeof(Solution)};
+            var dbStorableTypes = new[] {typeof(Profile), typeof(Group), typeof(Course), typeof(ChallengeBase), typeof(Solution)};
             foreach (var type in dbStorableTypes)
                 SqlMapper.AddTypeHandler(type, new DapperTypeHandler());
         }

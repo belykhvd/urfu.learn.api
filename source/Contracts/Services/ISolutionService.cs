@@ -14,7 +14,7 @@ namespace Contracts.Services
         Task<byte[]> Download(Guid solutionId);
 
         // STUDENT
-        Task<IEnumerable<SolutionStudentSummary>> SelectStudentSummaries(Guid taskId, int lastLoadedIndex, int limit);
+        Task<IEnumerable<SolutionDescription>> SelectStudentSummaries(Guid taskId, int lastLoadedIndex, int limit);
         
         // MENTOR
         Task RateProgress(SolutionProgress progress);

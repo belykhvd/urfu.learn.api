@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.Challenge;
 using Contracts.Types.Course;
-using Contracts.Types.CourseTask;
 using Core.IControllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -79,27 +78,6 @@ namespace Core.Controllers
         public async Task<IActionResult> Update([FromQuery] Guid courseId, [FromBody] Course course)
         {
             return (await courseService.Update(courseId, course).ConfigureAwait(false)).ActionResult();
-        }
-
-        [HttpPost]
-        [Route("challenges/add")]
-        public async Task<IActionResult> AddChallenge([FromBody] Challenge challenge)
-        {
-            return (await challengeService.Save(challenge).ConfigureAwait(false)).ActionResult();
-        }
-
-        [HttpGet]
-        [Route("challenge/{challengeId}")]
-        public async Task<IActionResult> GetChallenge([FromRoute] Guid challengeId)
-        {
-            return (await challengeService.Read(challengeId).ConfigureAwait(false)).ActionResult();
-        }
-
-        [HttpPost]
-        [Route("challenge/{challengeId}/update")]
-        public async Task<IActionResult> UpdateChallenge([FromRoute] Guid challengeId, [FromBody] Challenge challenge)
-        {
-            return (await challengeService.Update(challengeId, challenge).ConfigureAwait(false)).ActionResult();
         }
     }
 }

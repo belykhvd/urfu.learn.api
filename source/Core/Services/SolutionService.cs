@@ -36,7 +36,7 @@ namespace Core.Services
                 : null;
         }
 
-        public async Task<IEnumerable<SolutionStudentSummary>> SelectStudentSummaries(Guid taskId, int lastLoadedIndex, int limit)
+        public async Task<IEnumerable<SolutionDescription>> SelectStudentSummaries(Guid taskId, int lastLoadedIndex, int limit)
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
             await conn.QueryAsync(

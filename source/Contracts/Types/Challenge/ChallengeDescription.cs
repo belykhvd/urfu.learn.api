@@ -1,7 +1,6 @@
-﻿namespace Contracts.Types.CourseTask
+﻿namespace Contracts.Types.Challenge
 {
     public class ChallengeDescription
     {
-        
     }
 }
