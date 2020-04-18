@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Contracts.Repo;
 using Contracts.Types.Common;
@@ -8,18 +9,14 @@ namespace Contracts.Services
 {
     public interface IGroupService : ICrudRepo<Group>
     {
-        #region MEMBERSHIP
+        Task<IEnumerable<StudentList>> GetStudentList(int year, int semester);
 
-        Task<Result> Include(Guid groupId, Guid userId);
-        Task<Result> Exclude(Guid groupId, Guid userId);
-        Task<Result<StudentDescription[]>> GetMembers(Guid groupId);
+        Task<GroupLink[]> List();
 
-        #endregion
-
-        #region SEARCH
-
-        Task<GroupDescription[]> Search(string prefix, int? limit);
-
-        #endregion
+        Task<Result<StudentDescription[]>> ListMembers(int year, int semester, Guid groupId);
+        Task<Result> Include(int year, int semester, Guid groupId, Guid userId);
+        Task<Result> Exclude(int year, int semester, Guid groupId, Guid userId);
+        
+        Task<GroupLink[]> Search(string prefix, int? limit);
     }
 }

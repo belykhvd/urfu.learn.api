@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.Group;
@@ -17,8 +18,16 @@ namespace Core.Controllers
             this.groupService = groupService;
         }
 
-        
-        
+        [HttpGet][Route("studentlist")]
+        public async Task<IEnumerable<StudentList>> GetStudentList([FromQuery] int year, [FromQuery] int semester)
+        {
+            return await groupService.GetStudentList(year, semester).ConfigureAwait(false);
+        }
+
+
+        [HttpGet][Route("list")]
+        public async Task<GroupLink[]> List() => await groupService.List().ConfigureAwait(false);
+       
         #region CRUD
 
         [HttpPost]
@@ -68,40 +77,22 @@ namespace Core.Controllers
 
         #region MEMBERSHIP
 
-        [HttpPost]
-        [Route("{groupId}/include")]
-        public async Task<IActionResult> Include([FromRoute] Guid groupId, [FromQuery] Guid userId)
+        [HttpGet][Route("{groupId}/listMembers")]
+        public async Task<IActionResult> ListMembers([FromQuery] int year, [FromQuery] int semester, [FromRoute] Guid groupId)
         {
-            if (!User.Identity.IsAuthenticated)
-                return Unauthorized();
-
-            // authorization
-
-            return (await groupService.Include(groupId, userId).ConfigureAwait(false)).ActionResult();
+            return (await groupService.ListMembers(year, semester, groupId).ConfigureAwait(false)).ActionResult();
         }
 
-        [HttpPost]
-        [Route("{groupId}/exclude")]
-        public async Task<IActionResult> Exclude([FromRoute] Guid groupId, [FromQuery] Guid userId)
+        [HttpPost][Route("{groupId}/include")]
+        public async Task<IActionResult> Include([FromQuery] int year, [FromQuery] int semester, [FromRoute] Guid groupId, [FromQuery] Guid userId)
         {
-            if (!User.Identity.IsAuthenticated)
-                return Unauthorized();
-
-            // authorization
-
-            return (await groupService.Exclude(groupId, userId).ConfigureAwait(false)).ActionResult();
+            return (await groupService.Include(year, semester, groupId, userId).ConfigureAwait(false)).ActionResult();
         }
 
-        [HttpGet]
-        [Route("{groupId}/getMembers")]
-        public async Task<IActionResult> GetMembers([FromRoute] Guid groupId)
+        [HttpPost][Route("{groupId}/exclude")]
+        public async Task<IActionResult> Exclude([FromQuery] int year, [FromQuery] int semester, [FromRoute] Guid groupId, [FromQuery] Guid userId)
         {
-            if (!User.Identity.IsAuthenticated)
-                return Unauthorized();
-
-            // authorization
-
-            return (await groupService.GetMembers(groupId).ConfigureAwait(false)).ActionResult();
+            return (await groupService.Exclude(year, semester, groupId, userId).ConfigureAwait(false)).ActionResult();
         }
 
         #endregion

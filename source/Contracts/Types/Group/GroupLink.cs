@@ -2,9 +2,9 @@
 
 namespace Contracts.Types.Group
 {
-    public class GroupDescription
+    public class GroupLink
     {
-        public Guid GroupId { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
     }
 }
