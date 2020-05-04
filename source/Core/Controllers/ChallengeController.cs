@@ -2,13 +2,12 @@
 using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.Challenge;
-using Core.IControllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Core.Controllers
 {
     [ApiController]
-    public class ChallengeController : ControllerBase, IChallengeController
+    public class ChallengeController : ControllerBase
     {
         private readonly IChallengeService challengeService;
 

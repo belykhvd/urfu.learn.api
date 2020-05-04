@@ -8,13 +8,48 @@ using Npgsql;
 
 namespace Core.Repo
 {
-    public class CrudRepo<TEntity> : PgRepo, ICrudRepo<TEntity>
+    public class Repo<TEntity> : PgRepo, IRepo<TEntity>
     {
         private readonly string relationName;
 
-        protected CrudRepo(IConfiguration config, string relationName) : base(config)
+        protected Repo(IConfiguration config, string relationName) : base(config)
         {
             this.relationName = relationName;
+        }
+
+        public async Task<Guid> Save(Guid? id, TEntity data)
+        {
+            id ??= Guid.NewGuid();
+
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            await conn.ExecuteAsync(
+                @$"insert into {relationName} (id, data)
+                       values (@Id, @Data::jsonb)
+                       on conflict (id) do update set data = @Data::jsonb", new {id, data}).ConfigureAwait(false);
+
+            await SaveIndex(conn, id.Value, data).ConfigureAwait(false);
+
+            return id.Value;
+        }
+
+        protected virtual Task SaveIndex(NpgsqlConnection conn, Guid id, TEntity data) => Task.CompletedTask;
+        protected virtual Task DeleteIndex(NpgsqlConnection conn, Guid id) => Task.CompletedTask;
+
+        public async Task<TEntity> Get(Guid id)
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            return await conn.QuerySingleOrDefaultAsync<TEntity>(
+                $@"select data
+                       from {relationName}
+                       where id = @Id
+                       limit 1", new {id}).ConfigureAwait(false);
+        }
+
+        public async Task Delete(Guid id)
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            await conn.ExecuteAsync($@"delete from {relationName} where id = @Id", new {id}).ConfigureAwait(false);
+            await DeleteIndex(conn, id).ConfigureAwait(false);
         }
 
         public async Task<Result<Guid>> Save(TEntity data)
@@ -65,7 +100,7 @@ namespace Core.Repo
                 : Result.Success;
         }
 
-        public async Task<Result> Delete(Guid id)
+        public async Task<Result> DeleteOne(Guid id)
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
             await conn.ExecuteAsync($@"delete from {relationName} where id = @Id", new {id}).ConfigureAwait(false);

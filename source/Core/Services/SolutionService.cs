@@ -16,6 +16,19 @@ namespace Core.Services
         {
         }
 
+        public async Task<IEnumerable<SolutionInfo>> GetSolutionList(Guid userId, Guid challengeId)
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            return await conn.QueryAsync<SolutionInfo>(
+                $@"select inf.data
+	                   from {PgSchema.solution_index} si
+	                   join {PgSchema.solution_info} inf
+	                     on si.id = inf.id
+	                   where user_id = @UserId
+	                     and challenge_id = @ChallengeId
+	                   order by number desc", new { userId, challengeId }).ConfigureAwait(false);
+        }
+
         public async Task Upload(Solution solution)
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
@@ -36,7 +49,7 @@ namespace Core.Services
                 : null;
         }
 
-        public async Task<IEnumerable<SolutionDescription>> SelectStudentSummaries(Guid taskId, int lastLoadedIndex, int limit)
+        public async Task<IEnumerable<SolutionInfo>> SelectStudentSummaries(Guid taskId, int lastLoadedIndex, int limit)
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
             await conn.QueryAsync(

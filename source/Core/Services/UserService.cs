@@ -9,7 +9,7 @@ using Npgsql;
 
 namespace Core.Services
 {
-    public class UserService : CrudRepo<Profile>, IUserService
+    public class UserService : Repo<Profile>, IUserService
     {
         public UserService(IConfiguration config) : base(config, "profile")
         {

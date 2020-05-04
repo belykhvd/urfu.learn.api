@@ -13,7 +13,7 @@ using Npgsql;
 
 namespace Core.Services
 {
-    public class GroupService : CrudRepo<Group>, IGroupService
+    public class GroupService : Repo<Group>, IGroupService
     {
         public GroupService(IConfiguration config) : base(config, PgSchema.Group){}
 

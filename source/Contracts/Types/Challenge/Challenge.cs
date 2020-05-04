@@ -11,6 +11,6 @@ namespace Contracts.Types.Challenge
         public ChallengeStatus Status { get; set; }
         public Guid AttachmentId { get; set; }
         public Requirement[] Requirements { get; set; }
-        public SolutionDescription[] Solutions { get; set; }
+        public SolutionInfo[] Solutions { get; set; }
     }
 }

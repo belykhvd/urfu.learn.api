@@ -11,7 +11,7 @@ using Npgsql;
 
 namespace Core.Services
 {
-    public class ChallengeService : CrudRepo<ChallengeBase>, IChallengeService
+    public class ChallengeService : Repo<ChallengeBase>, IChallengeService
     {
         public ChallengeService(IConfiguration config) : base(config, PgSchema.Challenge)
         {

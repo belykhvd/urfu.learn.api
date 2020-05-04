@@ -2,9 +2,9 @@
 
 namespace Contracts.Types.Solution
 {
-    public class SolutionDescription
+    public class SolutionInfo
     {
-        public Guid SolutionId { get; set; }
+        public Guid Id { get; set; }
         public DateTime Timestamp { get; set; }
         public string FileName { get; set; }
         public long FileSize { get; set; }

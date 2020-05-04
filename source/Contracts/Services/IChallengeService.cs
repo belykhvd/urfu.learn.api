@@ -6,7 +6,7 @@ using Contracts.Types.Common;
 
 namespace Contracts.Services
 {
-    public interface IChallengeService : ICrudRepo<ChallengeBase>
+    public interface IChallengeService : IRepo<ChallengeBase>
     {
         Task<Result<Challenge>> Get(Guid challengeId, Guid userId);
     }

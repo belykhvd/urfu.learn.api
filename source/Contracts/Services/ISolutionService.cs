@@ -7,6 +7,8 @@ namespace Contracts.Services
 {
     public interface ISolutionService
     {
+        Task<IEnumerable<SolutionInfo>> GetSolutionList(Guid userId, Guid challengeId);
+
         // STUDENT
         Task Upload(Solution solution);
 
@@ -14,7 +16,7 @@ namespace Contracts.Services
         Task<byte[]> Download(Guid solutionId);
 
         // STUDENT
-        Task<IEnumerable<SolutionDescription>> SelectStudentSummaries(Guid taskId, int lastLoadedIndex, int limit);
+        Task<IEnumerable<SolutionInfo>> SelectStudentSummaries(Guid taskId, int lastLoadedIndex, int limit);
         
         // MENTOR
         Task RateProgress(SolutionProgress progress);

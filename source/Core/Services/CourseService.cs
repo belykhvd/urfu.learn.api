@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Contracts.Services;
-using Contracts.Types.Challenge;
 using Contracts.Types.Common;
 using Contracts.Types.Course;
 using Core.Repo;
@@ -12,35 +11,28 @@ using Npgsql;
 
 namespace Core.Services
 {
-    public class CourseService : CrudRepo<Course>, ICourseService
+    public class CourseService : Repo<Course>, ICourseService
     {
-        public CourseService(IConfiguration config) : base(config, PgSchema.Course) {}
+        public CourseService(IConfiguration config) : base(config, PgSchema.course) {}
 
-        public async Task<IEnumerable<CourseDescription>> SelectCourses()
+        public async Task<IEnumerable<Link>> Select()
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
-            return await conn.QueryAsync<CourseDescription>(
-                @$"select id, name, short_description from {PgSchema.CourseIndex}").ConfigureAwait(false);
+            return await conn.QueryAsync<Link>(
+                @$"select jsonb_build_object('id', id, 'text', name) from {PgSchema.course_index}").ConfigureAwait(false);
         }
 
-        public Task<IEnumerable<CourseDescription>> SelectEnrolledCourses(Guid userId)
+        protected override async Task SaveIndex(NpgsqlConnection conn, Guid id, Course data)
         {
-            throw new NotImplementedException();
+            await conn.ExecuteAsync(
+                @$"insert into {PgSchema.course_index} (id, name)
+                       values (@Id, @Name)
+                       on conflict (id) do update set name = @Name", new {id, data.Name}).ConfigureAwait(false);
         }
 
-        public Task<IEnumerable<ChallengeDescription>> SelectChallenges(Guid courseId)
+        protected override async Task DeleteIndex(NpgsqlConnection conn, Guid id)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<Result> Enroll(Guid courseId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task Leave(Guid courseId)
-        {
-            throw new NotImplementedException();
+            await conn.ExecuteAsync(@$"delete from {PgSchema.course_index} where id = @Id", new {id}).ConfigureAwait(false);
         }
     }
 }

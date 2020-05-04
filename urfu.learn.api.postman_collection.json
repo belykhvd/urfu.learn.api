@@ -1,0 +1,152 @@
+{
+	"info": {
+		"_postman_id": "4b16ed87-d3d3-4db2-9847-9b8ff35a82f4",
+		"name": "urfu.learn.api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Курсы",
+			"item": [
+				{
+					"name": "Список всех курсов",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/course/select",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"course",
+								"select"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Создать курс",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Курс актерского мастерства от Joey Tribianni\",\n\t\"description\": \"How you doing?\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/course/save",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"course",
+								"save"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Редактировать курс",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Анизотропная фильтрация [edited]\",\n\t\"description\": \"Здесь будет описание [edited]\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/course/save?id=6c4d6a06-0935-4618-9106-1766a489b562",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"course",
+								"save"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "6c4d6a06-0935-4618-9106-1766a489b562"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Открыть курс",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/course/get?id=6c4d6a06-0935-4618-9106-1766a489b562",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"course",
+								"get"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "6c4d6a06-0935-4618-9106-1766a489b562"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удалить курс",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/course/delete?id=00000000-0000-0000-0000-000000000000",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"course",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "00000000-0000-0000-0000-000000000000"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

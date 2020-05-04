@@ -70,7 +70,7 @@ namespace Core.Controllers
             if (!User.Identity.IsAuthenticated)
                 return Unauthorized();
 
-            return (await groupService.Delete(groupId).ConfigureAwait(false)).ActionResult();
+            return (await groupService.DeleteOne(groupId).ConfigureAwait(false)).ActionResult();
         }
 
         #endregion

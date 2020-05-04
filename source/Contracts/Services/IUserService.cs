@@ -5,7 +5,7 @@ using Contracts.Types.User;
 
 namespace Contracts.Services
 {
-    public interface IUserService : ICrudRepo<Profile>
+    public interface IUserService : IRepo<Profile>
     {
         #region Profile photo
 

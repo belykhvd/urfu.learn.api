@@ -7,7 +7,7 @@ using Contracts.Types.Group;
 
 namespace Contracts.Services
 {
-    public interface IGroupService : ICrudRepo<Group>
+    public interface IGroupService : IRepo<Group>
     {
         Task<IEnumerable<StudentList>> GetStudentList(int year, int semester);
 

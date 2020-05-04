@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.Solution;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Core.Controllers
@@ -18,6 +17,12 @@ namespace Core.Controllers
         {
             this.solutionService = solutionService;
         }
+
+        // [HttpGet][Route("list")]
+        // public async Task<IEnumerable<>> GetSolutionList([FromQuery] Guid userId, [FromQuery] Guid challengeId)
+        // {
+        //
+        // }
 
         [HttpPost]
         [Route("upload")]
@@ -56,7 +61,7 @@ namespace Core.Controllers
 
         [HttpGet]
         [Route("student/summaries")]
-        public async Task<ActionResult<IEnumerable<SolutionDescription>>> SelectStudentSummaries(Guid taskId, int lastLoadedIndex)
+        public async Task<ActionResult<IEnumerable<SolutionInfo>>> SelectStudentSummaries(Guid taskId, int lastLoadedIndex)
         {
             return Ok(await solutionService.SelectStudentSummaries(taskId, lastLoadedIndex, 10).ConfigureAwait(false));
         }
