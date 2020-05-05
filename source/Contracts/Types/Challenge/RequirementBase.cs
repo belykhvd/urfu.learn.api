@@ -1,4 +1,4 @@
-﻿namespace Contracts.Types.Challenge
+﻿namespace Contracts.Types.CourseTask
 {
     public class RequirementBase
     {

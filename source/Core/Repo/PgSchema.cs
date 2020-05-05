@@ -1,11 +1,16 @@
-﻿namespace Core.Repo
+﻿// ReSharper disable InconsistentNaming
+namespace Core.Repo
 {
     public static class PgSchema
     {
         public const string course = "course";              // id, data
         public const string course_index = "course_index";  // id, name
 
-        public const string Challenge = "challenge";
+        public const string course_tasks = "course_tasks";  // course_id, task_id
+
+        public const string task = "task";                  // id, data
+        public const string task_index = "task_index";      // id, name
+
         public const string ChallengeAccomplishment = "challenge_accomplishment";
 
         public const string solution_info = "solution_info";

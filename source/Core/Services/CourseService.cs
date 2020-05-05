@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Contracts.Services;
+using Contracts.Types.CourseTask;
 using Contracts.Types.Common;
 using Contracts.Types.Course;
 using Core.Repo;
@@ -13,13 +14,52 @@ namespace Core.Services
 {
     public class CourseService : Repo<Course>, ICourseService
     {
-        public CourseService(IConfiguration config) : base(config, PgSchema.course) {}
+        private readonly ITaskService taskService;
+
+        public CourseService(IConfiguration config, ITaskService taskService) : base(config, PgSchema.course)
+        {
+            this.taskService = taskService;
+        }
 
         public async Task<IEnumerable<Link>> Select()
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
             return await conn.QueryAsync<Link>(
                 @$"select jsonb_build_object('id', id, 'text', name) from {PgSchema.course_index}").ConfigureAwait(false);
+        }
+
+        public async Task<Guid> AddTask(Guid courseId, CourseTask task)
+        {
+            var taskId = await taskService.Save(null, task).ConfigureAwait(false);
+
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            await conn.ExecuteAsync(
+                $@"insert into {PgSchema.course_tasks} (course_id, task_id)
+                       values (@CourseId, @TaskId)", new {courseId, taskId}).ConfigureAwait(false);
+
+            return taskId;
+        }
+
+        public async Task DeleteTask(Guid courseId, Guid taskId)
+        {
+            await taskService.Delete(taskId).ConfigureAwait(false);
+
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            await conn.ExecuteAsync(
+                $@"delete from {PgSchema.course_tasks}
+                         where course_id = @CourseId
+                           and task_id = @TaskId", new {courseId, taskId}).ConfigureAwait(false);
+        }
+
+        public async Task<IEnumerable<Link>> SelectTasks(Guid courseId)
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            return await conn.QueryAsync<Link>(
+                @$"select jsonb_build_object('id', ti.id, 'text', ti.name)
+                       from {PgSchema.course_tasks} ct
+                       join {PgSchema.task_index} ti
+                         on ct.task_id = ti.id
+                       where ct.course_id = @CourseId", new {courseId}).ConfigureAwait(false);
         }
 
         protected override async Task SaveIndex(NpgsqlConnection conn, Guid id, Course data)

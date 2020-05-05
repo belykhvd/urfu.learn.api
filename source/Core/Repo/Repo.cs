@@ -12,7 +12,7 @@ namespace Core.Repo
     {
         private readonly string relationName;
 
-        protected Repo(IConfiguration config, string relationName) : base(config)
+        public Repo(IConfiguration config, string relationName) : base(config)
         {
             this.relationName = relationName;
         }
@@ -91,8 +91,8 @@ namespace Core.Repo
 
             var updated = await conn.QuerySingleOrDefaultAsync<bool?>(
                 $@"update {relationName}
-                      set data = @Data::jsonb                              
-                      where id = @Id                                                        
+                      set data = @Data::jsonb
+                      where id = @Id
                       returning true", new {id, data}).ConfigureAwait(false);
 
             return updated == null 

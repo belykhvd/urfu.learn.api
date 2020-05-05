@@ -1,5 +1,5 @@
 using Contracts.Services;
-using Contracts.Types.Challenge;
+using Contracts.Types.CourseTask;
 using Contracts.Types.Common;
 using Contracts.Types.Course;
 using Contracts.Types.Group;
@@ -38,7 +38,7 @@ namespace Core
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IGroupService, GroupService>();
             services.AddSingleton<ICourseService, CourseService>();
-            services.AddSingleton<IChallengeService, ChallengeService>();
+            services.AddSingleton<ITaskService, TaskService>();
             services.AddSingleton<ISolutionService, SolutionService>();
 
             DefaultTypeMap.MatchNamesWithUnderscores = true;
@@ -48,9 +48,8 @@ namespace Core
                 typeof(Profile),
                 typeof(Group),
                 typeof(Course),
-                typeof(ChallengeBase),
+                typeof(CourseTask),
                 typeof(Solution),
-                typeof(GroupLink),
                 typeof(Link),
                 typeof(Link[])
             };

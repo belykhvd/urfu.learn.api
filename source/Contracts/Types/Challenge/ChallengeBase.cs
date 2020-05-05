@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Contracts.Types.Challenge
+namespace Contracts.Types.CourseTask
 {
     public class ChallengeBase
     {
@@ -11,7 +11,7 @@ namespace Contracts.Types.Challenge
         public DateTime? Deadline { get; set; }
         public RequirementBase[] Requirements { get; set; }
 
-        public Challenge ToChallenge(HashSet<int> accomplishedRequirements) => new Challenge
+        public CourseTask ToChallenge(HashSet<int> accomplishedRequirements) => new CourseTask
         {
             Name = Name,
             Description = Description,

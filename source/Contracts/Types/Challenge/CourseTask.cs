@@ -1,9 +1,9 @@
 ﻿using System;
 using Contracts.Types.Solution;
 
-namespace Contracts.Types.Challenge
+namespace Contracts.Types.CourseTask
 {
-    public class Challenge
+    public class CourseTask
     {
         public string Name { get; set; }
         public string Description { get; set; }

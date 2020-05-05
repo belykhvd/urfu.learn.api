@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Contracts.Services;
+using Contracts.Types.CourseTask;
 using Contracts.Types.Common;
 using Contracts.Types.Course;
 using Microsoft.AspNetCore.Mvc;
@@ -38,5 +39,20 @@ namespace Core.Controllers
         [Route("delete")]
         public async Task Delete([FromQuery] Guid id)
             => await courseService.Delete(id).ConfigureAwait(false);
+
+        [HttpPost]
+        [Route("addTask")]
+        public async Task<Guid> AddTask([FromQuery] Guid courseId, [FromBody] CourseTask task)
+            => await courseService.AddTask(courseId, task).ConfigureAwait(false);
+
+        [HttpPost]
+        [Route("deleteTask")]
+        public async Task DeleteTask([FromQuery] Guid courseId, [FromQuery] Guid taskId)
+            => await courseService.DeleteTask(courseId, taskId).ConfigureAwait(false);
+
+        [HttpGet]
+        [Route("selectTasks")]
+        public async Task<IEnumerable<Link>> SelectTasks([FromQuery] Guid courseId)
+            => await courseService.SelectTasks(courseId).ConfigureAwait(false);
     }
 }
