@@ -146,6 +146,164 @@
 				}
 			],
 			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Задачи",
+			"item": [
+				{
+					"name": "Список всех задач курса",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/course/selecttasks?courseId=c1031b0a-0967-41d4-9966-f762a264fed4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"course",
+								"selecttasks"
+							],
+							"query": [
+								{
+									"key": "courseId",
+									"value": "c1031b0a-0967-41d4-9966-f762a264fed4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Добавить задачу к курсу",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Волны\",\n\t\"description\": \"Проплыть на доске по 10-метровой волне\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/course/addtask?courseId=c1031b0a-0967-41d4-9966-f762a264fed4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"course",
+								"addtask"
+							],
+							"query": [
+								{
+									"key": "courseId",
+									"value": "c1031b0a-0967-41d4-9966-f762a264fed4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Открыть задачу",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/task/get?id=170bc9c9-83bb-4a32-9a9b-68115dfa484b",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"task",
+								"get"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "170bc9c9-83bb-4a32-9a9b-68115dfa484b"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Редактировать задачу",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Волны [edited]\",\n\t\"description\": \"Проплыть по 20-метровой волне [edited]\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/task/save?id=170bc9c9-83bb-4a32-9a9b-68115dfa484b",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"task",
+								"save"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "170bc9c9-83bb-4a32-9a9b-68115dfa484b"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удалить задачу из курса",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/course/deleteTask?courseId=c1031b0a-0967-41d4-9966-f762a264fed4&taskId=d2d13dd7-4d0d-4842-87f6-4afe276ecadb",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"course",
+								"deleteTask"
+							],
+							"query": [
+								{
+									"key": "courseId",
+									"value": "c1031b0a-0967-41d4-9966-f762a264fed4"
+								},
+								{
+									"key": "taskId",
+									"value": "d2d13dd7-4d0d-4842-87f6-4afe276ecadb"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
 		}
 	],
 	"protocolProfileBehavior": {}
