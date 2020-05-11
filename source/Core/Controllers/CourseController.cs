@@ -16,10 +16,12 @@ namespace Core.Controllers
     public class CourseController : ControllerBase
     {
         private readonly ICourseService courseService;
+        private readonly ITaskService taskService;
 
-        public CourseController(ICourseService courseService)
+        public CourseController(ICourseService courseService, ITaskService taskService)
         {
             this.courseService = courseService;
+            this.taskService = taskService;
         }
 
         [HttpGet]

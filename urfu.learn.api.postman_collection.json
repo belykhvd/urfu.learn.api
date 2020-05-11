@@ -9,7 +9,7 @@
 			"name": "Курсы",
 			"item": [
 				{
-					"name": "Список всех курсов",
+					"name": "Список курсов",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -29,13 +29,33 @@
 					"response": []
 				},
 				{
+					"name": "Список линков на курсы",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/course/selectLinks",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"course",
+								"selectLinks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Создать курс",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"Курс актерского мастерства от Joey Tribianni\",\n\t\"description\": \"How you doing?\"\n}",
+							"raw": "{\n\t\"name\": \"Моделирование ракет\",\n\t\"description\": \"К звездам\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -64,7 +84,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"Анизотропная фильтрация [edited]\",\n\t\"description\": \"Здесь будет описание [edited]\"\n}",
+							"raw": "{\r\n    \"name\": \"Моделирование ракет\",\r\n    \"description\": \"К звездам\",\r\n    \"maxScore\": 100\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -72,7 +92,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/course/save?id=6c4d6a06-0935-4618-9106-1766a489b562",
+							"raw": "http://localhost:8080/course/save?id=edbe8757-86b8-4e30-bc97-e72b2b5fce4b",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -85,7 +105,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "6c4d6a06-0935-4618-9106-1766a489b562"
+									"value": "edbe8757-86b8-4e30-bc97-e72b2b5fce4b"
 								}
 							]
 						}
@@ -98,7 +118,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/course/get?id=6c4d6a06-0935-4618-9106-1766a489b562",
+							"raw": "http://localhost:8080/course/get?id=edbe8757-86b8-4e30-bc97-e72b2b5fce4b",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -111,7 +131,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "6c4d6a06-0935-4618-9106-1766a489b562"
+									"value": "edbe8757-86b8-4e30-bc97-e72b2b5fce4b"
 								}
 							]
 						}
@@ -151,12 +171,12 @@
 			"name": "Задачи",
 			"item": [
 				{
-					"name": "Список всех задач курса",
+					"name": "Список всех линков задач курса",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/course/selecttasks?courseId=c1031b0a-0967-41d4-9966-f762a264fed4",
+							"raw": "http://localhost:8080/course/selecttasks?courseId=edbe8757-86b8-4e30-bc97-e72b2b5fce4b",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -169,7 +189,7 @@
 							"query": [
 								{
 									"key": "courseId",
-									"value": "c1031b0a-0967-41d4-9966-f762a264fed4"
+									"value": "edbe8757-86b8-4e30-bc97-e72b2b5fce4b"
 								}
 							]
 						}
@@ -183,7 +203,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"Волны\",\n\t\"description\": \"Проплыть на доске по 10-метровой волне\"\n}",
+							"raw": "{\n\t\"name\": \"Стабилизаторы\",\n\t\"description\": \"Они самые\",\n\t\"deadline\": \"2009-02-15T00:00:00Z\",\n\t\"maxScore\": 100,\n\t\"requirements\": [\n\t\t{\"id\": \"dd92cb72-0ea3-4c39-a86c-5c0d7738aaf5\", \"name\": \"форма\"},\n\t\t{\"id\": \"dd92cb72-0ea3-4c39-a86c-5c0d7738aaf6\", \"name\": \"площадь\"},\n\t\t{\"id\": \"dd92cb72-0ea3-4c39-a86c-5c0d7738aaf7\", \"name\": \"количество\"}\n\t]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -191,7 +211,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/course/addtask?courseId=c1031b0a-0967-41d4-9966-f762a264fed4",
+							"raw": "http://localhost:8080/course/addtask?courseId=edbe8757-86b8-4e30-bc97-e72b2b5fce4b",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -204,7 +224,7 @@
 							"query": [
 								{
 									"key": "courseId",
-									"value": "c1031b0a-0967-41d4-9966-f762a264fed4"
+									"value": "edbe8757-86b8-4e30-bc97-e72b2b5fce4b"
 								}
 							]
 						}
@@ -217,7 +237,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/task/get?id=170bc9c9-83bb-4a32-9a9b-68115dfa484b",
+							"raw": "http://localhost:8080/task/get?id=b8a19b2a-1280-4898-967c-386adbd58f0e",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -230,7 +250,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "170bc9c9-83bb-4a32-9a9b-68115dfa484b"
+									"value": "b8a19b2a-1280-4898-967c-386adbd58f0e"
 								}
 							]
 						}
@@ -244,7 +264,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"Волны [edited]\",\n\t\"description\": \"Проплыть по 20-метровой волне [edited]\"\n}",
+							"raw": "{\r\n    \"name\": \"Стабилизаторы\",\r\n    \"description\": \"Они самые\",\r\n    \"deadline\": \"2020-02-15T00:00:00Z\",\r\n    \"maxScore\": 1000,\r\n    \"requirements\": [\r\n        {\r\n            \"id\": \"dd92cb72-0ea3-4c39-a86c-5c0d7738aaf5\",\r\n            \"name\": \"форма !!!\"\r\n        },\r\n        {\r\n            \"id\": \"dd92cb72-0ea3-4c39-a86c-5c0d7738aaf6\",\r\n            \"name\": \"площадь !!!\"\r\n        },\r\n        {\r\n            \"id\": \"dd92cb72-0ea3-4c39-a86c-5c0d7738aaf7\",\r\n            \"name\": \"количество\"\r\n        }\r\n    ],\r\n    \"status\": 0,\r\n    \"attachmentId\": \"00000000-0000-0000-0000-000000000001\",\r\n    \"solutions\": null\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -252,7 +272,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/task/save?id=170bc9c9-83bb-4a32-9a9b-68115dfa484b",
+							"raw": "http://localhost:8080/task/save?id=b8a19b2a-1280-4898-967c-386adbd58f0e",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -265,7 +285,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "170bc9c9-83bb-4a32-9a9b-68115dfa484b"
+									"value": "b8a19b2a-1280-4898-967c-386adbd58f0e"
 								}
 							]
 						}

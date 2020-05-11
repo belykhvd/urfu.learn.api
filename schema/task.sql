@@ -19,7 +19,3 @@ create table if not exists task_progress
 	score int not null default 0,
 	done uuid[]
 );
-
-drop table task;
-drop table task_index;
-drop table task_progress;

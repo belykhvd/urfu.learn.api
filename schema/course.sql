@@ -16,5 +16,3 @@ create table if not exists course_tasks
 	course_id uuid not null,
 	task_id uuid not null
 );
-
-drop table if exists course_index;
