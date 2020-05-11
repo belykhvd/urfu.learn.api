@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Contracts.Services;
-using Contracts.Types.CourseTask;
 using Contracts.Types.Common;
 using Contracts.Types.Course;
+using Contracts.Types.Task;
 using Core.Repo;
 using Dapper;
 using Microsoft.Extensions.Configuration;
@@ -21,7 +21,28 @@ namespace Core.Services
             this.taskService = taskService;
         }
 
-        public async Task<IEnumerable<Link>> Select()
+        public async Task<IEnumerable<CourseIndex>> SelectIndexes()
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            return await conn.QueryAsync<CourseIndex>(
+                $@"select jsonb_build_object('id', id, 'name', name, 'maxScore', max_score) from {PgSchema.course_index}").ConfigureAwait(false);
+        }
+
+        public async Task<IEnumerable<TaskProgress>> GetCourseProgress(Guid courseId, Guid userId)
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            return await conn.QueryAsync<TaskProgress>(
+                $@"select jsonb_build_object('id', ti.id, 'name', ti.name, 'score', coalesce(tp.score, 0), 'progress', ti.requirements)
+                       from {PgSchema.course_tasks} ct
+                       join {PgSchema.task_index} ti
+                         on ct.task_id = ti.id
+                       left join {PgSchema.task_progress} tp
+                         on tp.user_id = @UserId
+                        and ti.id = tp.task_id
+                       where ct.course_id = @CourseId", new {courseId, userId}).ConfigureAwait(false);
+        }
+
+        public async Task<IEnumerable<Link>> SelectLinks()
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
             return await conn.QueryAsync<Link>(

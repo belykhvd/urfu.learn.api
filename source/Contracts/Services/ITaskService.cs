@@ -1,5 +1,5 @@
 ﻿using Contracts.Repo;
-using Contracts.Types.CourseTask;
+using Contracts.Types.Task;
 
 namespace Contracts.Services
 {

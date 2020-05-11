@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Contracts.Types.CourseTask;
+using Contracts.Types.Task;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using Npgsql;

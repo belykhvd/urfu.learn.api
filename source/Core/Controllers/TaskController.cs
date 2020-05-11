@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.CourseTask;
+using Contracts.Types.Task;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Core.Controllers

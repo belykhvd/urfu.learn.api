@@ -1,9 +1,9 @@
 using Contracts.Services;
-using Contracts.Types.CourseTask;
 using Contracts.Types.Common;
 using Contracts.Types.Course;
 using Contracts.Types.Group;
 using Contracts.Types.Solution;
+using Contracts.Types.Task;
 using Contracts.Types.User;
 using Core.Services;
 using Dapper;
@@ -47,8 +47,15 @@ namespace Core
             {
                 typeof(Profile),
                 typeof(Group),
+
                 typeof(Course),
+                typeof(CourseIndex),
+
                 typeof(CourseTask),
+                typeof(Requirement),
+                typeof(Requirement[]),
+                typeof(TaskProgress),
+
                 typeof(Solution),
                 typeof(Link),
                 typeof(Link[])

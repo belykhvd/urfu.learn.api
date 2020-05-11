@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Contracts.Services;
-using Contracts.Types.CourseTask;
 using Contracts.Types.Common;
 using Contracts.Types.Course;
+using Contracts.Types.Course.ViewModel;
+using Contracts.Types.Task;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Core.Controllers
@@ -22,8 +24,42 @@ namespace Core.Controllers
 
         [HttpGet]
         [Route("select")]
-        public async Task<IEnumerable<Link>> Select()
-            => await courseService.Select().ConfigureAwait(false);
+        public async Task<IEnumerable<CourseListItem>> Select([FromQuery] Guid userId)
+        {
+            var items = new List<CourseListItem>();
+
+            var courses = await courseService.SelectIndexes().ConfigureAwait(false);
+
+            foreach (var course in courses)
+            {
+                var courseListItem = new CourseListItem
+                {
+                    Id = course.Id,
+                    Name = course.Name,
+                    MaxScore = course.MaxScore
+                };
+
+                var taskProgressRecords = (await courseService.GetCourseProgress(course.Id, userId).ConfigureAwait(false)).ToArray();
+                var taskItems = taskProgressRecords.Select(x => new CourseListTaskItem
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    RequirementStatusList = x.Progress
+                }).ToArray();
+
+                courseListItem.CourseTasks = taskItems;
+                courseListItem.CurrentScore = taskProgressRecords.Sum(x => x.Score);
+
+                items.Add(courseListItem);
+            }
+
+            return items;
+        }
+
+        [HttpGet]
+        [Route("selectLinks")]
+        public async Task<IEnumerable<Link>> SelectLinks()
+            => await courseService.SelectLinks().ConfigureAwait(false);
 
         [HttpPost]
         [Route("save")]
