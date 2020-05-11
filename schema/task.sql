@@ -7,5 +7,19 @@ create table if not exists task
 create table if not exists task_index
 (
 	id uuid primary key,
-	name text not null
+	name text not null,
+	max_score int not null default 0,
+	requirements jsonb
 );
+
+create table if not exists task_progress
+(
+	user_id uuid not null,
+	task_id uuid not null,
+	score int not null default 0,
+	done uuid[]
+);
+
+drop table task;
+drop table task_index;
+drop table task_progress;
