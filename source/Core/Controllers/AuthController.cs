@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.Auth;
@@ -21,10 +22,8 @@ namespace Core.Controllers
 
         [HttpPost]
         [Route("signUp")]
-        public async Task<IActionResult> SignUp([FromBody] RegistrationData registrationData)
-        {
-            return (await authService.SignUp(registrationData).ConfigureAwait(false)).ActionResult();
-        }
+        public async Task<Guid> SignUp([FromBody] RegistrationData registrationData)
+            => await authService.SignUp(registrationData).ConfigureAwait(false);
 
         [HttpPost]
         [Route("signIn")]

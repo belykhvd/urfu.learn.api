@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.Auth;
-using Contracts.Types.Common;
 using Contracts.Types.User;
 using Core.Repo;
 using Dapper;
@@ -17,42 +16,36 @@ namespace Core.Services
         {
         }
 
-        public async Task<Result<Guid>> SignUp(RegistrationData registrationData)
+        public async Task<Guid> SignUp(RegistrationData registrationData)
         {
-            // TODO
-            var profile = new Profile {Surname = registrationData.Surname, FirstName = registrationData.FirstName, SecondName = registrationData.SecondName, Group = registrationData.Group};
-            var authData = new AuthData {Email = registrationData.Email, Password = registrationData.Password};
+            var userId = Guid.NewGuid();
 
-            try
+            var profile = new Profile
             {
-                profile.InitAsFresh();
+                Surname = registrationData.Surname,
+                FirstName = registrationData.FirstName,
+                SecondName = registrationData.SecondName,
+                Group = registrationData.Group
+            };
 
-                await using var conn = new NpgsqlConnection(ConnectionString);
-                await conn.OpenAsync().ConfigureAwait(false);
-                await using var transaction = await conn.BeginTransactionAsync().ConfigureAwait(false);
-
-                await conn.ExecuteAsync(
-                    @"insert into auth_data (email, password_hash, user_id)
-                          values (@Email, digest(@Password, 'sha256'), @UserId)",
-                    new {authData.Email, authData.Password, UserId = profile.Id}).ConfigureAwait(false);
-
-                await conn.ExecuteAsync(
-                    @"insert into profile (id, deleted, version, data)
-                          values (@Id, false, 0, @Profile::jsonb)", new {profile.Id, profile}).ConfigureAwait(false);
-
-                await transaction.CommitAsync().ConfigureAwait(false);
-
-                return Result<Guid>.Success(profile.Id);
-            }
-            catch (PostgresException e) when (e.SqlState == "23505")
+            var authData = new AuthData
             {
-                return Result<Guid>.Fail(OperationStatusCode.Conflict, "User with such email already exists");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);  // TODO logging
-                return Result<Guid>.Fail(OperationStatusCode.InternalServerError);
-            }
+                Email = registrationData.Email,
+                Password = registrationData.Password
+            };
+
+            await using var conn = new NpgsqlConnection(ConnectionString);
+
+            await conn.ExecuteAsync(
+                @"insert into auth (email, password_hash, user_id)
+                      values (@Email, digest(@Password, 'sha256'), @UserId)",
+                new { authData.Email, authData.Password, UserId = userId }).ConfigureAwait(false);
+
+            await conn.ExecuteAsync(
+                @"insert into user_profile (id, data)
+                      values (@Id, @Profile::jsonb)", new { Id = userId, profile }).ConfigureAwait(false);
+
+            return userId;
         }
 
         public async Task<Guid?> TryGetUserId(AuthData authData)
@@ -60,10 +53,58 @@ namespace Core.Services
             await using var conn = new NpgsqlConnection(ConnectionString);
             return await conn.QuerySingleOrDefaultAsync<Guid?>(
                 @"select user_id
-                      from auth_data
+                      from auth
                       where email = @Email
                         and password_hash = digest(@Password, 'sha256')
-                        limit 1", new {authData.Email, authData.Password}).ConfigureAwait(false);
+                        limit 1", new { authData.Email, authData.Password }).ConfigureAwait(false);
         }
+
+        //public async Task<Result<Guid>> SignUp_(RegistrationData registrationData)
+        //{            
+        //    var profile = new Profile
+        //    {
+        //        Surname = registrationData.Surname,
+        //        FirstName = registrationData.FirstName,
+        //        SecondName = registrationData.SecondName,
+        //        Group = registrationData.Group
+        //    };
+
+        //    var authData = new AuthData
+        //    {
+        //        Email = registrationData.Email,
+        //        Password = registrationData.Password
+        //    };
+
+        //    try
+        //    {
+        //        //profile.InitAsFresh();
+
+        //        await using var conn = new NpgsqlConnection(ConnectionString);
+        //        await conn.OpenAsync().ConfigureAwait(false);
+        //        await using var transaction = await conn.BeginTransactionAsync().ConfigureAwait(false);
+
+        //        //await conn.ExecuteAsync(
+        //        //    @"insert into auth (email, password_hash, user_id)
+        //        //          values (@Email, digest(@Password, 'sha256'), @UserId)",
+        //        //    new {authData.Email, authData.Password, UserId = profile.Id}).ConfigureAwait(false);
+
+        //        await conn.ExecuteAsync(
+        //            @"insert into user_profile (id, data)
+        //                  values (@Id, @Profile::jsonb)", new {profile.Id, profile}).ConfigureAwait(false);
+
+        //        await transaction.CommitAsync().ConfigureAwait(false);
+
+        //        return Result<Guid>.Success(profile.Id);
+        //    }
+        //    catch (PostgresException e) when (e.SqlState == "23505")
+        //    {
+        //        return Result<Guid>.Fail(OperationStatusCode.Conflict, "User with such email already exists");
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine(e);  // TODO logging
+        //        return Result<Guid>.Fail(OperationStatusCode.InternalServerError);
+        //    }
+        //}
     }
 }

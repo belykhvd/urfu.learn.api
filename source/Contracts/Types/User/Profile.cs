@@ -2,7 +2,7 @@
 
 namespace Contracts.Types.User
 {
-    public class Profile : DbEntity
+    public class Profile
     {
         public string Surname { get; set; }
         public string FirstName { get; set; }

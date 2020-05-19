@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "4b16ed87-d3d3-4db2-9847-9b8ff35a82f4",
+		"_postman_id": "ce1d595b-f4de-49b7-a21a-6939aa87fcaa",
 		"name": "urfu.learn.api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -317,6 +317,87 @@
 									"key": "taskId",
 									"value": "d2d13dd7-4d0d-4842-87f6-4afe276ecadb"
 								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Авторизация",
+			"item": [
+				{
+					"name": "Регистрация (signUp)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"fio@gmail.com\",\n\t\"password\": \"root\",\n\t\"surname\": \"Фамилия\",\n\t\"firstName\": \"Имя\",\n\t\"secondName\": \"Отчество\",\n\t\"group\": \"КН-402\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/signUp",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"signUp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Залогиниться (login)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"fio@gmail.com\",\n\t\"password\": \"root\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/signIn",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"signIn"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Выйти (logout)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/signOut",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"signOut"
 							]
 						}
 					},
