@@ -33,7 +33,11 @@ namespace Core.Repo
         }
 
         protected virtual Task SaveIndex(NpgsqlConnection conn, Guid id, TEntity data) => Task.CompletedTask;
-        protected virtual Task DeleteIndex(NpgsqlConnection conn, Guid id) => Task.CompletedTask;
+
+        protected virtual async Task DeleteIndex(NpgsqlConnection conn, Guid id)
+        {
+            await conn.ExecuteAsync(@$"delete from {relationName} where id = @Id", new {id}).ConfigureAwait(false);
+        }
 
         public async Task<TEntity> Get(Guid id)
         {
@@ -95,7 +99,7 @@ namespace Core.Repo
                       where id = @Id
                       returning true", new {id, data}).ConfigureAwait(false);
 
-            return updated == null 
+            return updated == null
                 ? Result.Fail(OperationStatusCode.NotFound, "Entity with such ID does not exists")
                 : Result.Success;
         }

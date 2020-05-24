@@ -1,6 +1,4 @@
-﻿using Contracts.Types.Common;
-
-namespace Contracts.Types.User
+﻿namespace Contracts.Types.User
 {
     public class Profile
     {
@@ -8,5 +6,7 @@ namespace Contracts.Types.User
         public string FirstName { get; set; }
         public string SecondName { get; set; }
         public string Group { get; set; }
+
+        public string Fio => $"{Surname} {FirstName} {SecondName}";
     }
 }

@@ -3,28 +3,23 @@ using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.User;
 using Core.Repo;
-using Dapper;
 using Microsoft.Extensions.Configuration;
-using Npgsql;
 
 namespace Core.Services
 {
     public class UserService : PgRepo, IUserService
     {
-        public UserService(IConfiguration configuration) : base(configuration)
+        private readonly ProfileRepo profileRepo;
+
+        public UserService(IConfiguration configuration, ProfileRepo profileRepo) : base(configuration)
         {
+            this.profileRepo = profileRepo;
         }
 
         public async Task<Profile> GetProfile(Guid userId)
-        {
-            using var conn = new NpgsqlConnection(ConnectionString);
+            => await profileRepo.Get(userId).ConfigureAwait(false);
 
-            await conn.QuerySingleOrDefaultAsync<Profile>($@"").ConfigureAwait(false);
-        }
-
-        public Task SaveProfile(Profile profile)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task SaveProfile(Guid userId, Profile profile)
+            => await profileRepo.Save(userId, profile).ConfigureAwait(false);
     }
 }

@@ -22,27 +22,27 @@ namespace Core.Controllers
 
         [HttpPost]
         [Route("signUp")]
-        public async Task<Guid> SignUp([FromBody] RegistrationData registrationData)
-            => await authService.SignUp(registrationData).ConfigureAwait(false);
+        public async Task<AuthResult> SignUp([FromBody] RegistrationData registrationData)
+        {
+            var authResult = await authService.SignUp(registrationData).ConfigureAwait(false);
+
+            await HttpAuthorize(authResult.UserId).ConfigureAwait(false);
+
+            return authResult;
+        }
+
 
         [HttpPost]
         [Route("signIn")]
-        public async Task<IActionResult> SignIn([FromBody] AuthData authData)
+        public async Task<ActionResult<AuthResult>> Login([FromBody] AuthData authData)
         {
-            var userId = await authService.TryGetUserId(authData).ConfigureAwait(false);
-
-            if (userId == null)
+            var authResult = await authService.Authorize(authData).ConfigureAwait(false);
+            if (authResult == null)
                 return Unauthorized();
 
-            var claimsIdentity = new ClaimsIdentity(new[]
-            {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, userId.Value.ToString())
-            }, "ApplicationCookie");
+            await HttpAuthorize(authResult.UserId).ConfigureAwait(false);
 
-            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
-            return Ok();
+            return authResult;
         }
 
         [HttpPost]
@@ -51,6 +51,19 @@ namespace Core.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).ConfigureAwait(false);
             return Ok();
+        }
+
+        private async Task HttpAuthorize(Guid userId)
+        {
+            var claimsIdentity = new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType, $"{userId}")
+
+            }, "ApplicationCookie");
+
+            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
         }
     }
 }

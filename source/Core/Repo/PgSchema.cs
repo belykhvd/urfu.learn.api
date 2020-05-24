@@ -12,7 +12,9 @@ namespace Core.Repo
         public const string task_index = nameof(task_index);        // id, name, max_score, requirements
         public const string task_progress = nameof(task_progress);  // user_id, task_id, score, done
 
-        public const string ChallengeAccomplishment = "challenge_accomplishment";
+        public const string user_profile = nameof(user_profile);  // id, data
+        public const string user_index = nameof(user_index);  // id, fio
+
 
         public const string solution_info = "solution_info";
         public const string solution_index = "solution_index";

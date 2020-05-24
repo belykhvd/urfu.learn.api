@@ -10,5 +10,7 @@
         public string Password { get; set; }
 
         public string Group { get; set; }
+
+        public Role Role { get; set; }
     }
 }

@@ -7,6 +7,6 @@ namespace Contracts.Services
     public interface IUserService
     {
         Task<Profile> GetProfile(Guid userId);
-        Task SaveProfile(Profile profile);
+        Task SaveProfile(Guid userId, Profile profile);
     }
 }

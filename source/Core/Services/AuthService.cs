@@ -12,11 +12,14 @@ namespace Core.Services
 {
     public class AuthService : PgRepo, IAuthService
     {
-        public AuthService(IConfiguration config) : base(config)
+        private readonly ProfileRepo profileRepo;
+
+        public AuthService(IConfiguration config, ProfileRepo profileRepo) : base(config)
         {
+            this.profileRepo = profileRepo;
         }
 
-        public async Task<Guid> SignUp(RegistrationData registrationData)
+        public async Task<AuthResult> SignUp(RegistrationData registrationData)
         {
             var userId = Guid.NewGuid();
 
@@ -37,30 +40,35 @@ namespace Core.Services
             await using var conn = new NpgsqlConnection(ConnectionString);
 
             await conn.ExecuteAsync(
-                @"insert into auth (email, password_hash, user_id)
-                      values (@Email, digest(@Password, 'sha256'), @UserId)",
-                new { authData.Email, authData.Password, UserId = userId }).ConfigureAwait(false);
+                @"insert into auth (email, password_hash, user_id, role)
+                      values (@Email, digest(@Password, 'sha256'), @UserId, @Role)",
+                new {authData.Email, authData.Password, userId, registrationData.Role}).ConfigureAwait(false);
 
-            await conn.ExecuteAsync(
-                @"insert into user_profile (id, data)
-                      values (@Id, @Profile::jsonb)", new { Id = userId, profile }).ConfigureAwait(false);
+            await profileRepo.Save(userId, profile).ConfigureAwait(false);
 
-            return userId;
+            return new AuthResult
+            {
+                UserId = userId,
+                Role = registrationData.Role,
+                Fio = profile.Fio
+            };
         }
 
-        public async Task<Guid?> TryGetUserId(AuthData authData)
+        public async Task<AuthResult> Authorize(AuthData authData)
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
-            return await conn.QuerySingleOrDefaultAsync<Guid?>(
-                @"select user_id
-                      from auth
+            return await conn.QuerySingleOrDefaultAsync<AuthResult>(
+                @"select json_build_object('user_id', user_id, 'role', role, 'fio', fio)
+                      from auth au
+                      join user_index ui
+                        on au.user_id = ui.id
                       where email = @Email
                         and password_hash = digest(@Password, 'sha256')
-                        limit 1", new { authData.Email, authData.Password }).ConfigureAwait(false);
+                      limit 1", new {authData.Email, authData.Password}).ConfigureAwait(false);
         }
 
         //public async Task<Result<Guid>> SignUp_(RegistrationData registrationData)
-        //{            
+        //{
         //    var profile = new Profile
         //    {
         //        Surname = registrationData.Surname,
