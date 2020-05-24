@@ -21,7 +21,7 @@ namespace Core.Controllers
         public async Task<Profile> GetProfile([FromQuery] Guid userId)
             => await userService.GetProfile(userId).ConfigureAwait(false);
 
-        [HttpGet]
+        [HttpPost]
         [Route("profile/save")]
         public async Task SaveProfile([FromQuery] Guid userId, [FromBody] Profile profile)
             => await userService.SaveProfile(userId, profile).ConfigureAwait(false);

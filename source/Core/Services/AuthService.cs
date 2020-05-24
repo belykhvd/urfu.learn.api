@@ -58,7 +58,7 @@ namespace Core.Services
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
             return await conn.QuerySingleOrDefaultAsync<AuthResult>(
-                @"select json_build_object('user_id', user_id, 'role', role, 'fio', fio)
+                @"select json_build_object('userid', user_id, 'role', role, 'fio', fio)
                       from auth au
                       join user_index ui
                         on au.user_id = ui.id

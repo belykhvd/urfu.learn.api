@@ -1,4 +1,6 @@
-﻿namespace Contracts.Types.User
+﻿using System.Text.Json.Serialization;
+
+namespace Contracts.Types.User
 {
     public class Profile
     {
@@ -7,6 +9,7 @@
         public string SecondName { get; set; }
         public string Group { get; set; }
 
+        [JsonIgnore]
         public string Fio => $"{Surname} {FirstName} {SecondName}";
     }
 }

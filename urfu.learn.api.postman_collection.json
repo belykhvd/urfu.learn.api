@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "ce1d595b-f4de-49b7-a21a-6939aa87fcaa",
+		"_postman_id": "a02c4bb6-2c87-4f3b-933f-3a19813feaf4",
 		"name": "urfu.learn.api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -335,7 +335,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": \"fio@gmail.com\",\n\t\"password\": \"root\",\n\t\"surname\": \"Фамилия\",\n\t\"firstName\": \"Имя\",\n\t\"secondName\": \"Отчество\",\n\t\"group\": \"КН-402\"\n}",
+							"raw": "{\n\t\"surname\": \"Ландау\",\n\t\"firstName\": \"Лев\",\n\t\"secondName\": \"Давидович\",\n\n\t\"email\": \"landau@urfu.ru\",\n\t\"password\": \"strong_password\",\n\t\n\t\"group\": \"КН-402\",\n\t\"role\": 1\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -363,7 +363,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": \"fio@gmail.com\",\n\t\"password\": \"root\"\n}",
+							"raw": "{\n\t\"email\": \"landau@urfu.ru\",\n\t\"password\": \"strong_password\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -398,6 +398,73 @@
 							"port": "8080",
 							"path": [
 								"signOut"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Пользователи",
+			"item": [
+				{
+					"name": "Открыть профиль",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/profile/get?userId=7ccec9e8-8f42-4526-8942-e9eb3d73edf7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"profile",
+								"get"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "7ccec9e8-8f42-4526-8942-e9eb3d73edf7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Сохранить профиль",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"surname\": \"Ландау\",\r\n    \"firstName\": \"Лев\",\r\n    \"secondName\": \"Давидович\",\r\n    \"group\": \"КН-402\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/profile/save?userId=7ccec9e8-8f42-4526-8942-e9eb3d73edf7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"profile",
+								"save"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "7ccec9e8-8f42-4526-8942-e9eb3d73edf7"
+								}
 							]
 						}
 					},

@@ -1,10 +1,12 @@
 using Contracts.Services;
+using Contracts.Types.Auth;
 using Contracts.Types.Common;
 using Contracts.Types.Course;
 using Contracts.Types.Group;
 using Contracts.Types.Solution;
 using Contracts.Types.Task;
 using Contracts.Types.User;
+using Core.Repo;
 using Core.Services;
 using Dapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -41,10 +43,14 @@ namespace Core
             services.AddSingleton<ITaskService, TaskService>();
             services.AddSingleton<ISolutionService, SolutionService>();
 
+            services.AddSingleton<ProfileRepo>();
+
             DefaultTypeMap.MatchNamesWithUnderscores = true;
             
             var dbStorableTypes = new[]
             {
+                typeof(AuthResult),
+
                 typeof(Profile),
                 typeof(Group),
 
