@@ -1,18 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Contracts.Repo;
 using Contracts.Types.User;
 
 namespace Contracts.Services
 {
-    public interface IUserService : IRepo<Profile>
+    public interface IUserService
     {
-        #region Profile photo
-
-        Task<string> GetProfilePhoto(Guid userId);
-        Task SaveProfilePhoto(Guid userId, string photoBase64);
-        Task DeleteProfilePhoto(Guid userId);
-
-        #endregion
+        Task<Profile> GetProfile(Guid userId);
+        Task SaveProfile(Profile profile);
     }
 }
