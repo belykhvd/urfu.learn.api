@@ -10,6 +10,6 @@ namespace Contracts.Types.User
         public string Group { get; set; }
 
         [JsonIgnore]
-        public string Fio => $"{Surname} {FirstName} {SecondName}";
+        public string Fio => $"{Surname} {FirstName?.Substring(0, 1)}. {SecondName?.Substring(0, 1)}.";
     }
 }
