@@ -1,5 +1,6 @@
 ﻿using System;
 using Contracts.Types.CourseTask;
+using Contracts.Types.Media;
 using Contracts.Types.Solution;
 
 namespace Contracts.Types.Task
@@ -12,8 +13,9 @@ namespace Contracts.Types.Task
         public int MaxScore { get; set; }
         public Requirement[] Requirements { get; set; }
 
+        public Attachment InputData { get; set; }
+
         public ChallengeStatus Status { get; set; }
-        public Guid AttachmentId { get; set; }
         public SolutionInfo[] Solutions { get; set; }
     }
 }

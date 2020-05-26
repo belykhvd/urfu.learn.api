@@ -3,9 +3,9 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.Auth;
-using Contracts.Types.User;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Core.Controllers
@@ -53,11 +53,24 @@ namespace Core.Controllers
             return Ok();
         }
 
+        [HttpPost]
+        [Route("changePassword")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] PasswordData passwordData)
+        {
+            var userId = Guid.Parse(HttpContext.User.Identity.Name);
+
+            if (await authService.ChangePassword(userId, passwordData).ConfigureAwait(false))
+                return Ok();
+
+            return Unauthorized();
+        }
+
         private async Task HttpAuthorize(Guid userId)
         {
             var claimsIdentity = new ClaimsIdentity(new[]
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, $"{userId}")
+                new Claim(ClaimsIdentity.DefaultNameClaimType, $"{userId:N}")
 
             }, "ApplicationCookie");
 

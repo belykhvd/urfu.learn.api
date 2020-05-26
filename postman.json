@@ -321,6 +321,17 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Скачать входные данные",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -328,34 +339,6 @@
 		{
 			"name": "Авторизация",
 			"item": [
-				{
-					"name": "Регистрация (signUp)",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"surname\": \"Ландау\",\n\t\"firstName\": \"Лев\",\n\t\"secondName\": \"Давидович\",\n\n\t\"email\": \"landau@urfu.ru\",\n\t\"password\": \"strong_password\",\n\t\n\t\"group\": \"КН-402\",\n\t\"role\": 1\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/signUp",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"signUp"
-							]
-						}
-					},
-					"response": []
-				},
 				{
 					"name": "Залогиниться (login)",
 					"request": {
@@ -399,6 +382,45 @@
 							"path": [
 								"signOut"
 							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Регистрация (signUp)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"surname\": \"Ландау\",\n\t\"firstName\": \"Лев\",\n\t\"secondName\": \"Давидович\",\n\n\t\"email\": \"1landau@urfu.ru\",\n\t\"password\": \"strong_password\",\n\t\n\t\"group\": \"КН-402\",\n\t\"role\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/signUp",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"signUp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Сменить пароль",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
 						}
 					},
 					"response": []
@@ -466,6 +488,23 @@
 									"value": "7ccec9e8-8f42-4526-8942-e9eb3d73edf7"
 								}
 							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Файлы",
+			"item": [
+				{
+					"name": "Скачать файл по его id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
 						}
 					},
 					"response": []

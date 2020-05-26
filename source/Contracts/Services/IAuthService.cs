@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Contracts.Types.Auth;
-using Contracts.Types.User;
 
 namespace Contracts.Services
 {
@@ -8,5 +8,6 @@ namespace Contracts.Services
     {
         Task<AuthResult> SignUp(RegistrationData registrationData);
         Task<AuthResult> Authorize(AuthData authData);
+        Task<bool> ChangePassword(Guid userId, PasswordData passwordData);
     }
 }

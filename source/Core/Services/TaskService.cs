@@ -11,8 +11,16 @@ namespace Core.Services
 {
     public class TaskService : Repo<CourseTask>, ITaskService
     {
-        public TaskService(IConfiguration config) : base(config, PgSchema.task)
+        private readonly MediaRepo mediaRepo;
+
+        public TaskService(IConfiguration config, MediaRepo mediaRepo) : base(config, PgSchema.task)
         {
+            this.mediaRepo = mediaRepo;
+        }
+
+        public async Task<Guid> Save(CourseTask task)
+        {
+            throw new NotImplementedException();
         }
 
         protected override async Task SaveIndex(NpgsqlConnection conn, Guid id, CourseTask data)
@@ -34,6 +42,14 @@ namespace Core.Services
         protected override async Task DeleteIndex(NpgsqlConnection conn, Guid id)
         {
             await conn.ExecuteAsync(@$"delete from {PgSchema.task_index} where id = @Id", new {id}).ConfigureAwait(false);
+        }
+
+        public async Task<byte[]> DownloadInputData(Guid taskId)
+        {
+
+
+
+            return await mediaRepo.ReadFile(taskId).ConfigureAwait(false);
         }
     }
 }

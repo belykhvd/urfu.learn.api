@@ -3,6 +3,8 @@ namespace Core.Repo
 {
     public static class PgSchema
     {
+        public const string auth = nameof(auth); // email, password_hash, user_id, role
+
         public const string course = nameof(course);              // id, data
         public const string course_index = nameof(course_index);  // id, name
 
@@ -15,6 +17,7 @@ namespace Core.Repo
         public const string user_profile = nameof(user_profile);  // id, data
         public const string user_index = nameof(user_index);  // id, fio
 
+        public const string file_index = nameof(file_index); // id, name, size, timestamp, author
 
         public const string solution_info = "solution_info";
         public const string solution_index = "solution_index";

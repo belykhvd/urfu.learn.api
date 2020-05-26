@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.Auth;
-using Contracts.Types.User;
 using Core.Repo;
 using Dapper;
 using Microsoft.Extensions.Configuration;
@@ -23,34 +22,23 @@ namespace Core.Services
         {
             var userId = Guid.NewGuid();
 
-            var profile = new Profile
-            {
-                Surname = registrationData.Surname,
-                FirstName = registrationData.FirstName,
-                SecondName = registrationData.SecondName,
-                Group = registrationData.Group
-            };
-
-            var authData = new AuthData
-            {
-                Email = registrationData.Email,
-                Password = registrationData.Password
-            };
+            var profile = registrationData.Profile;
+            var authData = registrationData.AuthData;
 
             await using var conn = new NpgsqlConnection(ConnectionString);
 
             await conn.ExecuteAsync(
-                @"insert into auth (email, password_hash, user_id, role)
+                $@"insert into {PgSchema.auth} (email, password_hash, user_id, role)
                       values (@Email, digest(@Password, 'sha256'), @UserId, @Role)",
-                new {authData.Email, authData.Password, userId, registrationData.Role}).ConfigureAwait(false);
+                new {authData.Email, authData.Password, userId, authData.Role}).ConfigureAwait(false);
 
             await profileRepo.Save(userId, profile).ConfigureAwait(false);
 
             return new AuthResult
             {
                 UserId = userId,
-                Role = registrationData.Role,
-                Fio = profile.Fio
+                Role = authData.Role,
+                Fio = profile.Fio()
             };
         }
 
@@ -58,13 +46,30 @@ namespace Core.Services
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
             return await conn.QuerySingleOrDefaultAsync<AuthResult>(
-                @"select json_build_object('userid', user_id, 'role', role, 'fio', fio)
-                      from auth au
-                      join user_index ui
+                $@"select json_build_object('userid', user_id, 'role', role, 'fio', fio)
+                      from {PgSchema.auth} au
+                      join {PgSchema.user_index} ui
                         on au.user_id = ui.id
                       where email = @Email
                         and password_hash = digest(@Password, 'sha256')
                       limit 1", new {authData.Email, authData.Password}).ConfigureAwait(false);
+        }
+
+        public async Task<bool> ChangePassword(Guid userId, PasswordData passwordData)
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            return await conn.QuerySingleOrDefaultAsync<bool>(
+                $@"update {PgSchema.auth}
+                      set password_hash = digest(@New, 'sha256')
+                      where user_id = @UserId
+                        and password_hash = digest(@Current, 'sha256')
+                      returning true",
+                new
+                {
+                    userId,
+                    passwordData.New,
+                    passwordData.Current
+                }).ConfigureAwait(false);
         }
 
         //public async Task<Result<Guid>> SignUp_(RegistrationData registrationData)

@@ -2,9 +2,9 @@
 {
     public enum UserRole
     {
-        Anon = 0,
-        Student = 1,
-        Maintainer = 2,
-        Admin = 3
+        Offline = -1,
+        Moderator = 0,
+        Admin = 1,
+        Student = 2
     }
 }

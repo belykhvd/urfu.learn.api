@@ -18,7 +18,7 @@ namespace Core.Repo
             await conn.ExecuteAsync(
                 @$"insert into {PgSchema.user_index} (id, fio)
                        values (@Id, @Fio)
-                       on conflict (id) do update set fio = @Fio", new {id, data.Fio}).ConfigureAwait(false);
+                       on conflict (id) do update set fio = @Fio", new {id, fio = data.Fio()}).ConfigureAwait(false);
         }
     }
 }

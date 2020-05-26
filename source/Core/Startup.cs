@@ -44,6 +44,7 @@ namespace Core
             services.AddSingleton<ISolutionService, SolutionService>();
 
             services.AddSingleton<ProfileRepo>();
+            services.AddSingleton<MediaRepo>();
 
             DefaultTypeMap.MatchNamesWithUnderscores = true;
             

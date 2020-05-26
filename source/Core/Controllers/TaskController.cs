@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Contracts.Services;
-using Contracts.Types.CourseTask;
 using Contracts.Types.Task;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,5 +26,13 @@ namespace Core.Controllers
         [Route("get")]
         public async Task<CourseTask> Get([FromQuery] Guid id)
             => await taskService.Get(id).ConfigureAwait(false);
+
+        [HttpGet]
+        [Route("download")]
+        public async Task<FileResult> DownloadInputData(Guid taskId)
+        {
+            var content = await taskService.DownloadInputData(taskId).ConfigureAwait(false);
+            return File(content, "application/octet-stream", $"{taskId}");
+        }
     }
 }
