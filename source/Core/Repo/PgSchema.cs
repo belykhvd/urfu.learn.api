@@ -19,17 +19,13 @@ namespace Core.Repo
 
         public const string file_index = nameof(file_index); // id, name, size, timestamp, author
 
-        public const string solution_info = "solution_info";
-        public const string solution_index = "solution_index";
+        public const string invite = nameof(invite);
 
-        public const string Group = "\"group\"";
-        public const string GroupIndex = "group_index";
-        public const string GroupMembership = "group_membership";
+        public const string group = "\"" + nameof(group) + "\"";
+        public const string group_index = nameof(group_index);
+        public const string group_membership = nameof(group_membership);
 
-        public const string Profile = "profile";
-        public const string ProfileIndex = "profile_index";
-
-        public const string User = "\"user\"";
-        public const string UserIndex = "user_index";
+        public const string solution_info = nameof(solution_info);
+        public const string solution_index = nameof(solution_index);
     }
 }

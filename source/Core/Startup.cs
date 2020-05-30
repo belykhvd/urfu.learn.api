@@ -30,7 +30,9 @@ namespace Core
             }));
 
             services.AddMvc();
-            services.AddControllers();
+            services
+                .AddControllers()
+                .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new GuidJsonConverter()));
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                     .AddCookie();
