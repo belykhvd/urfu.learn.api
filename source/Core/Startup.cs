@@ -42,6 +42,7 @@ namespace Core
             services.AddSingleton<ICourseService, CourseService>();
             services.AddSingleton<ITaskService, TaskService>();
             services.AddSingleton<ISolutionService, SolutionService>();
+            services.AddSingleton<EmailService>();
 
             services.AddSingleton<ProfileRepo>();
             services.AddSingleton<MediaRepo>();
