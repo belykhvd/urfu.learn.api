@@ -49,13 +49,13 @@
 					"response": []
 				},
 				{
-					"name": "Создать курс",
+					"name": "★🔒 Создать",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"Моделирование ракет\",\n\t\"description\": \"К звездам\"\n}",
+							"raw": "{\n\t\"name\": \"JavaScript\",\n\t\"description\": \"Основы ESMAScript 5.1\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -176,7 +176,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/course/selecttasks?courseId=edbe8757-86b8-4e30-bc97-e72b2b5fce4b",
+							"raw": "http://localhost:8080/course/selecttasks?courseId=881d92b9-bcab-4c13-a07d-25640e0a1d90",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -189,7 +189,7 @@
 							"query": [
 								{
 									"key": "courseId",
-									"value": "edbe8757-86b8-4e30-bc97-e72b2b5fce4b"
+									"value": "881d92b9-bcab-4c13-a07d-25640e0a1d90"
 								}
 							]
 						}
@@ -197,13 +197,13 @@
 					"response": []
 				},
 				{
-					"name": "Добавить задачу к курсу",
+					"name": "★🔒 Добавить задачу к курсу",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"Стабилизаторы\",\n\t\"description\": \"Они самые\",\n\t\"deadline\": \"2009-02-15T00:00:00Z\",\n\t\"maxScore\": 100,\n\t\"requirements\": [\n\t\t{\"id\": \"dd92cb72-0ea3-4c39-a86c-5c0d7738aaf5\", \"name\": \"форма\"},\n\t\t{\"id\": \"dd92cb72-0ea3-4c39-a86c-5c0d7738aaf6\", \"name\": \"площадь\"},\n\t\t{\"id\": \"dd92cb72-0ea3-4c39-a86c-5c0d7738aaf7\", \"name\": \"количество\"}\n\t]\n}",
+							"raw": "{\n\t\"name\": \"Хэширование\",\n\t\"description\": \"Описание не предусмотрено!\",\n\t\"deadline\": \"2020-05-31T00:00:00Z\",\n\t\"maxScore\": 15,\n\t\"requirements\": [\n\t\t{\"id\": \"dd92cb72-0ea3-4c39-a86c-5c0d7738aaf5\", \"name\": \"форма\"},\n\t\t{\"id\": \"dd92cb72-0ea3-4c39-a86c-5c0d7738aaf6\", \"name\": \"площадь\"},\n\t\t{\"id\": \"dd92cb72-0ea3-4c39-a86c-5c0d7738aaf7\", \"name\": \"количество\"}\n\t]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -211,7 +211,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/course/addtask?courseId=edbe8757-86b8-4e30-bc97-e72b2b5fce4b",
+							"raw": "http://localhost:8080/course/addtask?courseId=7e9bd908d68e40c6934453c9446cfa19",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -224,7 +224,7 @@
 							"query": [
 								{
 									"key": "courseId",
-									"value": "edbe8757-86b8-4e30-bc97-e72b2b5fce4b"
+									"value": "7e9bd908d68e40c6934453c9446cfa19"
 								}
 							]
 						}
@@ -237,7 +237,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/task/get?id=b8a19b2a-1280-4898-967c-386adbd58f0e",
+							"raw": "http://localhost:8080/task/get?id=11947aec-9e62-4289-8cd5-1510bc85574e",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -250,7 +250,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "b8a19b2a-1280-4898-967c-386adbd58f0e"
+									"value": "11947aec-9e62-4289-8cd5-1510bc85574e"
 								}
 							]
 						}
@@ -328,7 +328,22 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": ""
+							"raw": "http://localhost:8080/task/download?taskId=32ca7eb4-91b2-4627-8e9b-6cdfa618d86a",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"task",
+								"download"
+							],
+							"query": [
+								{
+									"key": "taskId",
+									"value": "32ca7eb4-91b2-4627-8e9b-6cdfa618d86a"
+								}
+							]
 						}
 					},
 					"response": []
@@ -346,7 +361,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": \"landau@urfu.ru\",\n\t\"password\": \"strong_password\"\n}",
+							"raw": "{\n\t\"email\": \"landau@urfu.ru\",\n\t\"password\": \"strong_password_2\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -417,10 +432,27 @@
 				{
 					"name": "Сменить пароль",
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"current\": \"strong_password\",\n\t\"new\": \"strong_password_2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": ""
+							"raw": "http://localhost:8080/changePassword",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"changePassword"
+							]
 						}
 					},
 					"response": []
@@ -504,7 +536,258 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": ""
+							"raw": "http://localhost:8080/media/download?id=94f0ccacb21d3e1857e8d46eda516bf6",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"media",
+								"download"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "94f0ccacb21d3e1857e8d46eda516bf6"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Почта (админ)",
+			"item": [
+				{
+					"name": "Отправить текст",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\"<html><body><p>Здравствуйте, коллеги!</p><p>Напоминаем вам, что в связи с прекращением существования нашей солнечной системы, корпорация ВкР перевозит свои сервера на ближайшую станцию в районе Альфы Центавра.</p><p>С уважением, Почтовая подсистема ВКР</p></body></html>\"",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/email/send?email=azakov31@gmail.com&subject=Вроде как SSL",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"email",
+								"send"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "azakov31@gmail.com"
+								},
+								{
+									"key": "subject",
+									"value": "Вроде как SSL"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Группы",
+			"item": [
+				{
+					"name": "Студенты группы",
+					"item": [
+						{
+							"name": "★🔒 Пригласить студента в группу",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": ""
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "★🔒 Удалить студента из группы",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": ""
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "★🔒 Список студентов группы (активация email)",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/group/getStudentList?groupId=e67c0ea36171425e8f86a19a902f678b",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"group",
+										"getStudentList"
+									],
+									"query": [
+										{
+											"key": "groupId",
+											"value": "e67c0ea36171425e8f86a19a902f678b"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "★🔒 Создать",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"Name\": \"КН-402\",\r\n    \"OfficialName\": \"МЕН-460207\",\r\n    \"Year\": 2020,\r\n    \"Semester\": 8\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/group/save",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"group",
+								"save"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "🔒 Список групп",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/group/list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"group",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "★🔒 Редактировать",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"Id\": \"e67c0ea36171425e8f86a19a902f678b\",\r\n\t\"Name\": \"КН-402\",\r\n    \"OfficialName\": \"МЕН-460207\",\r\n    \"Year\": 2021,\r\n    \"Semester\": 8\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/group/save",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"group",
+								"save"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "🔒 Открыть",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/group/get?id=e67c0ea36171425e8f86a19a902f678b",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"group",
+								"get"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "e67c0ea36171425e8f86a19a902f678b"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "★🔒 Удалить",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/group/delete?id=e67c0ea36171425e8f86a19a902f678b",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"group",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "e67c0ea36171425e8f86a19a902f678b"
+								}
+							]
 						}
 					},
 					"response": []

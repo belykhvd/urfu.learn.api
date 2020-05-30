@@ -28,11 +28,11 @@ namespace Core.Services
                 $@"select jsonb_build_object('id', id, 'name', name, 'maxScore', max_score) from {PgSchema.course_index}").ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<TaskProgress>> GetCourseProgress(Guid courseId, Guid userId)
+        public async Task<IEnumerable<TaskProgress>> GetProgress(Guid courseId, Guid userId)
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
             return await conn.QueryAsync<TaskProgress>(
-                $@"select jsonb_build_object('id', ti.id, 'name', ti.name, 'score', coalesce(tp.score, 0), 'progress', ti.requirements)
+                $@"select jsonb_build_object('id', ti.id, 'name', ti.name, 'maxScore', ti.max_score, 'requirements', ti.requirements, 'currentScore', coalesce(tp.score, 0), 'done', tp.done)
                        from {PgSchema.course_tasks} ct
                        join {PgSchema.task_index} ti
                          on ct.task_id = ti.id

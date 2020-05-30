@@ -99,6 +99,11 @@ namespace Core.Services
             throw new NotImplementedException();
         }
 
+        public async Task<IEnumerable<GroupStudent>> GetStudents(Guid groupId)
+        {
+            throw new NotImplementedException();
+        }
+
         protected override async Task SaveIndex(NpgsqlConnection conn, Guid id, Group data)
         {
             await conn.ExecuteAsync(

@@ -57,6 +57,13 @@ namespace Core.Controllers
         public async Task<IEnumerable<Group>> List()
             => await groupService.List().ConfigureAwait(false);
 
+        [HttpGet]
+        [Authorize]
+        public async Task<IEnumerable<GroupStudent>> GetStudents([FromQuery] Guid groupId)
+            => await groupService.GetStudents(groupId).ConfigureAwait(false);
+
+
+
 
         [HttpGet][Route("studentlist")]
         public async Task<IEnumerable<StudentList>> GetStudentList([FromQuery] int year, [FromQuery] int semester)

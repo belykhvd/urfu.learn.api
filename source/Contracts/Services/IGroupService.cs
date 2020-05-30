@@ -12,6 +12,7 @@ namespace Contracts.Services
         Task<IEnumerable<StudentList>> GetStudentList(int year, int semester);
 
         Task<IEnumerable<Group>> List();
+        Task<IEnumerable<GroupStudent>> GetStudents(Guid groupId);
 
         Task<Result<StudentDescription[]>> ListMembers(int year, int semester, Guid groupId);
         Task<Result> Include(int year, int semester, Guid groupId, Guid userId);
