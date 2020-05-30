@@ -11,8 +11,8 @@ namespace Core.Services
     {
         private readonly string Server = "smtp.gmail.com";
         private readonly int Port = 465;
-        private readonly string Email = "urfu.learn.api@gmail.com";
-        private readonly string Password = "8ff7dcce9824491ab985017d5605a241";
+        private readonly string Email = "";
+        private readonly string Password = "";
         private readonly string Sender = "Почтовая подсистема ВКР";
 
         public EmailService(IConfiguration configuration)
