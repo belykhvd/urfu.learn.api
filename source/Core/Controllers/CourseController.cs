@@ -37,8 +37,7 @@ namespace Core.Controllers
                 var courseItem = new CourseItem
                 {
                     Id = course.Id,
-                    Name = course.Name,
-                    MaxScore = course.MaxScore
+                    Name = course.Name
                 };
 
                 var taskItems = new List<TaskItem>();
@@ -55,7 +54,7 @@ namespace Core.Controllers
                         RequirementStatusList = taskProgress.Requirements?.Select(r => new RequirementStatus
                         {
                             Id = r.Id,
-                            Name = r.Name
+                            Text = r.Name
                         }).ToArray()
                     };
 

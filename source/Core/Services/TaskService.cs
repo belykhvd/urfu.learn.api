@@ -27,15 +27,15 @@ namespace Core.Services
         {
             await conn.ExecuteAsync(
                 @$"insert into {PgSchema.task_index} (id, name, max_score, requirements)
-                       values (@Id, @Name, @MaxScore, @Requirements::jsonb)
+                       values (@Id, @Name, @MaxScore, @RequirementList::jsonb)
                        on conflict (id) do update set name = @Name,
                                                       max_score = @MaxScore,
-                                                      requirements = @Requirements::jsonb", new
+                                                      requirements = @RequirementList::jsonb", new
                 {
                     id, 
                     data.Name,
                     data.MaxScore,
-                    data.Requirements
+                    data.RequirementList
                 }).ConfigureAwait(false);
         }
 

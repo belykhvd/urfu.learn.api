@@ -1,3 +1,4 @@
+using System;
 using Contracts.Services;
 using Contracts.Types.Auth;
 using Contracts.Types.Common;
@@ -64,6 +65,8 @@ namespace Core
                 typeof(CourseTask),
                 typeof(Requirement),
                 typeof(Requirement[]),
+                typeof(RequirementStatus),
+                typeof(RequirementStatus[]),
                 typeof(TaskProgress),
 
                 typeof(Solution),
