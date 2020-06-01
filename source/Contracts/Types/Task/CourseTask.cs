@@ -11,8 +11,8 @@ namespace Contracts.Types.Task
         public string Name { get; set; }
         public string DescriptionText { get; set; }
         public DateTime? Deadline { get; set; }
-        public int CurrentScore { get; set; }
-        public int MaxScore { get; set; }
+        public int? CurrentScore { get; set; }
+        public int? MaxScore { get; set; }
         public RequirementStatus[] RequirementList { get; set; }
 
         public Attachment InputData { get; set; }

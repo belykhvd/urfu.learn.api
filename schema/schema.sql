@@ -1,67 +1,108 @@
--------------------------------------------
 create extension if not exists "uuid-ossp";
 create extension if not exists "pgcrypto";
--------------------------------------------
-create table if not exists auth_data
+
+drop table if exists auth;
+drop table if exists user_profile;
+drop table if exists user_index;
+drop table if exists course;
+drop table if exists course_index;
+drop table if exists course_tasks;
+drop table if exists task;
+drop table if exists task_index;
+drop table if exists task_progress;
+drop table if exists "group";
+drop table if exists group_index;
+drop table if exists attachment;
+drop table if exists invite;
+
+create table if not exists auth
 (
-    email         text  primary key,
-    password_hash bytea not null,
-    user_id       uuid  not null
-);
--------------------------------------------
-create table if not exists "group"
-(
-	id       uuid  primary key,
-	deleted  bool  not null,
-	version  int   not null,
-	data     jsonb not null
+	email text primary key,
+	password_hash bytea not null,
+	user_id uuid not null,
+	role int not null
 );
 
-create table if not exists group_membership
+create table if not exists user_profile
 (
-	user_id  uuid primary key,
-	group_id uuid not null
+	id uuid primary key,
+	data jsonb not null
 );
--------------------------------------------
+
+create table if not exists user_index
+(
+	id uuid primary key,
+	fio text not null
+);
+
 create table if not exists course
 (
-	id       uuid  primary key,	
-	version  int   not null,
-	data     jsonb not null
+	id uuid primary key,
+	data jsonb not null
 );
 
 create table if not exists course_index
 (
-	id                uuid primary key,
-	name              text not null,
-	short_description text
-);
--------------------------------------------
-create table if not exists challenge
-(
-	id       uuid  primary key,	
-	data     jsonb not null
+	id uuid primary key,
+	name text not null,
+	max_score int not null default 0
 );
 
-create table if not exists challenge_accomplishment
+create table if not exists course_tasks
 (
-	user_id      uuid not null,
-	challenge_id uuid not null,
-	number       int  not null,
-	status       bool not null
-);
--------------------------------------------
-create table if not exists profile
-(
-	id       uuid  primary key,
-	deleted  bool  not null,
-	version  int   not null,
-	data     jsonb not null
+	course_id uuid not null,
+	task_id uuid not null
 );
 
-create table if not exists profile_index
+create table if not exists task
 (
-	user_id  uuid primary key,
-	fullname text not null
+	id uuid primary key,
+	data jsonb not null
 );
--------------------------------------------
+
+create table if not exists task_index
+(
+	id uuid primary key,
+	name text not null,
+	max_score int not null default 0,
+	requirements jsonb
+);
+
+create table if not exists task_progress
+(
+	user_id uuid not null,
+	task_id uuid not null,
+	score int not null default 0,
+	done uuid[]
+);
+
+create table if not exists "group"
+(
+	id uuid primary key,
+	is_deleted bool not null default false,
+	data jsonb not null
+);
+
+create table if not exists group_index
+(
+	id uuid primary key,
+	is_deleted bool not null,
+	name text not null
+);
+
+create table if not exists attachment
+(
+	id uuid primary key,
+	name text not null,
+	size bigint not null,
+	timestamp timestamp not null,
+	author uuid not null
+);
+
+create table if not exists invite
+(
+	secret uuid primary key,
+	group_id uuid not null,
+	user_id uuid not null,
+	is_accepted bool not null default false
+);
