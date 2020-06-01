@@ -33,7 +33,7 @@ namespace Core.Repo
                     attachment.Author
                 }).ConfigureAwait(false);
 
-            await File.WriteAllBytesAsync(path, attachment.Content).ConfigureAwait(false);
+            //await File.WriteAllBytesAsync(path, attachment.Content).ConfigureAwait(false);
         }
 
         public async Task<Guid> WriteFile(byte[] content)

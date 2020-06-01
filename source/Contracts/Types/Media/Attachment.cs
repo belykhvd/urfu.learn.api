@@ -9,7 +9,5 @@ namespace Contracts.Types.Media
         public long Size { get; set; }
         public DateTime Timestamp { get; set; }
         public Guid Author { get; set; }
-
-        public byte[] Content { get; set; }
     }
 }
