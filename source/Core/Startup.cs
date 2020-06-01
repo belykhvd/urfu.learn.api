@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using Contracts.Services;
 using Contracts.Types.Auth;
 using Contracts.Types.Common;
@@ -7,6 +8,7 @@ using Contracts.Types.Group;
 using Contracts.Types.Solution;
 using Contracts.Types.Task;
 using Contracts.Types.User;
+using Core.JsonConverters;
 using Core.Repo;
 using Core.Services;
 using Dapper;
@@ -33,7 +35,11 @@ namespace Core
             services.AddMvc();
             services
                 .AddControllers()
-                .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new GuidJsonConverter()));
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new GuidJsonConverter());
+                    options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
+                });
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                     .AddCookie();

@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Core
+namespace Core.JsonConverters
 {
     public class GuidJsonConverter : JsonConverter<Guid>
     {

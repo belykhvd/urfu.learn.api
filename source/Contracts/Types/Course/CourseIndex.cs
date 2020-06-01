@@ -6,6 +6,6 @@ namespace Contracts.Types.Course
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public int MaxScore { get; set; }
+        public int? MaxScore { get; set; }
     }
 }
