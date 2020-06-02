@@ -54,7 +54,7 @@ namespace Core
             services.AddSingleton<EmailService>();
 
             services.AddSingleton<ProfileRepo>();
-            services.AddSingleton<MediaRepo>();
+            services.AddSingleton<FileRepo>();
 
             DefaultTypeMap.MatchNamesWithUnderscores = true;
             

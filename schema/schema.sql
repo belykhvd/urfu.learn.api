@@ -12,7 +12,7 @@ drop table if exists task_index;
 drop table if exists task_progress;
 drop table if exists "group";
 drop table if exists group_index;
-drop table if exists attachment;
+drop table if exists file_index;
 drop table if exists invite;
 
 create table if not exists auth
@@ -90,7 +90,7 @@ create table if not exists group_index
 	name text not null
 );
 
-create table if not exists attachment
+create table if not exists file_index
 (
 	id uuid primary key,
 	name text not null,
@@ -106,3 +106,12 @@ create table if not exists invite
 	user_id uuid not null,
 	is_accepted bool not null default false
 );
+
+create table if not exists solution
+(
+	task_id uuid not null,
+	author_id uuid not null,
+	attachment_id uuid not null,
+	number int not null
+);
+

@@ -59,7 +59,7 @@ namespace TestDataGenerator
             var profileRepo = new ProfileRepo(config);
             authService = new AuthService(config, profileRepo);
             
-            var mediaRepo = new MediaRepo(config);
+            var mediaRepo = new FileRepo(config);
             var taskService = new TaskService(config, mediaRepo);
             courseService = new CourseService(config, taskService);
         }

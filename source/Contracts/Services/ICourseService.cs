@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Contracts.Repo;
 using Contracts.Types.Common;
 using Contracts.Types.Course;
+using Contracts.Types.Media;
 using Contracts.Types.Task;
 
 namespace Contracts.Services

@@ -9,9 +9,9 @@ namespace Core.Controllers
     [Route("[controller]")]
     public class MediaController : ControllerBase
     {
-        private readonly MediaRepo mediaRepo;
+        private readonly FileRepo fileRepo;
 
-        public MediaController(MediaRepo mediaRepo) => this.mediaRepo = mediaRepo;
+        public MediaController(FileRepo fileRepo) => this.fileRepo = fileRepo;
 
         [HttpGet]
         [Route("attachment")]
@@ -24,7 +24,7 @@ namespace Core.Controllers
         [Route("download")]
         public IActionResult Download([FromQuery] Guid id)
         {
-            var fileStream = mediaRepo.StreamFile(id);
+            var fileStream = fileRepo.StreamFile(id);
             if (fileStream == null)
                 return NotFound();
 
