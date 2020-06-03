@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
 using Contracts.Repo;
 using Contracts.Types.Media;
@@ -10,11 +9,10 @@ namespace Contracts.Services
     public interface ITaskService : IRepo<CourseTask>
     {
         new Task<Guid> Save(CourseTask task);
-        
-        Task<Attachment> GetSolutionLink(Guid taskId, Guid userId);
-        Task RegisterSolution(Guid taskId, Guid authorId, Guid attachmentId);
-        Task<FileStream> DownloadSolution(Guid attachmentId);
-        Task<FileStream> DownloadInputData(Guid taskId);
-        
+        new Task<CourseTask> Get(Guid taskId, Guid userId);
+
+        Task<Attachment> GetInputLink(Guid taskId);
+        Task<Attachment> GetSolutionLink(Guid taskId, Guid authorId);
+        Task RegisterAttachment(Guid taskId, Guid authorId, Guid attachmentId, AttachmentType type);
     }
 }

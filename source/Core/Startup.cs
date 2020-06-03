@@ -1,11 +1,9 @@
-using System;
-using System.ComponentModel;
 using Contracts.Services;
 using Contracts.Types.Auth;
 using Contracts.Types.Common;
 using Contracts.Types.Course;
 using Contracts.Types.Group;
-using Contracts.Types.Solution;
+using Contracts.Types.Media;
 using Contracts.Types.Task;
 using Contracts.Types.User;
 using Core.JsonConverters;
@@ -50,7 +48,6 @@ namespace Core
             services.AddSingleton<IGroupService, GroupService>();
             services.AddSingleton<ICourseService, CourseService>();
             services.AddSingleton<ITaskService, TaskService>();
-            services.AddSingleton<ISolutionService, SolutionService>();
             services.AddSingleton<EmailService>();
 
             services.AddSingleton<ProfileRepo>();
@@ -75,7 +72,8 @@ namespace Core
                 typeof(RequirementStatus[]),
                 typeof(TaskProgress),
 
-                typeof(Solution),
+                typeof(Attachment),
+
                 typeof(Link),
                 typeof(Link[])
             };

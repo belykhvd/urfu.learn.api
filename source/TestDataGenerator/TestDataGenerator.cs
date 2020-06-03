@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.Auth;
 using Contracts.Types.Common;
 using Contracts.Types.Course;
 using Contracts.Types.Group;
-using Contracts.Types.Solution;
+using Contracts.Types.Media;
 using Contracts.Types.Task;
 using Contracts.Types.User;
 using Core;
@@ -22,6 +24,8 @@ namespace TestDataGenerator
     {
         private readonly IAuthService authService;
         private readonly ICourseService courseService;
+        private readonly ITaskService taskService;
+        private readonly FileRepo fileRepo;
 
         public TestDataGenerator()
         {
@@ -44,7 +48,6 @@ namespace TestDataGenerator
                 typeof(RequirementStatus[]),
                 typeof(TaskProgress),
 
-                typeof(Solution),
                 typeof(Link),
                 typeof(Link[])
             };
@@ -58,19 +61,22 @@ namespace TestDataGenerator
 
             var profileRepo = new ProfileRepo(config);
             authService = new AuthService(config, profileRepo);
-            
-            var mediaRepo = new FileRepo(config);
-            var taskService = new TaskService(config, mediaRepo);
-            courseService = new CourseService(config, taskService);
+
+            fileRepo = new FileRepo(config);
+            taskService = new TaskService(config, fileRepo);
+            courseService = new CourseService(config, taskService, fileRepo);
         }
-        
+
         [Test]
         public async Task Generate()
         {
             var random = new Random();
-         
+
             var users = new[]
             {
+                MakeUser("Иванович Иван Зарубин", "azakov@gmail.com", "12345", "", UserRole.Admin),
+                MakeUser("Иванович Иван Зарубин", "krivedina@gmail.com", "12345", "", UserRole.Student),
+                MakeUser("Белых Владислав Дмитриевич", "belykhvd@gmail.com", "123", "", UserRole.Admin),
                 MakeUser("Александров Александр Александрович", "alex@urfu2.ru", "123", "", UserRole.Admin),
                 MakeUser("Кириллов Кирилл Кириллович", "kir@urfu2.ru", "123", "", UserRole.Admin),
                 MakeUser("Иванов Иван Иванович", "evan@urfu2.ru", "123", "КН-402", UserRole.Student),
@@ -78,9 +84,25 @@ namespace TestDataGenerator
                 MakeUser("Васильева Василиса Васильевна", "vas@urfu2.ru", "123", "КН-402", UserRole.Student)
             };
 
+            var userMap = new Dictionary<Guid, AuthResult>();
+
             foreach (var user in users)
-                await authService.SignUp(user).ConfigureAwait(false);
-            
+            {
+                var authResult = await authService.SignUp(user).ConfigureAwait(false);
+                userMap[authResult.UserId] = authResult;
+            }
+
+            var commonAdminId = userMap.Keys.First();
+
+            await fileRepo.RegisterAttachment(new Attachment
+            {
+                Id = Guid.Empty,
+                Name = "Ubuntu 16.04.iso",
+                Size = 1024 * 1024 * 1024,
+                Timestamp = new DateTime(2020, 06, 03),
+                Author = commonAdminId
+            }).ConfigureAwait(false);
+
             var courses = new[]
             {
                 MakeCourse("JavaScript", 100, new DateTime(2020, 05, 30)),
@@ -101,7 +123,14 @@ namespace TestDataGenerator
                 };
 
                 foreach (var task in tasks)
-                    await courseService.AddTask(courseId, task).ConfigureAwait(false);
+                {
+                    var taskId = await courseService.AddTask(courseId, task).ConfigureAwait(false);
+
+                    await taskService.RegisterAttachment(taskId, commonAdminId, Guid.Empty, AttachmentType.Input).ConfigureAwait(false);
+
+                    foreach (var userId in userMap.Keys)
+                        await taskService.RegisterAttachment(taskId, userId, Guid.Empty, AttachmentType.Solution).ConfigureAwait(false);
+                }
             }
         }
 

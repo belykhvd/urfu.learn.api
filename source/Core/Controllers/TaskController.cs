@@ -6,6 +6,8 @@ using Contracts.Types.Task;
 using Core.Repo;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using System.Net;
 
 namespace Core.Controllers
 {
@@ -21,19 +23,19 @@ namespace Core.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<Guid> Save([FromQuery] Guid id, [FromBody] CourseTask course)
             => await taskService.Save(id, course).ConfigureAwait(false);
 
         [HttpGet]
-        public async Task<CourseTask> Get([FromQuery] Guid id)
-            => await taskService.Get(id).ConfigureAwait(false);
-
-        [HttpGet]
-        [Route("download")]
-        public async Task<FileResult> DownloadInputData(Guid taskId)
+        [Authorize]
+        public async Task<ActionResult<CourseTask>> Get([FromQuery] Guid taskId, [FromQuery] Guid? userId)
         {
-            var content = await taskService.DownloadInputData(taskId).ConfigureAwait(false);
-            return File(content, "application/octet-stream", $"{taskId}");
+            var task =  await taskService.Get(taskId).ConfigureAwait(false);
+            if (task == null)
+                return NotFound();
+
+            return task;
         }
 
         [HttpGet]
@@ -42,35 +44,56 @@ namespace Core.Controllers
         {
             return await taskService.GetSolutionLink(taskId, userId).ConfigureAwait(true);
         }
-        
+
+        [HttpGet]
+        [Authorize]
+        public async Task<Attachment> GetInputLink([FromQuery] Guid taskId)
+        {
+            return await taskService.GetInputLink(taskId).ConfigureAwait(true);
+        }
+
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<Guid>> UploadSolution([FromQuery] Guid taskId)
+        [RequestSizeLimit(Constants._2GB)]
+        [RequestFormLimits(MultipartBodyLengthLimit = Constants._2GB)]
+        public async Task<ActionResult<Guid>> UploadSolution([FromQuery] Guid taskId, [FromForm] IFormFile file)
         {
             if (HttpContext.User.Identity.Name == null || !Guid.TryParse(HttpContext.User.Identity.Name, out var authorId))
                 return Unauthorized();
-            
-            var attachmentId = await UploadFile().ConfigureAwait(true);
-            if (attachmentId == null)
-                return BadRequest(Constants.SolutionUploadError);
 
-            await taskService.RegisterSolution(taskId, authorId, attachmentId.Value).ConfigureAwait(true);
+            var filename = WebUtility.HtmlEncode(file.FileName);
+            var attachmentId = await fileRepo.SaveAttachment(file, filename, authorId);
 
-            return attachmentId.Value;
+            await taskService.RegisterAttachment(taskId, authorId, attachmentId, AttachmentType.Solution).ConfigureAwait(true);
+
+            return attachmentId;
         }
-        
-        [HttpGet]
+
+        [HttpPost]
         [Authorize]
-        public async Task<ActionResult<FileStreamResult>> DownloadSolution([FromQuery] Guid solutionId)
+        [RequestSizeLimit(Constants._2GB)]
+        [RequestFormLimits(MultipartBodyLengthLimit = Constants._2GB)]
+        public async Task<ActionResult<Guid>> UploadInput([FromQuery] Guid taskId, [FromForm] IFormFile file)
         {
-            var attachment = await fileRepo.GetAttachment(solutionId).ConfigureAwait(true);
-            var stream = fileRepo.StreamFile(solutionId);
-                
-            return File(stream, "application/octet-stream", $"{taskId}");
+            if (HttpContext.User.Identity.Name == null || !Guid.TryParse(HttpContext.User.Identity.Name, out var authorId))
+                return Unauthorized();
+
+            var filename = WebUtility.HtmlEncode(file.FileName);
+            var attachmentId = await fileRepo.SaveAttachment(file, filename, authorId);
+
+            await taskService.RegisterAttachment(taskId, authorId, attachmentId, AttachmentType.Input).ConfigureAwait(true);
+
+            return attachmentId;
         }
-        
+
         [HttpGet]
         [Authorize]
-        public async Task<Action<FileStreamResult> 
+        public async Task<IActionResult> DownloadAttachment([FromQuery] Guid attachmentId)
+        {
+            var attachment = await fileRepo.GetAttachment(attachmentId).ConfigureAwait(true);
+            var stream = fileRepo.StreamFile(attachmentId);
+
+            return File(stream, "application/octet-stream", attachment.Name);
+        }
     }
 }

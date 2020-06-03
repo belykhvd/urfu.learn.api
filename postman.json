@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "2eea53ea-cb4b-4021-af3d-21ff76beda86",
+		"_postman_id": "e2f17528-6552-4589-88b2-759f4a3a9135",
 		"name": "urfu.learn.api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -55,7 +55,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"JavaScript\",\n\t\"description\": \"Основы ESMAScript 5.1\"\n}",
+							"raw": "{\n\t\"name\": \"JavaScript\",\n\t\"description\": \"Основы ESMAScript 5.1\",\n\t\"maxScore\": 50,\n\t\"deadline\": \"03.06.2020\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -179,7 +179,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:8080/task/getSolutionLink?taskId&userId",
+									"raw": "http://localhost:8080/task/getSolutionLink?taskId=2dc6abddee5641e3b8017298adbfcc56&userId=0444b3586a1748c9a19f0ab64c2fc61d",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -192,11 +192,11 @@
 									"query": [
 										{
 											"key": "taskId",
-											"value": null
+											"value": "2dc6abddee5641e3b8017298adbfcc56"
 										},
 										{
 											"key": "userId",
-											"value": null
+											"value": "0444b3586a1748c9a19f0ab64c2fc61d"
 										}
 									]
 								}
@@ -206,10 +206,20 @@
 						{
 							"name": "🔒 Отправить решение",
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/C:/Users/Светлана/Downloads/multipart.html"
+										}
+									]
+								},
 								"url": {
-									"raw": "http://localhost:8080/task/uploadSolution?taskId",
+									"raw": "http://localhost:8080/task/uploadSolution?taskId=2dc6abddee5641e3b8017298adbfcc56",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -222,7 +232,7 @@
 									"query": [
 										{
 											"key": "taskId",
-											"value": null
+											"value": "2dc6abddee5641e3b8017298adbfcc56"
 										}
 									]
 								}
@@ -230,12 +240,12 @@
 							"response": []
 						},
 						{
-							"name": "🔒 Скачать решение",
+							"name": "🔒 Ссылка на входные данные",
 							"request": {
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:8080/task/downloadSolution?solutionId",
+									"raw": "http://localhost:8080/task/getInputLink?taskId=2dc6abddee5641e3b8017298adbfcc56",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -243,12 +253,74 @@
 									"port": "8080",
 									"path": [
 										"task",
-										"downloadSolution"
+										"getInputLink"
 									],
 									"query": [
 										{
-											"key": "solutionId",
-											"value": null
+											"key": "taskId",
+											"value": "2dc6abddee5641e3b8017298adbfcc56"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "🔒 Загрузить входные данные",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/C:/Users/Светлана/Downloads/multipart.html"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:8080/task/uploadInput?taskId=2dc6abddee5641e3b8017298adbfcc56",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"task",
+										"uploadInput"
+									],
+									"query": [
+										{
+											"key": "taskId",
+											"value": "2dc6abddee5641e3b8017298adbfcc56"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "🔒 Скачать решение/входные данные",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/task/downloadAttachment?attachmentId=3c5d4cdac0044cf49f278b5545fff220",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"task",
+										"downloadAttachment"
+									],
+									"query": [
+										{
+											"key": "attachmentId",
+											"value": "3c5d4cdac0044cf49f278b5545fff220"
 										}
 									]
 								}
@@ -292,7 +364,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"Хэширование\",\n\t\"description\": \"Описание не предусмотрено!\",\n\t\"deadline\": \"01.06.2020\",\n\t\"maxScore\": 15,\n\t\"requirements\": [\n\t\t{\"id\": \"dd92cb72-0ea3-4c39-a86c-5c0d7738aaf5\", \"name\": \"форма\"},\n\t\t{\"id\": \"dd92cb72-0ea3-4c39-a86c-5c0d7738aaf6\", \"name\": \"площадь\"},\n\t\t{\"id\": \"dd92cb72-0ea3-4c39-a86c-5c0d7738aaf7\", \"name\": \"количество\"}\n\t]\n}",
+							"raw": "{\n\t\"name\": \"Хэширование\",\n\t\"descriptionText\": \"Описание не предусмотрено!\",\n\t\"deadline\": \"01.06.2020\",\n\t\"maxScore\": 15,\n\t\"requirementList\": [\n\t\t{\"id\": \"dd92cb72-0ea3-4c39-a86c-5c0d7738aaf5\", \"text\": \"форма\"},\n\t\t{\"id\": \"dd92cb72-0ea3-4c39-a86c-5c0d7738aaf6\", \"text\": \"площадь\"},\n\t\t{\"id\": \"dd92cb72-0ea3-4c39-a86c-5c0d7738aaf7\", \"text\": \"количество\"}\n\t]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -300,7 +372,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/course/addtask?courseId=878e73825ccd4f0ba58dbcb2f199febd",
+							"raw": "http://localhost:8080/course/addtask?courseId=1e9bcea31f9e4506b36166c7db7a4141",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -313,7 +385,7 @@
 							"query": [
 								{
 									"key": "courseId",
-									"value": "878e73825ccd4f0ba58dbcb2f199febd"
+									"value": "1e9bcea31f9e4506b36166c7db7a4141"
 								}
 							]
 						}
@@ -410,67 +482,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "Скачать входные данные",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/task/download?taskId=32ca7eb4-91b2-4627-8e9b-6cdfa618d86a",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"task",
-								"download"
-							],
-							"query": [
-								{
-									"key": "taskId",
-									"value": "32ca7eb4-91b2-4627-8e9b-6cdfa618d86a"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Сохранить задачу",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "1",
-									"value": "22",
-									"type": "text"
-								},
-								{
-									"key": "2",
-									"value": "[\n    {\n        \"id\": \"878e73825ccd4f0ba58dbcb2f199febd\",\n        \"name\": \"❦ JavaScript ❦\",\n        \"currentScore\": 0,\n        \"maxScore\": 0,\n        \"courseStatus\": false,\n        \"courseTasks\": [\n            {\n                \"id\": \"4f5b14bc61b74d7788cfbef6694f1e75\",\n                \"name\": \"💐 First task\",\n                \"requirementStatusList\": [\n                    {\n                        \"id\": \"cf56cd68b8774e3c84efd202e665eceb\",\n                        \"text\": \"Requirement 1\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"84e58e455757413bb70534d594ccd595\",\n                        \"text\": \"Requirement 2\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"0af1c09333c54454bbca267478cc12ae\",\n                        \"text\": \"Requirement 3\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"f47ba8c429ae4d03b52561746cf4dd4b\",\n                        \"text\": \"Requirement 4\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"5ddd548e454a438c9991a77cd577c808\",\n                        \"text\": \"Requirement 5\",\n                        \"status\": false\n                    }\n                ],\n                \"currentScore\": 0,\n                \"maxScore\": 15,\n                \"inputDataId\": null\n            },\n            {\n                \"id\": \"a82d0d07ea5342a2901efb7a4a8306cb\",\n                \"name\": \"💐 Second task\",\n                \"requirementStatusList\": [\n                    {\n                        \"id\": \"616e9f603776414e840e4af17d93df58\",\n                        \"text\": \"Requirement 1\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"4235b9efe1cd4d1399f35f53ae102dfa\",\n                        \"text\": \"Requirement 2\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"349be10959de4858b1e2f0e33464e2aa\",\n                        \"text\": \"Requirement 3\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"593c3e0c1f73476291609a6b86bd11e0\",\n                        \"text\": \"Requirement 4\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"532ce3ad5ce74f7c801f1597558f0f15\",\n                        \"text\": \"Requirement 5\",\n                        \"status\": false\n                    }\n                ],\n                \"currentScore\": 0,\n                \"maxScore\": 1,\n                \"inputDataId\": null\n            },\n            {\n                \"id\": \"27b4211838824615a85d55a735f92c4f\",\n                \"name\": \"💐 Third task\",\n                \"requirementStatusList\": [\n                    {\n                        \"id\": \"e154aa522e37427aac545300eedf6a2b\",\n                        \"text\": \"Requirement 1\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"0060756505ac4b478d82a1c9ba0a7101\",\n                        \"text\": \"Requirement 2\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"b8c78639d8164c45b41919cc8b997360\",\n                        \"text\": \"Requirement 3\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"1f384eba11e44ae0b5f77c41935eb7c8\",\n                        \"text\": \"Requirement 4\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"4b94fc3e2e1c4c178b446ac3441a2bd9\",\n                        \"text\": \"Requirement 5\",\n                        \"status\": false\n                    }\n                ],\n                \"currentScore\": 0,\n                \"maxScore\": 8,\n                \"inputDataId\": null\n            },\n            {\n                \"id\": \"d79d7ddfa6b247f987eea50b09c5ee04\",\n                \"name\": \"Хэширование\",\n                \"requirementStatusList\": null,\n                \"currentScore\": 0,\n                \"maxScore\": 15,\n                \"inputDataId\": null\n            },\n            {\n                \"id\": \"fe48e8d0dfcc4f17a14e64086b46f98e\",\n                \"name\": \"Хэширование\",\n                \"requirementStatusList\": null,\n                \"currentScore\": 0,\n                \"maxScore\": 15,\n                \"inputDataId\": null\n            }\n        ]\n    },\n    {\n        \"id\": \"8bec463adbb546e79df6dbd913940b37\",\n        \"name\": \"❦ TypeScript ❦\",\n        \"currentScore\": 0,\n        \"maxScore\": 0,\n        \"courseStatus\": false,\n        \"courseTasks\": [\n            {\n                \"id\": \"c3057ca3376141fbb3e7e3b2cdd4c38f\",\n                \"name\": \"💐 First task\",\n                \"requirementStatusList\": [\n                    {\n                        \"id\": \"75ad1c3d019a4670b330d6c8805d97c3\",\n                        \"text\": \"Requirement 1\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"b454ffde18784bde959607914dcb0020\",\n                        \"text\": \"Requirement 2\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"5c323de2a8d64fb69ab3bb13e81cf2d0\",\n                        \"text\": \"Requirement 3\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"839c6533ac894a17bb9263caec9bf624\",\n                        \"text\": \"Requirement 4\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"5eca29b87768421da9b9e1b2d3c6d04c\",\n                        \"text\": \"Requirement 5\",\n                        \"status\": false\n                    }\n                ],\n                \"currentScore\": 0,\n                \"maxScore\": 36,\n                \"inputDataId\": null\n            },\n            {\n                \"id\": \"2d69b014c39d4891b87a42089aae6dd8\",\n                \"name\": \"💐 Second task\",\n                \"requirementStatusList\": [\n                    {\n                        \"id\": \"a8dab3e54cb34f4aa7d01e7f46949f26\",\n                        \"text\": \"Requirement 1\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"eeba20c6ec7c4514bef5c85779a26d29\",\n                        \"text\": \"Requirement 2\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"d27eccbdfcde42968b46b47e36e274b4\",\n                        \"text\": \"Requirement 3\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"26183d1dd2a54e96920b859016bdce8f\",\n                        \"text\": \"Requirement 4\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"c7f2c8870a824b85a1e2e4874bc85bc4\",\n                        \"text\": \"Requirement 5\",\n                        \"status\": false\n                    }\n                ],\n                \"currentScore\": 0,\n                \"maxScore\": 23,\n                \"inputDataId\": null\n            },\n            {\n                \"id\": \"262e1fbde1764b96878acd445fd21739\",\n                \"name\": \"💐 Third task\",\n                \"requirementStatusList\": [\n                    {\n                        \"id\": \"c4fbc25ecafa429083f5a8a35a7126f9\",\n                        \"text\": \"Requirement 1\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"97d898f198ac4c3ab618492558eaffed\",\n                        \"text\": \"Requirement 2\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"3b23e609559c41c7bb921ad0c1d1af9e\",\n                        \"text\": \"Requirement 3\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"9b0b7b3861694814b33414074c2171e5\",\n                        \"text\": \"Requirement 4\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"048fbd2f657849449df679b9281a98df\",\n                        \"text\": \"Requirement 5\",\n                        \"status\": false\n                    }\n                ],\n                \"currentScore\": 0,\n                \"maxScore\": 39,\n                \"inputDataId\": null\n            }\n        ]\n    },\n    {\n        \"id\": \"bf031c2ea8d14974bd4e70aba5d7dfc4\",\n        \"name\": \"❦ React.JS ❦\",\n        \"currentScore\": 0,\n        \"maxScore\": 0,\n        \"courseStatus\": false,\n        \"courseTasks\": [\n            {\n                \"id\": \"2a497e4db634446c975e23baa0519101\",\n                \"name\": \"💐 First task\",\n                \"requirementStatusList\": [\n                    {\n                        \"id\": \"72008a5f534b4c3e8936b21a76b43050\",\n                        \"text\": \"Requirement 1\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"fc9420ec5182440b879e88a5298b70d8\",\n                        \"text\": \"Requirement 2\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"e9cf0281d6114f48ae6052cc5ee9ac3b\",\n                        \"text\": \"Requirement 3\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"48e985c70408408d8ce11c2262f939d4\",\n                        \"text\": \"Requirement 4\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"52aae61042ad474a8770462b7a28b0c1\",\n                        \"text\": \"Requirement 5\",\n                        \"status\": false\n                    }\n                ],\n                \"currentScore\": 0,\n                \"maxScore\": 37,\n                \"inputDataId\": null\n            },\n            {\n                \"id\": \"55594ee41eaa4aca9ede4dab0affbb9d\",\n                \"name\": \"💐 Second task\",\n                \"requirementStatusList\": [\n                    {\n                        \"id\": \"750ed6131bf84141ad3f547751ee1370\",\n                        \"text\": \"Requirement 1\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"d34674cbd07a4a27a6dd5bdabceb1583\",\n                        \"text\": \"Requirement 2\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"3ed4d37c5e9e4472997a142298a1da58\",\n                        \"text\": \"Requirement 3\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"65e4330c3b8744edb0306fae1efdc6cc\",\n                        \"text\": \"Requirement 4\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"fe5ee6fda6c442a2b54412833894addb\",\n                        \"text\": \"Requirement 5\",\n                        \"status\": false\n                    }\n                ],\n                \"currentScore\": 0,\n                \"maxScore\": 15,\n                \"inputDataId\": null\n            },\n            {\n                \"id\": \"aefa2e3612cd49a9a9e28d75302aec04\",\n                \"name\": \"💐 Third task\",\n                \"requirementStatusList\": [\n                    {\n                        \"id\": \"262ecfe8730b498d8c4813dc4d4cbfb1\",\n                        \"text\": \"Requirement 1\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"b526886377394e60839d612c9c922176\",\n                        \"text\": \"Requirement 2\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"5f3434732c8f4773b261e50aa4abb998\",\n                        \"text\": \"Requirement 3\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"220e4e8cce8d421182c4d51b0520c460\",\n                        \"text\": \"Requirement 4\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"c70d212edff34ec486ac8a27c2e56774\",\n                        \"text\": \"Requirement 5\",\n                        \"status\": false\n                    }\n                ],\n                \"currentScore\": 0,\n                \"maxScore\": 20,\n                \"inputDataId\": null\n            }\n        ]\n    },\n    {\n        \"id\": \"56e49ae1f5b4423589bea518b3c5f0e5\",\n        \"name\": \"❦ Angular.JS ❦\",\n        \"currentScore\": 0,\n        \"maxScore\": 0,\n        \"courseStatus\": false,\n        \"courseTasks\": [\n            {\n                \"id\": \"8c69d49522df44c1a56cc74c2507d2fd\",\n                \"name\": \"💐 First task\",\n                \"requirementStatusList\": [\n                    {\n                        \"id\": \"072ecb0dd7ab449b8003172efab7ed0b\",\n                        \"text\": \"Requirement 1\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"9a3c8873a5df488283b2dedeceb37947\",\n                        \"text\": \"Requirement 2\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"249731667f6b4141855109409c952e57\",\n                        \"text\": \"Requirement 3\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"cb93b871ddf148989810560f2bd8515a\",\n                        \"text\": \"Requirement 4\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"6bc93f2e21c140dda1214e2b98c500fe\",\n                        \"text\": \"Requirement 5\",\n                        \"status\": false\n                    }\n                ],\n                \"currentScore\": 0,\n                \"maxScore\": 25,\n                \"inputDataId\": null\n            },\n            {\n                \"id\": \"4567cd2342ac4cc5aaf4a9a1e25a113f\",\n                \"name\": \"💐 Second task\",\n                \"requirementStatusList\": [\n                    {\n                        \"id\": \"8c56258a9a594f3b9ead6e5c18c47628\",\n                        \"text\": \"Requirement 1\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"2b9f0ba1d80842c9bea6fb9b4c516b54\",\n                        \"text\": \"Requirement 2\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"47ac3b074adb403c8129a18e709651c2\",\n                        \"text\": \"Requirement 3\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"571ff6c324ed4d7ab58eff978c9f6c6f\",\n                        \"text\": \"Requirement 4\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"3729cebd8ed741c6841649ac97679ba8\",\n                        \"text\": \"Requirement 5\",\n                        \"status\": false\n                    }\n                ],\n                \"currentScore\": 0,\n                \"maxScore\": 23,\n                \"inputDataId\": null\n            },\n            {\n                \"id\": \"1b0cb7e5e7104b4c815ed5cd5d7ef125\",\n                \"name\": \"💐 Third task\",\n                \"requirementStatusList\": [\n                    {\n                        \"id\": \"9e05ce1f09a44b80bad261841345546b\",\n                        \"text\": \"Requirement 1\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"98eade4f218848a9945109c0ecf05133\",\n                        \"text\": \"Requirement 2\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"0f367a1240c9437fa7c5dc685d19910c\",\n                        \"text\": \"Requirement 3\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"68dad5e006c9464290acd1fbeef9ba05\",\n                        \"text\": \"Requirement 4\",\n                        \"status\": false\n                    },\n                    {\n                        \"id\": \"6ec5cdb1aa684f7eb33014f0bb5a74a2\",\n                        \"text\": \"Requirement 5\",\n                        \"status\": false\n                    }\n                ],\n                \"currentScore\": 0,\n                \"maxScore\": 20,\n                \"inputDataId\": null\n            }\n        ]\n    }\n]",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "http://localhost:8080/task/saveMultipart",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"task",
-								"saveMultipart"
-							]
-						}
-					},
-					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -479,13 +490,13 @@
 			"name": "Авторизация",
 			"item": [
 				{
-					"name": "Залогиниться (login)",
+					"name": "Залогиниться",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": \"landau@urfu.ru\",\n\t\"password\": \"strong_password\"\n}",
+							"raw": "{\n\t\"email\": \"landau2@urfu.ru\",\n\t\"password\": \"strong_password\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -526,13 +537,13 @@
 					"response": []
 				},
 				{
-					"name": "Регистрация (signUp)",
+					"name": "Регистрация",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"surname\": \"Ландау\",\n\t\"firstName\": \"Лев\",\n\t\"secondName\": \"Давидович\",\n\n\t\"email\": \"landau@urfu.ru\",\n\t\"password\": \"strong_password\",\n\t\n\t\"group\": \"КН-402\",\n\t\"role\": 1\n}",
+							"raw": "{\n\t\"surname\": \"Ландау\",\n\t\"firstName\": \"Лев\",\n\t\"secondName\": \"Давидович\",\n\n\t\"email\": \"landau2@urfu.ru\",\n\t\"password\": \"strong_password\",\n\t\n\t\"group\": \"КН-402\",\n\t\"role\": 1\n}",
 							"options": {
 								"raw": {
 									"language": "json"

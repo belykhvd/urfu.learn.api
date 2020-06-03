@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.Media;
@@ -20,24 +19,7 @@ namespace Core.Services
             this.fileRepo = fileRepo;
         }
 
-        public async Task<Guid> Save(CourseTask task)
-        {
-            throw new NotImplementedException();
-        }
-
-        public (Attachment attachment, FileStream stream) DownloadSolution(Guid attachmentId)
-        {
-            
-            
-            return fileRepo.StreamFile(attachmentId);
-        }
-
-        public FileStream DownloadInputData(Guid taskId)
-        {
-            return fileRepo.StreamFile(attachmentId);
-        }
-
-        public async Task<Attachment> GetSolutionLink(Guid taskId, Guid userId)
+        public async Task<Attachment> GetInputLink(Guid taskId)
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
             return await conn.QuerySingleOrDefaultAsync<Attachment>(
@@ -46,32 +28,54 @@ namespace Core.Services
 		                    'name', fi.name,
 		                    'size', fi.size,
 		                    'timestamp', fi.timestamp,
-		                    'author', fi.author_id)
-	                   from {PgSchema.solution} sol
+		                    'author', fi.author)
+	                   from {PgSchema.attachment} sol
+                       left join {PgSchema.file_index} fi
+                         on sol.attachment_id = fi.id
+                       where sol.task_id = @TaskId
+                         and sol.type = 0
+                       order by sol.number desc
+                       limit 1", new {taskId}).ConfigureAwait(false);
+        }
+
+        public async Task<Attachment> GetSolutionLink(Guid taskId, Guid authorId)
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            return await conn.QuerySingleOrDefaultAsync<Attachment>(
+                $@"select json_build_object(
+		                    'id', fi.id,
+		                    'name', fi.name,
+		                    'size', fi.size,
+		                    'timestamp', fi.timestamp,
+		                    'author', fi.author)
+	                   from {PgSchema.attachment} sol
                        left join {PgSchema.file_index} fi
                          on sol.attachment_id = fi.id
                        where sol.task_id = @TaskId
                          and sol.author_id = @AuthorId
                        order by sol.number desc
-                       limit 1", new {taskId, userId}).ConfigureAwait(false);
+                       limit 1", new {taskId, authorId}).ConfigureAwait(false);
         }
         
-        public async Task RegisterSolution(Guid taskId, Guid authorId, Guid attachmentId)
+        public async Task RegisterAttachment(Guid taskId, Guid authorId, Guid attachmentId, AttachmentType type)
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
             await conn.ExecuteAsync(
-                $@"insert into {PgSchema.solution} (task_id, author_id, attachment_id, number)
+                $@"insert into {PgSchema.attachment} (task_id, author_id, attachment_id, number, type)
 	                   values (@TaskId, @AuthorId, @AttachmentId,
 		                    coalesce((select number
-	                                      from {PgSchema.solution}
+	                                      from {PgSchema.attachment}
 	                                      where task_id = @TaskId
 	                                        and author_id = @AuthorId
-	                                      limit 1), 0) + 1)",
+	                                      limit 1), 0) + 1,
+                            @Type
+                       )",
                 new
                 {
                     taskId,
                     authorId,
-                    attachmentId
+                    attachmentId,
+                    type
                 }).ConfigureAwait(false);
         }
 

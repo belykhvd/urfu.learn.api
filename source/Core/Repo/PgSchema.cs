@@ -25,6 +25,6 @@ namespace Core.Repo
         public const string group_index = nameof(group_index);
         public const string group_membership = nameof(group_membership);
 
-        public const string solution = nameof(solution);
+        public const string attachment = nameof(attachment);
     }
 }
