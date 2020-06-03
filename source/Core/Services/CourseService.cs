@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.Common;
 using Contracts.Types.Course;
-using Contracts.Types.Media;
 using Contracts.Types.Task;
 using Core.Repo;
 using Dapper;
@@ -55,7 +54,9 @@ namespace Core.Services
 
         public async Task<Guid> AddTask(Guid courseId, CourseTask task)
         {
-            var taskId = await taskService.Save(null, task).ConfigureAwait(false);
+            task.Id = Guid.NewGuid();
+
+            var taskId = await taskService.Save(task).ConfigureAwait(false);
 
             await using var conn = new NpgsqlConnection(ConnectionString);
             await conn.ExecuteAsync(

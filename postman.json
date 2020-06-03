@@ -393,12 +393,12 @@
 					"response": []
 				},
 				{
-					"name": "Открыть задачу",
+					"name": "🔒 Открыть задачу",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/task/get?id=fe48e8d0dfcc4f17a14e64086b46f98e",
+							"raw": "http://localhost:8080/task/get?taskId=20781bfa4ff54080859c66145b5870cb&userId=d44112a0a16b44869a48e4e46de7482d",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -410,8 +410,12 @@
 							],
 							"query": [
 								{
-									"key": "id",
-									"value": "fe48e8d0dfcc4f17a14e64086b46f98e"
+									"key": "taskId",
+									"value": "20781bfa4ff54080859c66145b5870cb"
+								},
+								{
+									"key": "userId",
+									"value": "d44112a0a16b44869a48e4e46de7482d"
 								}
 							]
 						}
@@ -419,13 +423,13 @@
 					"response": []
 				},
 				{
-					"name": "Редактировать задачу",
+					"name": "★🔒 Редактировать задачу",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Стабилизаторы\",\r\n    \"description\": \"Они самые\",\r\n    \"deadline\": \"2020-02-15T00:00:00Z\",\r\n    \"maxScore\": 1000,\r\n    \"requirements\": [\r\n        {\r\n            \"id\": \"dd92cb72-0ea3-4c39-a86c-5c0d7738aaf5\",\r\n            \"name\": \"форма !!!\"\r\n        },\r\n        {\r\n            \"id\": \"dd92cb72-0ea3-4c39-a86c-5c0d7738aaf6\",\r\n            \"name\": \"площадь !!!\"\r\n        },\r\n        {\r\n            \"id\": \"dd92cb72-0ea3-4c39-a86c-5c0d7738aaf7\",\r\n            \"name\": \"количество\"\r\n        }\r\n    ],\r\n    \"status\": 0,\r\n    \"attachmentId\": \"00000000-0000-0000-0000-000000000001\",\r\n    \"solutions\": null\r\n}",
+							"raw": "{\r\n    \"id\": \"20781bfa4ff54080859c66145b5870cb\",\r\n    \"name\": \"Стабилизаторы\",\r\n    \"descriptionText\": \"Они самые\",\r\n    \"deadline\": \"03.06.2020\",\r\n    \"maxScore\": 40,\r\n    \"requirementList\": [\r\n        {\r\n            \"id\": \"0e882ddeb1d4402fbe1d4ad639dbb513\",\r\n            \"text\": \"1\",\r\n            \"status\": false\r\n        },\r\n        {\r\n            \"id\": \"821aaa503f304d40b15de74a3be13c1c\",\r\n            \"text\": \"2\",\r\n            \"status\": false\r\n        },\r\n        {\r\n            \"id\": \"91ac072da5ef4824972dfd24da146255\",\r\n            \"text\": \"3\",\r\n            \"status\": false\r\n        },\r\n        {\r\n            \"id\": \"cf321e50f856496ab08f68a1c8a4449c\",\r\n            \"text\": \"5\",\r\n            \"status\": false\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -433,7 +437,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/task/save?id=b8a19b2a-1280-4898-967c-386adbd58f0e",
+							"raw": "http://localhost:8080/task/save",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -442,12 +446,6 @@
 							"path": [
 								"task",
 								"save"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "b8a19b2a-1280-4898-967c-386adbd58f0e"
-								}
 							]
 						}
 					},
@@ -490,6 +488,34 @@
 			"name": "Авторизация",
 			"item": [
 				{
+					"name": "Регистрация",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"surname\": \"Ландау\",\n\t\"firstName\": \"Лев\",\n\t\"secondName\": \"Давидович\",\n\n\t\"email\": \"landau2@urfu.ru\",\n\t\"password\": \"strong_password\",\n\t\n\t\"group\": \"КН-402\",\n\t\"role\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/signUp",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"signUp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Залогиниться",
 					"request": {
 						"method": "POST",
@@ -518,7 +544,7 @@
 					"response": []
 				},
 				{
-					"name": "Выйти (logout)",
+					"name": "Выйти",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -531,34 +557,6 @@
 							"port": "8080",
 							"path": [
 								"signOut"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Регистрация",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"surname\": \"Ландау\",\n\t\"firstName\": \"Лев\",\n\t\"secondName\": \"Давидович\",\n\n\t\"email\": \"landau2@urfu.ru\",\n\t\"password\": \"strong_password\",\n\t\n\t\"group\": \"КН-402\",\n\t\"role\": 1\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/signUp",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"signUp"
 							]
 						}
 					},

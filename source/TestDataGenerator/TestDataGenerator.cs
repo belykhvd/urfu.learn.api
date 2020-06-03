@@ -149,11 +149,11 @@ namespace TestDataGenerator
             MaxScore = maxScore,
             RequirementList = new[]
             {
-                new RequirementStatus {Id = Guid.NewGuid(), Text = "Requirement 1"},
-                new RequirementStatus {Id = Guid.NewGuid(), Text = "Requirement 2"},
-                new RequirementStatus {Id = Guid.NewGuid(), Text = "Requirement 3"},
-                new RequirementStatus {Id = Guid.NewGuid(), Text = "Requirement 4"},
-                new RequirementStatus {Id = Guid.NewGuid(), Text = "Requirement 5"}
+                new RequirementStatus {Id = Guid.NewGuid(), Text = "☆ Requirement 1 ☆"},
+                new RequirementStatus {Id = Guid.NewGuid(), Text = "☆ Requirement 2 ☆"},
+                new RequirementStatus {Id = Guid.NewGuid(), Text = "☆ Requirement 3 ☆"},
+                new RequirementStatus {Id = Guid.NewGuid(), Text = "☆ Requirement 4 ☆"},
+                new RequirementStatus {Id = Guid.NewGuid(), Text = "☆ Requirement 5 ☆"}
             }
         };
 
@@ -169,7 +169,7 @@ namespace TestDataGenerator
                 Password = password,
                 Group = group,
                 Role = role
-            };   
+            };
         }
     }
 }

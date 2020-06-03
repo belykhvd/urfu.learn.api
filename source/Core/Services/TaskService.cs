@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Contracts.Services;
+using Contracts.Types.Course;
 using Contracts.Types.Media;
 using Contracts.Types.Task;
 using Core.Repo;
@@ -17,6 +19,72 @@ namespace Core.Services
         public TaskService(IConfiguration config, FileRepo fileRepo) : base(config, PgSchema.task)
         {
             this.fileRepo = fileRepo;
+        }
+
+        public new async Task<Guid> Save(CourseTask task)
+        {
+            if (task.Id == Guid.Empty)
+                task.Id = Guid.NewGuid();
+
+            task.Input = null;
+
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            await conn.ExecuteAsync(
+                @$"insert into {PgSchema.task} (id, data)
+                       values (@Id, @Data::jsonb)
+                       on conflict (id) do update set data = @Data::jsonb", new {task.Id, Data = task}).ConfigureAwait(false);
+
+            await SaveIndex(conn, task.Id, task).ConfigureAwait(false);
+
+            return task.Id;
+        }
+
+        public async Task<CourseTask> Get(Guid taskId, Guid? userId)
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            var task = await conn.QuerySingleOrDefaultAsync<CourseTask>(
+                $@"select data
+                       from {PgSchema.task}
+                       where id = @TaskId
+                       limit 1", new {taskId}).ConfigureAwait(false);
+
+            if (task == null)
+                return null;
+
+            var attachment = await GetInputLink(taskId).ConfigureAwait(false);
+            task.Input = attachment;
+
+            if (userId == null)
+                return task;
+
+            var progress = await GetProgress(taskId, userId.Value).ConfigureAwait(false);
+            if (progress == null)
+                return task;
+
+            task.CurrentScore = progress.CurrentScore;
+
+            var doneRequirements = progress.Done?.ToHashSet();
+            foreach (var requirement in task.RequirementList)
+            {
+                if (doneRequirements == null)
+                    break;
+
+                if (doneRequirements.Contains(requirement.Id))
+                    requirement.Status = true;
+            }
+
+            return task;
+        }
+
+        public async Task<TaskProgress> GetProgress(Guid taskId, Guid userId)
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            return await conn.QuerySingleOrDefaultAsync<TaskProgress>(
+                $@"select jsonb_build_object('currentScore', coalesce(tp.score, 0), 'done', tp.done)
+                       from {PgSchema.task_progress} tp
+                       where tp.user_id = @UserId
+                         and tp.task_id = @TaskId
+                       limit 1", new { userId, taskId }).ConfigureAwait(false);
         }
 
         public async Task<Attachment> GetInputLink(Guid taskId)

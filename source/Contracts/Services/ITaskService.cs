@@ -9,7 +9,7 @@ namespace Contracts.Services
     public interface ITaskService : IRepo<CourseTask>
     {
         new Task<Guid> Save(CourseTask task);
-        new Task<CourseTask> Get(Guid taskId, Guid userId);
+        Task<CourseTask> Get(Guid taskId, Guid? userId);
 
         Task<Attachment> GetInputLink(Guid taskId);
         Task<Attachment> GetSolutionLink(Guid taskId, Guid authorId);

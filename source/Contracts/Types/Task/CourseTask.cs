@@ -7,6 +7,7 @@ namespace Contracts.Types.Task
 {
     public class CourseTask
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string DescriptionText { get; set; }
         public DateTime? Deadline { get; set; }

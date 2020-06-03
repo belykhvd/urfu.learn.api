@@ -24,14 +24,14 @@ namespace Core.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<Guid> Save([FromQuery] Guid id, [FromBody] CourseTask course)
-            => await taskService.Save(id, course).ConfigureAwait(false);
+        public async Task<Guid> Save([FromBody] CourseTask course)
+            => await taskService.Save(course).ConfigureAwait(false);
 
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<CourseTask>> Get([FromQuery] Guid taskId, [FromQuery] Guid? userId)
         {
-            var task =  await taskService.Get(taskId).ConfigureAwait(false);
+            var task =  await taskService.Get(taskId, userId).ConfigureAwait(false);
             if (task == null)
                 return NotFound();
 
