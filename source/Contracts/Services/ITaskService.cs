@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Contracts.Repo;
 using Contracts.Types.Media;
@@ -14,5 +15,7 @@ namespace Contracts.Services
         Task<Attachment> GetInputLink(Guid taskId);
         Task<Attachment> GetSolutionLink(Guid taskId, Guid authorId);
         Task RegisterAttachment(Guid taskId, Guid authorId, Guid attachmentId, AttachmentType type);
+
+        Task<IEnumerable<TestResult>> GetTestResults(Guid solutionId);
     }
 }

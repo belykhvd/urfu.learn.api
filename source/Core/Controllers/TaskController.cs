@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using System.Net;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Core.Controllers
 {
@@ -95,5 +97,10 @@ namespace Core.Controllers
 
             return File(stream, "application/octet-stream", attachment.Name);
         }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IEnumerable<TestResult>> GetTestResults([FromQuery] Guid solutionId)
+            => await taskService.GetTestResults(solutionId).ConfigureAwait(true);
     }
 }

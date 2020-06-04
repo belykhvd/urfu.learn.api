@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Contracts.Services;
@@ -166,6 +167,19 @@ namespace Core.Services
         protected override async Task DeleteIndex(NpgsqlConnection conn, Guid id)
         {
             await conn.ExecuteAsync(@$"delete from {PgSchema.task_index} where id = @Id", new {id}).ConfigureAwait(false);
+        }
+
+        public async Task<IEnumerable<TestResult>> GetTestResults(Guid solutionId)
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            return await conn.QueryAsync<TestResult>(
+                $@"select json_build_object(
+                         'number', test_number,
+                         'is_passed', is_passed,
+                         'error_message', error_message)
+                       from {PgSchema.js_check}
+                       where solution_id = @SolutionId
+                       order by test_number", new {solutionId}).ConfigureAwait(false);
         }
     }
 }
