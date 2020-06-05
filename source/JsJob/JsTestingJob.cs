@@ -5,14 +5,17 @@ using Npgsql;
 using Repo;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace JsJob
 {
     public class JsCheckJob : PgRepo
     {
-        private readonly FileRepo fileRepo;
+        private const int DelayTimeout = 2000;
+        
         private readonly JsRunner jsRunner;
+        private readonly FileRepo fileRepo;
 
         public JsCheckJob(IConfiguration configuration, JsRunner jsRunner, FileRepo fileRepo)
              : base(configuration)
@@ -21,13 +24,22 @@ namespace JsJob
             this.fileRepo = fileRepo;
         }
 
-        public async Task Next()
+        public async Task Run(CancellationToken cancellation)
+        {
+            while (!cancellation.IsCancellationRequested)
+            {
+                await Task.Delay(DelayTimeout, cancellation).ConfigureAwait(false);
+                await Next().ConfigureAwait(false);
+            }
+        }
+        
+        private async Task Next()
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
             var checkTasks = await conn.QueryAsync<CheckTask>(
                 $@"select json_build_object('taskId', task_id, 'solutionId', solution_id)
-                       from js_queue
-                       where not is_checked").ConfigureAwait(false);
+                       from {PgSchema.js_queue}
+                       where status = @Status", new {Status = CheckStatus.InQueue}).ConfigureAwait(false);
 
             foreach (var task in checkTasks)
             {
@@ -48,7 +60,8 @@ namespace JsJob
             {
                 var testCase = testCases[i];
 
-                var testRunResult = jsRunner.Execute(solutionSource, testCase.Input);
+                var argumentArray = testCase.Input.Split().Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+                var testRunResult = jsRunner.Execute(solutionSource, argumentArray);
 
                 if (testRunResult.IsSuccess)
                 {
@@ -69,18 +82,39 @@ namespace JsJob
                 }
             }
 
-            using var conn = new NpgsqlConnection(ConnectionString);
+            await MarkFinished(taskId, solutionId, passedCount, testCases.Length, firstFailedNumber, firstFailedError).ConfigureAwait(false);
+        }
+
+        private async Task MarkFinished(
+            Guid taskId,
+            Guid solutionId,
+            int passedCount,
+            int allCount,
+            int failedNumber,
+            string failedStacktrace)
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
             await conn.ExecuteAsync(
                 $@"insert into {PgSchema.js_check_result} (solution_id, passed, all_count, failed_number, stacktrace)
-                       values (@SolutionId, @Passed, @All, @FailedNumber, @Stacktrace)",
+                       values (@SolutionId, @Passed, @All, @FailedNumber, @Stacktrace)
+                       on conflict (solution_id) do update set passed = @Passed,
+                                                               all_count = @All,
+                                                               failed_number = @FailedNumber,
+                                                               stacktrace = @Stacktrace",
                 new
                 {
                     solutionId,
                     passed = passedCount,
-                    all = testCases.Length,
-                    failedNumber = firstFailedNumber != -1 ? (int?) firstFailedNumber : null,
-                    stacktrace = firstFailedNumber != -1 ? firstFailedError : null
+                    all = allCount,
+                    failedNumber = failedNumber != -1 ? (int?) failedNumber : null,
+                    stacktrace = failedNumber != -1 ? failedStacktrace : null
                 }).ConfigureAwait(false);
+
+            await conn.ExecuteAsync(
+                $@"update {PgSchema.js_queue}
+                       set status = @Status
+                       where task_id = @TaskId
+                         and solution_id = @SolutionId", new {taskId, solutionId, Status = CheckStatus.Finished}).ConfigureAwait(false);
         }
     }
 }

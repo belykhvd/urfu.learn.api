@@ -62,9 +62,11 @@ namespace Core.Controllers
                 return Unauthorized();
 
             var filename = WebUtility.HtmlEncode(file.FileName);
-            var attachmentId = await fileRepo.SaveAttachment(file, filename, authorId);
+            var attachmentId = await fileRepo.SaveAttachment(file, filename, authorId).ConfigureAwait(true);
 
             await taskService.RegisterAttachment(taskId, authorId, attachmentId, AttachmentType.Solution).ConfigureAwait(true);
+
+            await taskService.EnqueueSolution(taskId, attachmentId).ConfigureAwait(true);
 
             return attachmentId;
         }

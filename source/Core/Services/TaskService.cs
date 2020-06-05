@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Contracts.Services;
+using Contracts.Types.CheckSystem;
 using Contracts.Types.Course;
 using Contracts.Types.Media;
 using Contracts.Types.Task;
@@ -145,6 +146,20 @@ namespace Core.Services
                     authorId,
                     attachmentId,
                     type
+                }).ConfigureAwait(false);
+        }
+
+        public async Task EnqueueSolution(Guid taskId, Guid solutionId)
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            await conn.ExecuteAsync(
+                $@"insert into {PgSchema.js_queue} (task_id, solution_id, status)
+                       values (@TaskId, @SolutionId, @Status)",
+                new
+                {
+                    taskId,
+                    solutionId,
+                    Status = CheckStatus.InQueue
                 }).ConfigureAwait(false);
         }
 

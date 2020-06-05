@@ -15,6 +15,7 @@ namespace Contracts.Services
         Task<Attachment> GetSolutionLink(Guid taskId, Guid authorId);
         Task RegisterAttachment(Guid taskId, Guid authorId, Guid attachmentId, AttachmentType type);
 
+        Task EnqueueSolution(Guid taskId, Guid solutionId);
         Task<TestResults> GetTestResults(Guid solutionId);
     }
 }

@@ -15,9 +15,6 @@ drop table if exists group_index;
 drop table if exists file_index;
 drop table if exists invite;
 drop table if exists attachment;
-drop table if exists js_test;
-drop table if exists js_check_result;
-drop table if exists js_queue;
 
 create table if not exists auth
 (
@@ -129,7 +126,7 @@ create table if not exists js_test
 
 create table if not exists js_check_result
 (
-	solution_id uuid not null,
+	solution_id uuid primary key,
 	passed int not null,
 	all_count int not null,
 	failed_number int,
@@ -137,9 +134,13 @@ create table if not exists js_check_result
 );
 
 create table if not exists js_queue
-(
+(	
     task_id uuid not null,
-	solution_id uuid not null,
-	is_checked bool not null default false
-);
+    solution_id uuid not null,
+	status int not null default 0
+);	
+
+drop table if exists js_test;
+drop table if exists js_check_result;
+drop table if exists js_queue;
 
