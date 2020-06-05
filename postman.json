@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "e2f17528-6552-4589-88b2-759f4a3a9135",
-		"name": "urfu.learn.api",
+		"_postman_id": "09cdd4b8-e1be-4288-83e8-65b85ce201ae",
+		"name": "urfu.learn.api copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -214,7 +214,7 @@
 										{
 											"key": "file",
 											"type": "file",
-											"src": "/C:/Users/Светлана/Downloads/multipart.html"
+											"src": "/C:/Users/admin/Desktop/sol.js"
 										}
 									]
 								},
@@ -937,7 +937,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/task/testResults?solutionId",
+							"raw": "http://localhost:8080/task/getTestResults?solutionId=9843ad0c-4b54-463e-a767-209af844cca6",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -945,12 +945,12 @@
 							"port": "8080",
 							"path": [
 								"task",
-								"testResults"
+								"getTestResults"
 							],
 							"query": [
 								{
 									"key": "solutionId",
-									"value": null
+									"value": "9843ad0c-4b54-463e-a767-209af844cca6"
 								}
 							]
 						}
