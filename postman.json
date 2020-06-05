@@ -927,6 +927,38 @@
 				}
 			],
 			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Проверяющая система",
+			"item": [
+				{
+					"name": "🔒 Результаты проверки",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/task/testResults?solutionId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"task",
+								"testResults"
+							],
+							"query": [
+								{
+									"key": "solutionId",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
 		}
 	],
 	"protocolProfileBehavior": {}

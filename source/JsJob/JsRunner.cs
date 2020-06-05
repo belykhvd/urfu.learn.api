@@ -7,44 +7,55 @@ namespace JsJob
 {
     public class JsRunner
     {
-        public object Execute(string source, object input = null)
+        public TestRunResult Execute(string source, object input = null)
         {
             try
             {
-                var engine = new Engine(options =>
-                {
-                    options.DiscardGlobal();
-                    options.LimitRecursion(20);
-                    options.TimeoutInterval(TimeSpan.FromSeconds(10));
-                    options.MaxStatements(200);
-                });
+                var engine = CreateEngine();
 
-                return engine
+                var output = engine
                     .SetValue("input", input)
                     .Execute(source)
                     .GetCompletionValue()
                     .ToObject();
+
+                return new TestRunResult
+                {
+                    IsSuccess = true,
+                    Output = output.ToString()
+                };
             }
             catch (ParserException p)
             {
-                return $"Compilation error: {p.Message}";
+                return TestRunResult.Fail($"Compilation error: {p.Message}");
             }
             catch (JavaScriptException js)
             {
-                return $"Runtime error: {js.Message}";
+                return TestRunResult.Fail($"Runtime error: {js.Message}");
             }
             catch (TimeoutException)
             {
-                return "Time limit exceeded";
+                return TestRunResult.Fail("Time limit exceeded");
             }
             catch (RecursionDepthOverflowException)
             {
-                return "Recursion limit exceeded";
+                return TestRunResult.Fail("Recursion limit exceeded");
             }
             catch (StatementsCountOverflowException)
             {
-                return "Statements limit exceeded";
+                return TestRunResult.Fail("Statements limit exceeded");
             }
+        }
+
+        private static Engine CreateEngine()
+        {
+            return new Engine(options =>
+            {
+                options.DiscardGlobal();
+                options.LimitRecursion(20);
+                options.TimeoutInterval(TimeSpan.FromSeconds(10));
+                options.MaxStatements(200);
+            });
         }
     }
 }

@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Contracts.Types.CheckSystem;
 using Contracts.Types.Media;
 using Dapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using Npgsql;
 
-namespace Core.Repo
+namespace Repo
 {
     public class FileRepo : PgRepo
     {
@@ -17,7 +18,7 @@ namespace Core.Repo
 
         public FileRepo(IConfiguration configuration) : base(configuration)
         {
-            rootPath = AppDomain.CurrentDomain.BaseDirectory; //environment.ContentRootPath;
+            rootPath = configuration.GetValue<string>("FileRootPath");
 
             if (!Directory.Exists(rootPath))
                 Directory.CreateDirectory(rootPath);
@@ -90,7 +91,14 @@ namespace Core.Repo
                 return null;
             }
         }
-        
+
+        public async Task<string> ReadSourceCode(Guid fileId)
+        {
+            var stream = StreamFile(fileId);
+            using var streamReader = new StreamReader(stream);
+            return await streamReader.ReadToEndAsync().ConfigureAwait(false);
+        }
+
         public async Task RegisterAttachment(Attachment attachment)
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
@@ -123,8 +131,48 @@ namespace Core.Repo
                 new {Id = attachmentId}).ConfigureAwait(false);
         }
 
+        public async Task<IEnumerable<TestCase>> ReadTests(Guid taskId)
+        {
+            var testPath = BuildTestPath(taskId);
+
+            var testCases = new Dictionary<int, TestCase>();
+
+            var testDirectory = new DirectoryInfo(testPath);
+            foreach (var file in testDirectory.EnumerateFiles())
+            {
+                var splitted = file.Name.Split(".");
+                if (splitted.Length < 2
+                    || !int.TryParse(splitted[0], out var number)
+                    || (splitted[1].ToLower() != "in"
+                    && splitted[1].ToLower() != "out"))
+                {
+                    continue;
+                }
+
+                if (!testCases.TryGetValue(number, out var testCase))
+                {
+                    testCases[number] = new TestCase
+                    {
+                        Number = number
+                    };
+                }
+
+                testCase = testCases[number];
+
+                var fileContent = await File.ReadAllTextAsync(file.FullName).ConfigureAwait(false);
+
+                if (splitted[1].ToLower() == "in")
+                    testCase.Input = fileContent;
+                else
+                    testCase.CorrectOutput = fileContent;
+            }
+
+            return testCases.Values;
+        }
+
         public long GetFileSize(Guid fileId) => new FileInfo(BuildPath(fileId)).Length;
 
         private string BuildPath(Guid fileId) => Path.Combine(rootPath, "files", $"{fileId:N}");
+        private string BuildTestPath(Guid taskId) => Path.Combine(rootPath, "tests", $"{taskId:N}");
     }
 }

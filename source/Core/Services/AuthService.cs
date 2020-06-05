@@ -6,6 +6,7 @@ using Core.Repo;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
+using Repo;
 
 namespace Core.Services
 {

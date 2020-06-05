@@ -3,7 +3,7 @@ using System.Data;
 using Dapper;
 using Newtonsoft.Json;
 
-namespace Core
+namespace Repo
 {
     public class DapperTypeHandler : SqlMapper.ITypeHandler
     {

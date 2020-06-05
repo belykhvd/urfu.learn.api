@@ -4,6 +4,7 @@ using Contracts.Services;
 using Contracts.Types.User;
 using Core.Repo;
 using Microsoft.Extensions.Configuration;
+using Repo;
 
 namespace Core.Services
 {

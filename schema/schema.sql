@@ -14,25 +14,29 @@ drop table if exists "group";
 drop table if exists group_index;
 drop table if exists file_index;
 drop table if exists invite;
+drop table if exists attachment;
+drop table if exists js_test;
+drop table if exists js_check_result;
+drop table if exists js_queue;
 
 create table if not exists auth
 (
-	email text primary key,
-	password_hash bytea not null,
-	user_id uuid not null,
-	role int not null
+    email text primary key,
+    password_hash bytea not null,
+    user_id uuid not null,
+    role int not null
 );
 
 create table if not exists user_profile
 (
-	id uuid primary key,
-	data jsonb not null
+    id uuid primary key,
+    data jsonb not null
 );
 
 create table if not exists user_index
 (
-	id uuid primary key,
-	fio text not null
+    id uuid primary key,
+    fio text not null
 );
 
 create table if not exists course
@@ -107,11 +111,35 @@ create table if not exists invite
 	is_accepted bool not null default false
 );
 
-create table if not exists solution
+create table if not exists attachment
 (
 	task_id uuid not null,
 	author_id uuid not null,
 	attachment_id uuid not null,
+	number int not null,
+	type int not null
+);
+
+create table if not exists js_test
+(
+	task_id uuid not null,
+	name text not null,
 	number int not null
+);
+
+create table if not exists js_check_result
+(
+	solution_id uuid not null,
+	passed int not null,
+	all_count int not null,
+	failed_number int,
+	stacktrace text
+);
+
+create table if not exists js_queue
+(
+    task_id uuid not null,
+	solution_id uuid not null,
+	is_checked bool not null default false
 );
 

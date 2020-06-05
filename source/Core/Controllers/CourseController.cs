@@ -1,24 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.Common;
 using Contracts.Types.Course;
 using Contracts.Types.Course.ViewModel;
-using Contracts.Types.Media;
 using Contracts.Types.Task;
-using Core.Repo;
-using Core.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Primitives;
-using Microsoft.Net.Http.Headers;
-using Newtonsoft.Json;
+using Repo;
 
 namespace Core.Controllers
 {

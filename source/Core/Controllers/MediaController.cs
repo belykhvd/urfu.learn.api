@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Threading.Tasks;
-using Core.Repo;
 using Microsoft.AspNetCore.Mvc;
+using Repo;
 
 namespace Core.Controllers
 {
@@ -12,13 +11,6 @@ namespace Core.Controllers
         private readonly FileRepo fileRepo;
 
         public MediaController(FileRepo fileRepo) => this.fileRepo = fileRepo;
-
-        [HttpGet]
-        [Route("attachment")]
-        public async Task<FileResult> Attachment(Guid fileId)
-        {
-            throw new NotImplementedException();
-        }
 
         [HttpGet]
         [Route("download")]

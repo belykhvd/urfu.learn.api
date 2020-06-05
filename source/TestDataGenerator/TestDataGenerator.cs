@@ -16,6 +16,7 @@ using Core.Services;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
+using Repo;
 
 namespace TestDataGenerator
 {

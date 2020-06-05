@@ -3,13 +3,11 @@ using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.Media;
 using Contracts.Types.Task;
-using Core.Repo;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using System.Net;
-using System.Collections;
-using System.Collections.Generic;
+using Repo;
 
 namespace Core.Controllers
 {
@@ -100,7 +98,7 @@ namespace Core.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IEnumerable<TestResult>> GetTestResults([FromQuery] Guid solutionId)
+        public async Task<TestResults> GetTestResults([FromQuery] Guid solutionId)
             => await taskService.GetTestResults(solutionId).ConfigureAwait(true);
     }
 }

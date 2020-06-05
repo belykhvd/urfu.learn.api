@@ -5,6 +5,7 @@ using Contracts.Types.Common;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
+using Repo;
 
 namespace Core.Repo
 {

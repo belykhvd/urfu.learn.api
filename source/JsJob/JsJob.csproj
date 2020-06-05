@@ -10,6 +10,7 @@
     <PackageReference Include="Dapper" Version="2.0.35" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Jint" Version="2.11.58" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.4" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
     <PackageReference Include="Npgsql" Version="4.1.3.1" />
     <PackageReference Include="NUnit" Version="3.12.0" />
@@ -17,6 +18,17 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Contracts\Contracts.csproj" />
+    <ProjectReference Include="..\Repo\Repo.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Contracts.Services;
@@ -10,6 +9,7 @@ using Core.Repo;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
+using Repo;
 
 namespace Core.Services
 {
@@ -169,17 +169,18 @@ namespace Core.Services
             await conn.ExecuteAsync(@$"delete from {PgSchema.task_index} where id = @Id", new {id}).ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<TestResult>> GetTestResults(Guid solutionId)
+        public async Task<TestResults> GetTestResults(Guid solutionId)
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
-            return await conn.QueryAsync<TestResult>(
+            return await conn.QuerySingleOrDefaultAsync<TestResults>(
                 $@"select json_build_object(
-                         'number', test_number,
-                         'is_passed', is_passed,
-                         'error_message', error_message)
-                       from {PgSchema.js_check}
+                         'passed', passed,
+                         'all', all_count,
+                         'failedNumber', failed_number,
+                         'stacktrace', stacktrace)
+                       from {PgSchema.js_check_result}
                        where solution_id = @SolutionId
-                       order by test_number", new {solutionId}).ConfigureAwait(false);
+                       limit 1", new {solutionId}).ConfigureAwait(false);
         }
     }
 }
