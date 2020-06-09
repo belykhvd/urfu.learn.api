@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 
@@ -25,6 +26,8 @@ namespace EmailService
 
             var emailSender = new EmailSender(settings);
             var mailJob = new MailJob(configuration, emailSender);
+
+            Console.WriteLine("Starting job...");
 
             mailJob.Run(CancellationToken.None).GetAwaiter().GetResult();
         }

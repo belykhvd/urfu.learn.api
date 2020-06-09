@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 using Repo;
@@ -30,12 +31,16 @@ namespace EmailService
 
         private async Task Next()
         {
-            await using var conn = new NpgsqlConnection(ConnectionString);
-            var (secret, email) = await conn.QuerySingleOrDefaultAsync<(Guid Secret, string Email)>(
-                $@"select secret, email
+            (Guid secret, string email) = (Guid.Empty, null);
+
+            await using (var conn = new NpgsqlConnection(ConnectionString))
+            {
+                (secret, email) = await conn.QuerySingleOrDefaultAsync<(Guid Secret, string Email)>(
+                    $@"select secret, email
                        from {PgSchema.invite}
                        where not is_sent
                        limit 1").ConfigureAwait(false);
+            };
 
             if (email == null)
                 return;
@@ -44,6 +49,12 @@ namespace EmailService
 
             var inviteUrl = $"http://localhost:8080/acceptInvite?secret={secret}";
             await emailSender.SendInvite(email, inviteUrl).ConfigureAwait(false);
+
+            await using var conn2 = new NpgsqlConnection(ConnectionString);
+            await conn2.ExecuteAsync(
+                $@"update {PgSchema.invite}
+                      set is_sent = true
+                      where secret = @Secret", new {secret}).ConfigureAwait(false);
         }
     }
 }
