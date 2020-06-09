@@ -1,0 +1,1 @@
+start /d "build/core/netcoreapp3.1" Core.exe
