@@ -64,11 +64,30 @@ namespace Core.Services
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
             return await conn.QueryAsync<GroupInviteItem>(
-                $@"select gr.data as group,
-                          jsonb_agg(jsonb_build_object('email', inv.email, 'is_accepted', inv.is_accepted)) as invites
+                $@"select jsonb_build_object(
+                             'group', gr.data,
+                             'invites', jsonb_agg(jsonb_build_object('email', inv.email, 'is_accepted', inv.is_accepted))
+                           )
                        from {PgSchema.invite} inv
                        left join ""group"" gr
                          on inv.group_id = gr.id
+                       group by group_id, data").ConfigureAwait(false);
+        }
+
+        public async Task<IEnumerable<GroupItem>> GetStudentList()
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            return await conn.QueryAsync<GroupItem>(
+                $@"select jsonb_build_object(
+                             'group', gr.data,
+                             'students', jsonb_agg(jsonb_build_object('userId', inv.student_id, 'fio', ui.fio))
+                           )
+                       from {PgSchema.invite} inv
+                       left join ""group"" gr
+                         on inv.group_id = gr.id
+                       left join user_index ui
+                         on inv.student_id = ui.id
+                       where is_accepted
                        group by group_id, data").ConfigureAwait(false);
         }
 

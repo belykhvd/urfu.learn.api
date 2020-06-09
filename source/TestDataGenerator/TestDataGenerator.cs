@@ -26,6 +26,7 @@ namespace TestDataGenerator
         private readonly IAuthService authService;
         private readonly ICourseService courseService;
         private readonly ITaskService taskService;
+        private readonly IGroupService groupService;
         private readonly FileRepo fileRepo;
 
         public TestDataGenerator()

@@ -1,12 +1,32 @@
-﻿using System;
+﻿using System.Threading;
+using Dapper;
+using Microsoft.Extensions.Configuration;
 
-namespace MailJob
+namespace EmailService
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            DefaultTypeMap.MatchNamesWithUnderscores = true;
+
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            var settings = new Settings
+            {
+                Server = configuration.GetValue<string>("Server"),
+                Port = configuration.GetValue<int>("Port"),
+                Email = configuration.GetValue<string>("Email"),
+                Password = configuration.GetValue<string>("Password"),
+                Sender = configuration.GetValue<string>("Sender")
+            };
+
+            var emailSender = new EmailSender(settings);
+            var mailJob = new MailJob(configuration, emailSender);
+
+            mailJob.Run(CancellationToken.None).GetAwaiter().GetResult();
         }
     }
 }

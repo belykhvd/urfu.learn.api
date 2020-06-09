@@ -10,13 +10,11 @@ namespace Contracts.Types.Group
         [Required]
         public string Name { get; set; }
 
-        [Required]
         public string OfficialName { get; set; }
 
         [Required]
         public int Year { get; set; }
 
-        [Required]
         public int Semester { get; set; }
     }
 }

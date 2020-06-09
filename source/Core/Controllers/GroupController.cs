@@ -23,7 +23,7 @@ namespace Core.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<Guid>> Save([FromBody] Group group)
+        public async Task<ActionResult<Guid>> Save([FromBody][Required] Group group)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState.Values);
@@ -96,6 +96,13 @@ namespace Core.Controllers
         public async Task<IEnumerable<GroupInviteItem>> GetInviteList()
         {
             return await groupService.GetInviteList().ConfigureAwait(true);
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IEnumerable<GroupItem>> GetStudentList()
+        {
+            return await groupService.GetStudentList().ConfigureAwait(true);
         }
     }
 }

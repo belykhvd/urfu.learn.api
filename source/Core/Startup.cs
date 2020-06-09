@@ -3,13 +3,6 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.Auth;
-using Contracts.Types.Common;
-using Contracts.Types.Course;
-using Contracts.Types.Group;
-using Contracts.Types.Group.ViewModel;
-using Contracts.Types.Media;
-using Contracts.Types.Task;
-using Contracts.Types.User;
 using Core.JsonConverters;
 using Core.Repo;
 using Core.Services;
@@ -17,14 +10,29 @@ using Dapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Repo;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace Core
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; set; }
+        
+        public Startup(IHostingEnvironment env)
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddEnvironmentVariables();
+
+            Configuration = builder.Build();
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors(options => options.AddDefaultPolicy(builder =>
@@ -65,36 +73,13 @@ namespace Core
             services.AddSingleton<FileRepo>();
 
             DefaultTypeMap.MatchNamesWithUnderscores = true;
-            
-            var dbStorableTypes = new[]
+
+            var contractsAssembly = Assembly.GetAssembly(typeof(AuthData));
+            foreach (var type in contractsAssembly.DefinedTypes)
             {
-                typeof(AuthResult),
-
-                typeof(Profile),
-                typeof(Group),
-
-                typeof(Course),
-                typeof(CourseIndex),
-
-                typeof(CourseTask),
-                typeof(Requirement),
-                typeof(Requirement[]),
-                typeof(RequirementStatus),
-                typeof(RequirementStatus[]),
-                typeof(TaskProgress),
-
-                typeof(Attachment),
-
-                typeof(Link),
-                typeof(Link[]),
-
-                typeof(GroupInviteItem)
-            };
-
-            var assemblyTypes = Assembly.GetExecutingAssembly().GetTypes();
-
-            foreach (var type in dbStorableTypes)
-                SqlMapper.AddTypeHandler(type, new DapperTypeHandler());
+                if (type.IsClass && !type.ContainsGenericParameters)
+                    SqlMapper.AddTypeHandler(type.AsType(), new DapperTypeHandler());
+            }
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

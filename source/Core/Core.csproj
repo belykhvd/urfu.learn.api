@@ -32,4 +32,16 @@
       <_ContentIncludedByDefault Remove="Views\Solution\Index.cshtml" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Update="appsettings.Debug.json">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+    </ItemGroup>
+
+    <PropertyGroup>
+        <AppConfig>appsettings.$(Configuration).json</AppConfig>
+    </PropertyGroup>
+
 </Project>
