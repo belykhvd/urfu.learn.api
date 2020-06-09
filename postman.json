@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "09cdd4b8-e1be-4288-83e8-65b85ce201ae",
-		"name": "urfu.learn.api copy",
+		"name": "urfu.learn.api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -741,68 +741,13 @@
 			"name": "Группы",
 			"item": [
 				{
-					"name": "Студенты группы",
-					"item": [
-						{
-							"name": "★🔒 Пригласить студента в группу",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"url": {
-									"raw": ""
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "★🔒 Удалить студента из группы",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"url": {
-									"raw": ""
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "★🔒 Список студентов группы (активация email)",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "http://localhost:8080/group/getStudentList?groupId=e67c0ea36171425e8f86a19a902f678b",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8080",
-									"path": [
-										"group",
-										"getStudentList"
-									],
-									"query": [
-										{
-											"key": "groupId",
-											"value": "e67c0ea36171425e8f86a19a902f678b"
-										}
-									]
-								}
-							},
-							"response": []
-						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
-				},
-				{
 					"name": "★🔒 Создать",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"Name\": \"КН-402\",\r\n    \"OfficialName\": \"МЕН-460207\",\r\n    \"Year\": 2020,\r\n    \"Semester\": 8\r\n}",
+							"raw": "{\r\n\t\"name\": \"КН-402\",\r\n    \"officialName\": \"МЕН-460207\",\r\n    \"year\": 2020,\r\n    \"semester\": 8\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -951,6 +896,108 @@
 								{
 									"key": "solutionId",
 									"value": "9843ad0c-4b54-463e-a767-209af844cca6"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Студенты",
+			"item": [
+				{
+					"name": "🔒 Список студентов по группам",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/group/getStudentList",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"group",
+								"getStudentList"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "★🔒 Список инвайтов",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/group/getInviteList",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"group",
+								"getInviteList"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "★🔒 Отправить инвайт",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/group/inviteStudent?groupId=cc03cea09b094b31835c682c598387ba&email=wolf@urfu.ru",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"group",
+								"inviteStudent"
+							],
+							"query": [
+								{
+									"key": "groupId",
+									"value": "cc03cea09b094b31835c682c598387ba"
+								},
+								{
+									"key": "email",
+									"value": "wolf@urfu.ru"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "🔒 Принять инвайт",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/group/acceptInvite?secret=b4150d1dce75438da6fe3cd169cbb817",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"group",
+								"acceptInvite"
+							],
+							"query": [
+								{
+									"key": "secret",
+									"value": "b4150d1dce75438da6fe3cd169cbb817"
 								}
 							]
 						}
