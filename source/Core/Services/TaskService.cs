@@ -30,6 +30,12 @@ namespace Core.Services
 
             task.Input = null;
 
+            foreach (var requirement in task.RequirementList)
+            {
+                if (requirement.Id == Guid.Empty)
+                    requirement.Id = Guid.NewGuid();
+            }
+
             await using var conn = new NpgsqlConnection(ConnectionString);
             await conn.ExecuteAsync(
                 @$"insert into {PgSchema.task} (id, data)

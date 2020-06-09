@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.Group;
+using Contracts.Types.Group.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -59,39 +61,41 @@ namespace Core.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IEnumerable<GroupStudent>> GetStudents([FromQuery] Guid groupId)
+        public async Task<IEnumerable<StudentInvite>> GetStudents([FromQuery] Guid groupId)
             => await groupService.GetStudents(groupId).ConfigureAwait(false);
 
 
-
-
-        [HttpGet][Route("studentlist")]
-        public async Task<IEnumerable<StudentList>> GetStudentList([FromQuery] int year, [FromQuery] int semester)
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> InviteStudent([FromQuery] Guid groupId, [FromQuery][EmailAddress] string email)
         {
-            return await groupService.GetStudentList(year, semester).ConfigureAwait(false);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState.Values);
+
+            await groupService.InviteStudent(groupId, email).ConfigureAwait(true);
+
+            return Ok();
         }
 
-
-        #region MEMBERSHIP
-
-        [HttpGet][Route("{groupId}/listMembers")]
-        public async Task<IActionResult> ListMembers([FromQuery] int year, [FromQuery] int semester, [FromRoute] Guid groupId)
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> AcceptInvite([FromQuery] Guid secret)
         {
-            return (await groupService.ListMembers(year, semester, groupId).ConfigureAwait(false)).ActionResult();
+            if (HttpContext.User.Identity.Name == null || !Guid.TryParse(HttpContext.User.Identity.Name, out var userId))
+                return Unauthorized();
+
+            var success = await groupService.AcceptInvite(secret, userId).ConfigureAwait(true);
+            if (!success)
+                return Unauthorized();
+
+            return Ok();
         }
 
-        [HttpPost][Route("{groupId}/include")]
-        public async Task<IActionResult> Include([FromQuery] int year, [FromQuery] int semester, [FromRoute] Guid groupId, [FromQuery] Guid userId)
+        [HttpGet]
+        [Authorize]
+        public async Task<IEnumerable<GroupInviteItem>> GetInviteList()
         {
-            return (await groupService.Include(year, semester, groupId, userId).ConfigureAwait(false)).ActionResult();
+            return await groupService.GetInviteList().ConfigureAwait(true);
         }
-
-        [HttpPost][Route("{groupId}/exclude")]
-        public async Task<IActionResult> Exclude([FromQuery] int year, [FromQuery] int semester, [FromRoute] Guid groupId, [FromQuery] Guid userId)
-        {
-            return (await groupService.Exclude(year, semester, groupId, userId).ConfigureAwait(false)).ActionResult();
-        }
-
-        #endregion
     }
 }

@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestDataGenerator", "TestDa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repo", "Repo\Repo.csproj", "{1BF29DD2-B558-4C4F-BD78-2EDC7C6B8D09}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailService", "EmailService\EmailService.csproj", "{BABAFE20-903E-415D-8C70-9F7C3FBDA037}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{1BF29DD2-B558-4C4F-BD78-2EDC7C6B8D09}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1BF29DD2-B558-4C4F-BD78-2EDC7C6B8D09}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1BF29DD2-B558-4C4F-BD78-2EDC7C6B8D09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BABAFE20-903E-415D-8C70-9F7C3FBDA037}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BABAFE20-903E-415D-8C70-9F7C3FBDA037}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BABAFE20-903E-415D-8C70-9F7C3FBDA037}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BABAFE20-903E-415D-8C70-9F7C3FBDA037}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

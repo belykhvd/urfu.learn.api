@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.Common;
 using Contracts.Types.Group;
+using Contracts.Types.Group.ViewModel;
 using Core.Repo;
 using Dapper;
 using Microsoft.Extensions.Configuration;
@@ -15,7 +16,61 @@ namespace Core.Services
 {
     public class GroupService : Repo<Group>, IGroupService
     {
+        /* create table if not exists invite
+           (
+               secret uuid primary key,
+               group_id uuid not null,
+               email text not null,
+               is_sent bool not null default false,
+               is_accepted bool not null default false,
+               student_id uuid
+           );                                          */
+
         public GroupService(IConfiguration config) : base(config, PgSchema.group){}
+
+        // TODO: update on conflict (group_id, email) when is_accepted = false
+        public async Task InviteStudent(Guid groupId, string email)
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            await conn.ExecuteAsync(
+                $@"insert into {PgSchema.invite} (secret, group_id, email)
+                       values (@Secret, @GroupId, @Email)",
+                new
+                {
+                    Secret = Guid.NewGuid(),
+                    groupId,
+                    email
+                }).ConfigureAwait(false);
+        }
+
+        public async Task<bool> AcceptInvite(Guid secret, Guid studentId)
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            return await conn.QuerySingleOrDefaultAsync<bool>(
+                $@"update {PgSchema.invite}
+                       set is_accepted = true,
+                           student_id = @StudentId
+                       where secret = @Secret
+                         and email = (select email from auth where user_id = @StudentId limit 1)
+                       returning true",
+                new
+                {
+                    secret,
+                    studentId
+                }).ConfigureAwait(false);
+        }
+
+        public async Task<IEnumerable<GroupInviteItem>> GetInviteList()
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            return await conn.QueryAsync<GroupInviteItem>(
+                $@"select gr.data as group,
+                          jsonb_agg(jsonb_build_object('email', inv.email, 'is_accepted', inv.is_accepted)) as invites
+                       from {PgSchema.invite} inv
+                       left join ""group"" gr
+                         on inv.group_id = gr.id
+                       group by group_id, data").ConfigureAwait(false);
+        }
 
         public async Task<IEnumerable<StudentList>> GetStudentList(int year, int semester)
         {
@@ -100,7 +155,7 @@ namespace Core.Services
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<GroupStudent>> GetStudents(Guid groupId)
+        public async Task<IEnumerable<StudentInvite>> GetStudents(Guid groupId)
         {
             throw new NotImplementedException();
         }

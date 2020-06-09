@@ -1,8 +1,12 @@
+using System.Net;
+using System.Reflection;
+using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.Auth;
 using Contracts.Types.Common;
 using Contracts.Types.Course;
 using Contracts.Types.Group;
+using Contracts.Types.Group.ViewModel;
 using Contracts.Types.Media;
 using Contracts.Types.Task;
 using Contracts.Types.User;
@@ -32,16 +36,23 @@ namespace Core
             }));
 
             services.AddMvc();
-            services
-                .AddControllers()
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.Converters.Add(new GuidJsonConverter());
-                    options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
-                });
+            services.AddControllers()
+                    .AddJsonOptions(options =>
+                    {
+                        options.JsonSerializerOptions.Converters.Add(new GuidJsonConverter());
+                        options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
+                    });
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                    .AddCookie();
+                    .AddCookie(options =>
+                    {
+                        options.Events.OnRedirectToLogin = ctx =>
+                        {
+                            ctx.Response.StatusCode = (int) HttpStatusCode.Unauthorized;
+                            return Task.CompletedTask;
+                        };
+                    });
+
             services.AddAuthorization();
 
             services.AddSingleton<IAuthService, AuthService>();
@@ -49,7 +60,6 @@ namespace Core
             services.AddSingleton<IGroupService, GroupService>();
             services.AddSingleton<ICourseService, CourseService>();
             services.AddSingleton<ITaskService, TaskService>();
-            services.AddSingleton<EmailService>();
 
             services.AddSingleton<ProfileRepo>();
             services.AddSingleton<FileRepo>();
@@ -76,8 +86,12 @@ namespace Core
                 typeof(Attachment),
 
                 typeof(Link),
-                typeof(Link[])
+                typeof(Link[]),
+
+                typeof(GroupInviteItem)
             };
+
+            var assemblyTypes = Assembly.GetExecutingAssembly().GetTypes();
 
             foreach (var type in dbStorableTypes)
                 SqlMapper.AddTypeHandler(type, new DapperTypeHandler());

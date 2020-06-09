@@ -138,10 +138,10 @@ namespace TestDataGenerator
         private static Course MakeCourse(string name, int maxScore, DateTime? deadline = null) => new Course
         {
             Name = $"❦ {name} ❦",
-            MaxScore = maxScore,
-            Deadline = deadline
+            DescriptionText = "Здесь могла быть ваша реклама",
+            MaxScore = maxScore
         };
-        
+
         private static CourseTask MakeTask(string namePrefix, int maxScore) => new CourseTask
         {
             Name = $"💐 {namePrefix} task",

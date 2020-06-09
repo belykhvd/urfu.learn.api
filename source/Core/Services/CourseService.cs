@@ -92,9 +92,10 @@ namespace Core.Services
         protected override async Task SaveIndex(NpgsqlConnection conn, Guid id, Course data)
         {
             await conn.ExecuteAsync(
-                @$"insert into {PgSchema.course_index} (id, name)
-                       values (@Id, @Name)
-                       on conflict (id) do update set name = @Name", new {id, data.Name}).ConfigureAwait(false);
+                @$"insert into {PgSchema.course_index} (id, name, max_score)
+                       values (@Id, @Name, @MaxScore)
+                       on conflict (id) do update set name = @Name,
+                                                      max_score = @MaxScore", new {id, data.Name, data.MaxScore}).ConfigureAwait(false);
         }
 
         protected override async Task DeleteIndex(NpgsqlConnection conn, Guid id)

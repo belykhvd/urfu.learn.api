@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Contracts.Types.Course;
 using Contracts.Types.CourseTask;
 using Contracts.Types.Media;
@@ -8,6 +9,8 @@ namespace Contracts.Types.Task
     public class CourseTask
     {
         public Guid Id { get; set; }
+
+        [Required]
         public string Name { get; set; }
         public string DescriptionText { get; set; }
         public DateTime? Deadline { get; set; }

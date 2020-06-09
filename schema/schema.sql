@@ -13,7 +13,6 @@ drop table if exists task_progress;
 drop table if exists "group";
 drop table if exists group_index;
 drop table if exists file_index;
-drop table if exists invite;
 drop table if exists attachment;
 
 create table if not exists auth
@@ -100,12 +99,15 @@ create table if not exists file_index
 	author uuid not null
 );
 
+drop table if exists invite;
 create table if not exists invite
 (
 	secret uuid primary key,
 	group_id uuid not null,
-	user_id uuid not null,
-	is_accepted bool not null default false
+	email text not null,
+	is_sent bool not null default false,
+	is_accepted bool not null default false,
+	student_id uuid
 );
 
 create table if not exists attachment
