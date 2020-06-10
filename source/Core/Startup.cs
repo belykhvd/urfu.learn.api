@@ -3,6 +3,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.Auth;
+using Contracts.Types.Course;
+using Contracts.Types.Task;
 using Core.JsonConverters;
 using Core.Repo;
 using Core.Services;
@@ -80,6 +82,15 @@ namespace Core
                 if (type.IsClass && !type.ContainsGenericParameters)
                     SqlMapper.AddTypeHandler(type.AsType(), new DapperTypeHandler());
             }
+
+            var arrayTypes = new[]
+            {
+                typeof(Requirement[]),
+                typeof(RequirementStatus[])
+            };
+            
+            foreach (var type in arrayTypes)
+                SqlMapper.AddTypeHandler(type, new DapperTypeHandler());
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
