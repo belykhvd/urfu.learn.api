@@ -99,7 +99,6 @@ namespace Core.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IEnumerable<GroupItem>> GetStudentList()
         {
             return await groupService.GetStudentList().ConfigureAwait(true);

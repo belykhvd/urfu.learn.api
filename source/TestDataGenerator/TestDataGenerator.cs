@@ -7,6 +7,7 @@ using Contracts.Types.Auth;
 using Contracts.Types.Common;
 using Contracts.Types.Course;
 using Contracts.Types.Group;
+using Contracts.Types.Group.ViewModel;
 using Contracts.Types.Media;
 using Contracts.Types.Task;
 using Contracts.Types.User;
@@ -14,6 +15,7 @@ using Core;
 using Core.Repo;
 using Core.Services;
 using Dapper;
+using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 using Repo;
@@ -67,6 +69,7 @@ namespace TestDataGenerator
             fileRepo = new FileRepo(config);
             taskService = new TaskService(config, fileRepo);
             courseService = new CourseService(config, taskService, fileRepo);
+            groupService = new GroupService(config);
         }
 
         [Test]
@@ -134,6 +137,22 @@ namespace TestDataGenerator
                         await taskService.RegisterAttachment(taskId, userId, Guid.Empty, AttachmentType.Solution).ConfigureAwait(false);
                 }
             }
+
+            var groups = new[]
+            {
+                MakeGroup("КН-401"),
+                MakeGroup("КН-402"),
+                MakeGroup("КН-403")
+            };
+
+            (await groupService.GetInviteList().ConfigureAwait(false)).Should().BeEquivalentTo();
+            (await groupService.GetStudentList().ConfigureAwait(false)).Should().BeEquivalentTo();
+            
+            foreach (var group in groups)
+            {
+                await groupService.Save(group.Id, group).ConfigureAwait(false);
+                (await groupService.Get(group.Id).ConfigureAwait(false)).Should().BeEquivalentTo(group);
+            }
         }
 
         private static Course MakeCourse(string name, int maxScore, DateTime? deadline = null) => new Course
@@ -173,5 +192,12 @@ namespace TestDataGenerator
                 Role = role
             };
         }
+
+        private static Group MakeGroup(string name) => new Group
+        {
+            Id = Guid.NewGuid(),
+            Name = name,
+            Year = 2020
+        };
     }
 }

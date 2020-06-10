@@ -119,12 +119,12 @@ namespace Core.Services
             await using var conn = new NpgsqlConnection(ConnectionString);
             return await conn.QuerySingleOrDefaultAsync<Attachment>(
                 $@"select json_build_object(
-		                    'id', fi.id,
-		                    'name', fi.name,
-		                    'size', fi.size,
-		                    'timestamp', fi.timestamp,
-		                    'author', fi.author)
-	                   from {PgSchema.attachment} sol
+                            'id', fi.id,
+                            'name', fi.name,
+                            'size', fi.size,
+                            'timestamp', fi.timestamp,
+                            'author', fi.author)
+                       from {PgSchema.attachment} sol
                        left join {PgSchema.file_index} fi
                          on sol.attachment_id = fi.id
                        where sol.task_id = @TaskId
@@ -138,12 +138,13 @@ namespace Core.Services
             await using var conn = new NpgsqlConnection(ConnectionString);
             await conn.ExecuteAsync(
                 $@"insert into {PgSchema.attachment} (task_id, author_id, attachment_id, number, type)
-	                   values (@TaskId, @AuthorId, @AttachmentId,
-		                    coalesce((select number
-	                                      from {PgSchema.attachment}
-	                                      where task_id = @TaskId
-	                                        and author_id = @AuthorId
-	                                      limit 1), 0) + 1,
+                       values (@TaskId, @AuthorId, @AttachmentId,
+                            coalesce((select number
+                                          from {PgSchema.attachment}
+                                          where task_id = @TaskId
+                                            and author_id = @AuthorId
+                                          order by number desc
+                                          limit 1), 0) + 1,
                             @Type
                        )",
                 new
