@@ -28,6 +28,22 @@ namespace Core.Services
 
         public GroupService(IConfiguration config) : base(config, PgSchema.group){}
 
+        public async Task GrantAccess(Guid groupId, Guid[] courseIds)
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            foreach (var courseId in courseIds)
+            {
+                await conn.ExecuteAsync(
+                    $@"insert into {PgSchema.course_access} (group_id, course_id)
+                           values (@GroupId, @CourseId)",
+                    new
+                    {
+                        groupId,
+                        courseId
+                    }).ConfigureAwait(false);
+            }
+        }
+
         // TODO: update on conflict (group_id, email) when is_accepted = false
         public async Task InviteStudent(Guid groupId, string email)
         {
@@ -77,18 +93,29 @@ namespace Core.Services
         public async Task<IEnumerable<GroupItem>> GetStudentList()
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
-            return await conn.QueryAsync<GroupItem>(
-                $@"select jsonb_build_object(
-                             'group', gr.data,
-                             'students', jsonb_agg(jsonb_build_object('userId', inv.student_id, 'fio', ui.fio))
-                           )
-                       from {PgSchema.invite} inv
+            var groupItems = await conn.QueryAsync<GroupItem>(
+                $@"select gr.data || jsonb_build_object('studentList', jsonb_agg(
+            case when inv.student_id is not null then jsonb_build_object('userId', inv.student_id, 'studentName', ui.fio)
+              else null end
+            )       
+                )
+                       from group_index gi
                        left join ""group"" gr
-                         on inv.group_id = gr.id
-                       left join user_index ui
-                         on inv.student_id = ui.id
-                       where is_accepted
-                       group by group_id, data").ConfigureAwait(false);
+            on gi.id = gr.id
+            left join invite inv
+            on gi.id = inv.group_id
+            left join user_index ui
+            on inv.student_id = ui.id
+            where is_accepted
+            or inv.group_id is null
+            group by group_id, data").ConfigureAwait(false);
+
+            foreach (var item in groupItems)
+            {
+                item.StudentList = item.StudentList.Where(x => x != null).ToArray();
+            }
+
+            return groupItems;
         }
 
         public async Task<IEnumerable<StudentList>> GetStudentList(int year, int semester)

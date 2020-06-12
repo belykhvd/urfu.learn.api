@@ -16,13 +16,46 @@ namespace Core.Services
     public class CourseService : Repo<Course>, ICourseService
     {
         private readonly ITaskService taskService;
-        private readonly FileRepo fileRepo;
 
-        public CourseService(IConfiguration config, ITaskService taskService, FileRepo fileRepo) 
+        public CourseService(IConfiguration config, ITaskService taskService) 
              : base(config, PgSchema.course)
         {
             this.taskService = taskService;
-            this.fileRepo = fileRepo;
+        }
+
+        public new async Task<Guid> Save(Course course)
+        {
+            if (course.Id == Guid.Empty)
+                course.Id = Guid.NewGuid();
+
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            await conn.ExecuteAsync(
+                @$"insert into {PgSchema.course} (id, data)
+                       values (@Id, @Data::jsonb)
+                       on conflict (id) do update set data = @Data::jsonb", new {course.Id, Data = course}).ConfigureAwait(false);
+
+            await SaveIndex(conn, course.Id, course).ConfigureAwait(false);
+
+            return course.Id;
+        }
+
+        public async Task<IEnumerable<Course>> Select(Guid? userId)
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+
+            if (userId != null)
+            {
+                return await conn.QueryAsync<Course>(
+                    $@"select data
+                       from {PgSchema.course}
+                       where id =any (select distinct course_id
+                                          from {PgSchema.course_access}
+                                          where group_id =any (select group_id
+                                                                   from {PgSchema.invite}
+                                                                   where student_id = @UserId))", new{userId}).ConfigureAwait(false);
+            }
+
+            return await conn.QueryAsync<Course>($@"select data from {PgSchema.course}").ConfigureAwait(false);
         }
 
         public async Task<IEnumerable<CourseIndex>> SelectIndexes()
@@ -32,17 +65,23 @@ namespace Core.Services
                 $@"select jsonb_build_object('id', id, 'name', name, 'maxScore', max_score) from {PgSchema.course_index}").ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<TaskProgress>> GetProgress(Guid courseId, Guid userId)
+        public async Task<IEnumerable<TaskProgress>> GetProgress(Guid courseId, Guid? userId)
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
             return await conn.QueryAsync<TaskProgress>(
-                $@"select jsonb_build_object('id', ti.id, 'name', ti.name, 'maxScore', ti.max_score, 'requirements', ti.requirements, 'currentScore', coalesce(tp.score, 0), 'done', tp.done)
+                $@"select jsonb_build_object(
+                            'id', ti.id,
+                            'name', ti.name,
+                            'maxScore', ti.max_score,
+                            'requirements', ti.requirements,
+                            'currentScore', coalesce(tp.score, 0),
+                            'done', tp.done)
                        from {PgSchema.course_tasks} ct
                        join {PgSchema.task_index} ti
                          on ct.task_id = ti.id
                        left join {PgSchema.task_progress} tp
                          on tp.user_id = @UserId
-                        and ti.id = tp.task_id
+                         and ti.id = tp.task_id
                        where ct.course_id = @CourseId", new {courseId, userId}).ConfigureAwait(false);
         }
 

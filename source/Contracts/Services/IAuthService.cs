@@ -9,5 +9,6 @@ namespace Contracts.Services
         Task<AuthResult> SignUp(RegistrationData registrationData);
         Task<AuthResult> Authorize(AuthData authData);
         Task<bool> ChangePassword(Guid userId, PasswordData passwordData);
+        //Task<bool> HasAccess(Guid userId, )
     }
 }

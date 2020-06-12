@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using System.Net;
+using Contracts.Types.Auth;
 using Repo;
 
 namespace Core.Controllers
@@ -23,7 +24,7 @@ namespace Core.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = nameof(UserRole.Admin))]
         public async Task<Guid> Save([FromBody] CourseTask course)
             => await taskService.Save(course).ConfigureAwait(false);
 
@@ -42,23 +43,21 @@ namespace Core.Controllers
         [Authorize]
         public async Task<Attachment> GetSolutionLink([FromQuery] Guid taskId, [FromQuery] Guid userId)
         {
-            return await taskService.GetSolutionLink(taskId, userId).ConfigureAwait(true);
+            return await taskService.GetSolutionAttachment(taskId, userId).ConfigureAwait(true);
         }
 
         [HttpGet]
         [Authorize]
         public async Task<Attachment> GetInputLink([FromQuery] Guid taskId)
         {
-            return await taskService.GetInputLink(taskId).ConfigureAwait(true);
+            return await taskService.GetInputAttachment(taskId).ConfigureAwait(true);
         }
 
         [HttpPost]
         [Authorize]
-        [RequestSizeLimit(Constants._2GB)]
-        [RequestFormLimits(MultipartBodyLengthLimit = Constants._2GB)]
         public async Task<ActionResult<Guid>> UploadSolution([FromQuery] Guid taskId, [FromForm] IFormFile file)
         {
-            if (HttpContext.User.Identity.Name == null || !Guid.TryParse(HttpContext.User.Identity.Name, out var authorId))
+            if (!Guid.TryParse(HttpContext.User.Identity.Name, out var authorId))
                 return Unauthorized();
 
             var filename = WebUtility.HtmlEncode(file.FileName);
@@ -72,12 +71,12 @@ namespace Core.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = nameof(UserRole.Admin))]
         [RequestSizeLimit(Constants._2GB)]
         [RequestFormLimits(MultipartBodyLengthLimit = Constants._2GB)]
         public async Task<ActionResult<Guid>> UploadInput([FromQuery] Guid taskId, [FromForm] IFormFile file)
         {
-            if (HttpContext.User.Identity.Name == null || !Guid.TryParse(HttpContext.User.Identity.Name, out var authorId))
+            if (!Guid.TryParse(HttpContext.User.Identity.Name, out var authorId))
                 return Unauthorized();
 
             var filename = WebUtility.HtmlEncode(file.FileName);
@@ -93,6 +92,9 @@ namespace Core.Controllers
         public async Task<IActionResult> DownloadAttachment([FromQuery] Guid attachmentId)
         {
             var attachment = await fileRepo.GetAttachment(attachmentId).ConfigureAwait(true);
+            if (attachment == null)
+                return NotFound();
+
             var stream = fileRepo.StreamFile(attachmentId);
 
             return File(stream, "application/octet-stream", attachment.Name);

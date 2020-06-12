@@ -55,7 +55,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"JavaScript\",\n\t\"description\": \"Основы ESMAScript 5.1\",\n\t\"maxScore\": 50,\n\t\"deadline\": \"03.06.2020\"\n}",
+							"raw": "{\n\t\"name\": \"JavaScript\",\n\t\"descriptionText\": \"Основы ECMAScript 5.1\",\n\t\"maxScore\": 50\t\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -337,7 +337,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/course/selecttasks?courseId=881d92b9-bcab-4c13-a07d-25640e0a1d90",
+							"raw": "http://localhost:8080/course/selecttasks?courseId=068d84c48efb4d60950c13327537c7fc",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -350,7 +350,7 @@
 							"query": [
 								{
 									"key": "courseId",
-									"value": "881d92b9-bcab-4c13-a07d-25640e0a1d90"
+									"value": "068d84c48efb4d60950c13327537c7fc"
 								}
 							]
 						}
@@ -372,7 +372,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/course/addtask?courseId=1e9bcea31f9e4506b36166c7db7a4141",
+							"raw": "http://localhost:8080/course/addtask?courseId=b22bfeb8c57d4cec9b4f3dfdc7f407bc",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -385,7 +385,7 @@
 							"query": [
 								{
 									"key": "courseId",
-									"value": "1e9bcea31f9e4506b36166c7db7a4141"
+									"value": "b22bfeb8c57d4cec9b4f3dfdc7f407bc"
 								}
 							]
 						}
@@ -398,7 +398,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/task/get?taskId=20781bfa4ff54080859c66145b5870cb&userId=d44112a0a16b44869a48e4e46de7482d",
+							"raw": "http://localhost:8080/task/get?taskId=3b66a3b739d7416194e3a13b9ce41afe&userId=d44112a0a16b44869a48e4e46de7482d",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -411,7 +411,7 @@
 							"query": [
 								{
 									"key": "taskId",
-									"value": "20781bfa4ff54080859c66145b5870cb"
+									"value": "3b66a3b739d7416194e3a13b9ce41afe"
 								},
 								{
 									"key": "userId",
@@ -429,7 +429,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": \"20781bfa4ff54080859c66145b5870cb\",\r\n    \"name\": \"Стабилизаторы\",\r\n    \"descriptionText\": \"Они самые\",\r\n    \"deadline\": \"03.06.2020\",\r\n    \"maxScore\": 40,\r\n    \"requirementList\": [\r\n        {\r\n            \"id\": \"0e882ddeb1d4402fbe1d4ad639dbb513\",\r\n            \"text\": \"1\",\r\n            \"status\": false\r\n        },\r\n        {\r\n            \"id\": \"821aaa503f304d40b15de74a3be13c1c\",\r\n            \"text\": \"2\",\r\n            \"status\": false\r\n        },\r\n        {\r\n            \"id\": \"91ac072da5ef4824972dfd24da146255\",\r\n            \"text\": \"3\",\r\n            \"status\": false\r\n        },\r\n        {\r\n            \"id\": \"cf321e50f856496ab08f68a1c8a4449c\",\r\n            \"text\": \"5\",\r\n            \"status\": false\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"id\": \"3b66a3b739d7416194e3a13b9ce41afe\",\r\n    \"name\": \"Name\",\r\n    \"descriptionText\": \"DescriptionText\",\r\n    \"deadline\": \"07.07.4000\",    \r\n    \"maxScore\": 1000000,\r\n    \"requirementList\": [\r\n        {\r\n            \"id\": \"10bf46381b314d1ca26f75c1fe0711b1\",\r\n            \"text\": \"☆ R ☆\"            \r\n        },\r\n        {\r\n            \"id\": \"27677989f148461e854c0e8564c5bdb9\",\r\n            \"text\": \"☆ R2 ☆\"            \r\n        },\r\n        {\r\n            \"id\": \"2ae26373655840ca893da544930c1cd2\",\r\n            \"text\": \"☆ Requirement 3 ☆\"            \r\n        },\r\n        {\r\n            \"id\": \"004036e7ce6f4e38880cfe72600c926f\",\r\n            \"text\": \"☆ Requirement 4 ☆\"            \r\n        },\r\n        {\r\n            \"id\": \"635a43d175b34703b6c6b60f551fa622\",\r\n            \"text\": \"☆ Requirement 5 ☆\"            \r\n        }\r\n    ],\r\n    \"input\": {\r\n        \"id\": \"00000000000000000000000000000000\",\r\n        \"name\": \"Ubuntu 16.04.iso\",\r\n        \"size\": 1073741824,\r\n        \"timestamp\": \"03.06.2020\",\r\n        \"author\": \"1a6ca73993814a9a84bc6d86fdd20865\"\r\n    },\r\n    \"status\": 0\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -522,7 +522,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": \"landau2@urfu.ru\",\n\t\"password\": \"strong_password\"\n}",
+							"raw": "{\n\t\"email\": \"belykhvd@gmail.com\",\n\t\"password\": \"123\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -984,7 +984,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/group/acceptInvite?secret=b4150d1dce75438da6fe3cd169cbb817",
+							"raw": "http://localhost:8080/group/acceptInvite?secret=582150c2-c402-4a6b-ba95-9d1854e92914",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -997,7 +997,42 @@
 							"query": [
 								{
 									"key": "secret",
-									"value": "b4150d1dce75438da6fe3cd169cbb817"
+									"value": "582150c2-c402-4a6b-ba95-9d1854e92914"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Права группы на курсы",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\"068d84c48efb4d60950c13327537c7fc\"]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/group/grantAccess?groupId=7a66aa205233492ab81851ff264a28bb",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"group",
+								"grantAccess"
+							],
+							"query": [
+								{
+									"key": "groupId",
+									"value": "7a66aa205233492ab81851ff264a28bb"
 								}
 							]
 						}

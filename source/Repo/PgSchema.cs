@@ -7,6 +7,7 @@ namespace Repo
 
         public const string course = nameof(course);
         public const string course_index = nameof(course_index);
+        public const string course_access = nameof(course_access);
 
         public const string course_tasks = nameof(course_tasks);
 

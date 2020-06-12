@@ -2,6 +2,7 @@ create extension if not exists "uuid-ossp";
 create extension if not exists "pgcrypto";
 
 drop table if exists auth;
+drop table if exists registration;
 drop table if exists user_profile;
 drop table if exists user_index;
 drop table if exists course;
@@ -14,6 +15,14 @@ drop table if exists "group";
 drop table if exists group_index;
 drop table if exists file_index;
 drop table if exists attachment;
+
+create table if not exists registration
+(
+	secret uuid primary key,
+	email text not null,
+	password_hash bytea not null,
+	sent bool not null default false
+);
 
 create table if not exists auth
 (
@@ -145,4 +154,15 @@ create table if not exists js_queue
 drop table if exists js_test;
 drop table if exists js_check_result;
 drop table if exists js_queue;
+
+
+drop table if exists course_access;
+create table if not exists course_access
+(
+	group_id uuid not null,
+	course_id uuid not null
+);
+
+drop index if exists idx_group_course;
+create index if not exists idx_group_course on course_access (group_id, course_id);
 

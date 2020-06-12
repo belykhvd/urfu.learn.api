@@ -36,7 +36,7 @@ namespace Repo
                 Timestamp = DateTime.UtcNow
             };
             
-            await RegisterAttachment(attachment).ConfigureAwait(false);
+            await RegisterFile(attachment).ConfigureAwait(false);
             return fileId;
         }
 
@@ -52,7 +52,7 @@ namespace Repo
                 Timestamp = DateTime.UtcNow
             };
 
-            await RegisterAttachment(attachment).ConfigureAwait(false);
+            await RegisterFile(attachment).ConfigureAwait(false);
             return fileId;
         }
 
@@ -99,7 +99,7 @@ namespace Repo
             return await streamReader.ReadToEndAsync().ConfigureAwait(false);
         }
 
-        public async Task RegisterAttachment(Attachment attachment)
+        public async Task RegisterFile(Attachment attachment)
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
             await conn.ExecuteAsync(

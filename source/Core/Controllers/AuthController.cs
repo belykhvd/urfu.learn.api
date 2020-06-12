@@ -22,15 +22,16 @@ namespace Core.Controllers
 
         [HttpPost]
         [Route("signUp")]
-        public async Task<AuthResult> SignUp([FromBody] RegistrationData registrationData)
+        public async Task<ActionResult<AuthResult>> SignUp([FromBody] RegistrationData registrationData)
         {
             var authResult = await authService.SignUp(registrationData).ConfigureAwait(false);
+            if (authResult == null)
+                return Conflict();
 
-            await HttpAuthorize(authResult.UserId).ConfigureAwait(false);
+            await HttpAuthorize(authResult.UserId, authResult.Role).ConfigureAwait(false);
 
             return authResult;
         }
-
 
         [HttpPost]
         [Route("signIn")]
@@ -40,7 +41,7 @@ namespace Core.Controllers
             if (authResult == null)
                 return Unauthorized();
 
-            await HttpAuthorize(authResult.UserId).ConfigureAwait(false);
+            await HttpAuthorize(authResult.UserId, authResult.Role).ConfigureAwait(false);
 
             return authResult;
         }
@@ -66,11 +67,12 @@ namespace Core.Controllers
             return Unauthorized();
         }
 
-        private async Task HttpAuthorize(Guid userId)
+        private async Task HttpAuthorize(Guid userId, UserRole userRole)
         {
             var claimsIdentity = new ClaimsIdentity(new[]
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, $"{userId:N}")
+                new Claim(ClaimsIdentity.DefaultNameClaimType, $"{userId:N}"),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, $"{userRole}")
 
             }, "ApplicationCookie");
 

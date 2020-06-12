@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Contracts.Services;
+using Contracts.Types.Auth;
 using Contracts.Types.Group;
 using Contracts.Types.Group.ViewModel;
 using Microsoft.AspNetCore.Authorization;
@@ -22,7 +23,7 @@ namespace Core.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = nameof(UserRole.Admin))]
         public async Task<ActionResult<Guid>> Save([FromBody][Required] Group group)
         {
             if (!ModelState.IsValid)
@@ -48,7 +49,7 @@ namespace Core.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = nameof(UserRole.Admin))]
         public async Task Delete([FromQuery] Guid id)
         {
             await groupService.Delete(id).ConfigureAwait(false);
@@ -66,7 +67,7 @@ namespace Core.Controllers
 
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = nameof(UserRole.Admin))]
         public async Task<IActionResult> InviteStudent([FromQuery] Guid groupId, [FromQuery][EmailAddress] string email)
         {
             if (!ModelState.IsValid)
@@ -81,7 +82,7 @@ namespace Core.Controllers
         [Authorize]
         public async Task<IActionResult> AcceptInvite([FromQuery] Guid secret)
         {
-            if (HttpContext.User.Identity.Name == null || !Guid.TryParse(HttpContext.User.Identity.Name, out var userId))
+            if (!Guid.TryParse(HttpContext.User.Identity.Name, out var userId))
                 return Unauthorized();
 
             var success = await groupService.AcceptInvite(secret, userId).ConfigureAwait(true);
@@ -92,7 +93,7 @@ namespace Core.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = nameof(UserRole.Admin))]
         public async Task<IEnumerable<GroupInviteItem>> GetInviteList()
         {
             return await groupService.GetInviteList().ConfigureAwait(true);
@@ -102,6 +103,13 @@ namespace Core.Controllers
         public async Task<IEnumerable<GroupItem>> GetStudentList()
         {
             return await groupService.GetStudentList().ConfigureAwait(true);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = nameof(UserRole.Admin))]
+        public async Task GrantAccess([FromQuery] Guid groupId, [FromBody][Required] Guid[] courseIds)
+        {
+            await groupService.GrantAccess(groupId, courseIds).ConfigureAwait(true);
         }
     }
 }

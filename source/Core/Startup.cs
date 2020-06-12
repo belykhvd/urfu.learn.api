@@ -1,3 +1,4 @@
+using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -61,6 +62,11 @@ namespace Core
                             ctx.Response.StatusCode = (int) HttpStatusCode.Unauthorized;
                             return Task.CompletedTask;
                         };
+                        options.Events.OnRedirectToAccessDenied = ctx =>
+                        {
+                            ctx.Response.StatusCode = (int) HttpStatusCode.Unauthorized;
+                            return Task.CompletedTask;
+                        };
                     });
 
             services.AddAuthorization();
@@ -88,7 +94,7 @@ namespace Core
                 typeof(Requirement[]),
                 typeof(RequirementStatus[])
             };
-            
+
             foreach (var type in arrayTypes)
                 SqlMapper.AddTypeHandler(type, new DapperTypeHandler());
         }

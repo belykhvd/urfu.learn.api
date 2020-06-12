@@ -30,10 +30,13 @@ namespace Core.Services
 
             task.Input = null;
 
-            foreach (var requirement in task.RequirementList)
+            if (task.RequirementList != null)
             {
-                if (requirement.Id == Guid.Empty)
-                    requirement.Id = Guid.NewGuid();
+                foreach (var requirement in task.RequirementList)
+                {
+                    if (requirement.Id == Guid.Empty)
+                        requirement.Id = Guid.NewGuid();
+                }
             }
 
             await using var conn = new NpgsqlConnection(ConnectionString);
@@ -59,7 +62,7 @@ namespace Core.Services
             if (task == null)
                 return null;
 
-            var attachment = await GetInputLink(taskId).ConfigureAwait(false);
+            var attachment = await GetInputAttachment(taskId).ConfigureAwait(false);
             task.Input = attachment;
 
             if (userId == null)
@@ -95,7 +98,7 @@ namespace Core.Services
                        limit 1", new { userId, taskId }).ConfigureAwait(false);
         }
 
-        public async Task<Attachment> GetInputLink(Guid taskId)
+        public async Task<Attachment> GetInputAttachment(Guid taskId)
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
             return await conn.QuerySingleOrDefaultAsync<Attachment>(
@@ -114,7 +117,7 @@ namespace Core.Services
                        limit 1", new {taskId}).ConfigureAwait(false);
         }
 
-        public async Task<Attachment> GetSolutionLink(Guid taskId, Guid authorId)
+        public async Task<Attachment> GetSolutionAttachment(Guid taskId, Guid authorId)
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
             return await conn.QuerySingleOrDefaultAsync<Attachment>(

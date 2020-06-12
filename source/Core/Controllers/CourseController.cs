@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Contracts.Services;
+using Contracts.Types.Auth;
 using Contracts.Types.Common;
 using Contracts.Types.Course;
 using Contracts.Types.Course.ViewModel;
@@ -27,19 +28,29 @@ namespace Core.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<CourseItem>> Select([FromQuery] Guid userId)
+        public async Task<ActionResult<IEnumerable<CourseItem>>> Select([FromQuery] Guid? userId)
         {
+            if (!Guid.TryParse(HttpContext.User.Identity.Name, out var senderId))
+                return Unauthorized();
+
+            var isAdmin = HttpContext.User.IsInRole(nameof(UserRole.Admin));
+            if (!isAdmin && userId != null && senderId != userId)
+                return Unauthorized();
+
+            if (!isAdmin)
+                userId = senderId;
+
             var items = new List<CourseItem>();
 
-            var courses = await courseService.SelectIndexes().ConfigureAwait(false);
-
+            var courses = await courseService.Select(userId).ConfigureAwait(false);
             foreach (var course in courses)
             {
                 var courseItem = new CourseItem
                 {
                     Id = course.Id,
                     Name = course.Name,
-                    MaxScore = course.MaxScore
+                    MaxScore = course.MaxScore,
+                    DescriptionText = course.DescriptionText
                 };
 
                 var taskItems = new List<TaskItem>();
@@ -60,9 +71,12 @@ namespace Core.Controllers
                         }).ToArray()
                     };
 
-                    var solutionAttachment = await taskService.GetSolutionLink(taskItem.Id, userId).ConfigureAwait(false);
-                    if (solutionAttachment != null)
-                        taskItem.SolutionId = solutionAttachment.Id;
+                    if (userId != null)
+                    {
+                        var solutionAttachment = await taskService.GetSolutionAttachment(taskItem.Id, userId.Value).ConfigureAwait(false);
+                        if (solutionAttachment != null && solutionAttachment.Id != Guid.Empty)
+                            taskItem.SolutionId = solutionAttachment.Id;    
+                    }
 
                     var doneRequirements = taskProgress.Done?.ToHashSet();
 
@@ -84,7 +98,7 @@ namespace Core.Controllers
                 items.Add(courseItem);
             }
 
-            return items.OrderBy(x => x.Name);
+            return items.OrderBy(x => x.Name).ToArray();
         }
 
         [HttpGet]
@@ -92,10 +106,13 @@ namespace Core.Controllers
             => await courseService.SelectLinks().ConfigureAwait(false);
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = nameof(UserRole.Admin))]
         public async Task<Guid> Save([FromQuery] Guid? id, [FromBody] Course course)
         {
-            return await courseService.Save(id, course).ConfigureAwait(false);
+            if (id != null)
+                course.Id = id.Value;
+
+            return await courseService.Save(course).ConfigureAwait(false);
         }
 
         [HttpGet]
@@ -103,17 +120,17 @@ namespace Core.Controllers
             => await courseService.Get(id).ConfigureAwait(false);
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = nameof(UserRole.Admin))]
         public async Task Delete([FromQuery] Guid id)
             => await courseService.Delete(id).ConfigureAwait(false);
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = nameof(UserRole.Admin))]
         public async Task<Guid> AddTask([FromQuery] Guid courseId, [FromBody][Required] CourseTask task)
             => await courseService.AddTask(courseId, task).ConfigureAwait(false);
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = nameof(UserRole.Admin))]
         public async Task DeleteTask([FromQuery] Guid courseId, [FromQuery] Guid taskId)
             => await courseService.DeleteTask(courseId, taskId).ConfigureAwait(false);
 

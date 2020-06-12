@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Contracts.Services;
 using Contracts.Types.Auth;
@@ -26,6 +27,7 @@ namespace TestDataGenerator
     public class TestDataGenerator
     {
         private readonly IAuthService authService;
+        private readonly IUserService userService;
         private readonly ICourseService courseService;
         private readonly ITaskService taskService;
         private readonly IGroupService groupService;
@@ -34,31 +36,23 @@ namespace TestDataGenerator
         public TestDataGenerator()
         {
             DefaultTypeMap.MatchNamesWithUnderscores = true;
-            
-            var dbStorableTypes = new[]
+
+            var contractsAssembly = Assembly.GetAssembly(typeof(AuthData));
+            foreach (var type in contractsAssembly.DefinedTypes)
             {
-                typeof(AuthResult),
+                if (type.IsClass && !type.ContainsGenericParameters)
+                    SqlMapper.AddTypeHandler(type.AsType(), new DapperTypeHandler());
+            }
 
-                typeof(Profile),
-                typeof(Group),
-
-                typeof(Course),
-                typeof(CourseIndex),
-
-                typeof(CourseTask),
-                typeof(Requirement),
+            var arrayTypes = new[]
+            {
                 typeof(Requirement[]),
-                typeof(RequirementStatus),
-                typeof(RequirementStatus[]),
-                typeof(TaskProgress),
-
-                typeof(Link),
-                typeof(Link[])
+                typeof(RequirementStatus[])
             };
 
-            foreach (var type in dbStorableTypes)
+            foreach (var type in arrayTypes)
                 SqlMapper.AddTypeHandler(type, new DapperTypeHandler());
-            
+
             var config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .Build();
@@ -68,8 +62,10 @@ namespace TestDataGenerator
 
             fileRepo = new FileRepo(config);
             taskService = new TaskService(config, fileRepo);
-            courseService = new CourseService(config, taskService, fileRepo);
+            courseService = new CourseService(config, taskService);
             groupService = new GroupService(config);
+
+            userService = new UserService(config, profileRepo);
         }
 
         [Test]
@@ -90,51 +86,68 @@ namespace TestDataGenerator
             };
 
             var userMap = new Dictionary<Guid, AuthResult>();
-
             foreach (var user in users)
             {
                 var authResult = await authService.SignUp(user).ConfigureAwait(false);
+                if (authResult == null)
+                {
+                    authResult = await authService.Authorize(new AuthData
+                    {
+                        Email = user.Email,
+                        Password = user.Password
+                    }).ConfigureAwait(false);
+                }
+
+                authResult.Should().NotBeNull();
+
                 userMap[authResult.UserId] = authResult;
             }
 
             var commonAdminId = userMap.Keys.First();
 
-            await fileRepo.RegisterAttachment(new Attachment
+            var commonAttachment = new Attachment
             {
                 Id = Guid.Empty,
                 Name = "Ubuntu 16.04.iso",
                 Size = 1024 * 1024 * 1024,
                 Timestamp = new DateTime(2020, 06, 03),
                 Author = commonAdminId
-            }).ConfigureAwait(false);
+            };
+            await fileRepo.RegisterFile(commonAttachment).ConfigureAwait(false);
 
             var courses = new[]
             {
-                MakeCourse("JavaScript", 100, new DateTime(2020, 05, 30)),
-                MakeCourse("TypeScript", 75, new DateTime(2022, 06, 03)),
+                MakeCourse("JavaScript", 100),
+                MakeCourse("TypeScript", 75),
                 MakeCourse("React.JS", 50),
-                MakeCourse("Angular.JS", 100, new DateTime(2020, 06, 05))
+                MakeCourse("Angular.JS", 100)
             };
 
             foreach (var course in courses)
             {
-                var courseId = await courseService.Save(null, course).ConfigureAwait(false);
+                var courseId = await courseService.Save(course).ConfigureAwait(false);
+                (await courseService.Get(courseId).ConfigureAwait(false)).Should().BeEquivalentTo(course);
 
                 var tasks = new[]
                 {
-                    MakeTask("First", random.Next(0, 41)),
-                    MakeTask("Second", random.Next(0, 41)),
-                    MakeTask("Third", random.Next(0, 41))
+                    MakeTask("Простая", random.Next(0, 41)),
+                    MakeTask("Сложная", random.Next(0, 41)),
+                    MakeTask("Веселая", random.Next(0, 41))
                 };
 
                 foreach (var task in tasks)
                 {
                     var taskId = await courseService.AddTask(courseId, task).ConfigureAwait(false);
+                    (await taskService.Get(taskId).ConfigureAwait(false)).Should().BeEquivalentTo(task);
 
                     await taskService.RegisterAttachment(taskId, commonAdminId, Guid.Empty, AttachmentType.Input).ConfigureAwait(false);
+                    (await taskService.GetInputAttachment(taskId).ConfigureAwait(false)).Should().BeEquivalentTo(commonAttachment);
 
                     foreach (var userId in userMap.Keys)
+                    {
                         await taskService.RegisterAttachment(taskId, userId, Guid.Empty, AttachmentType.Solution).ConfigureAwait(false);
+                        (await taskService.GetSolutionAttachment(taskId, userId).ConfigureAwait(false)).Should().BeEquivalentTo(commonAttachment);
+                    }
                 }
             }
 
@@ -153,28 +166,33 @@ namespace TestDataGenerator
                 await groupService.Save(group.Id, group).ConfigureAwait(false);
                 (await groupService.Get(group.Id).ConfigureAwait(false)).Should().BeEquivalentTo(group);
             }
+
+            var firstGroup = groups.First();
+
+            foreach (var student in users.Where(x => x.Role == UserRole.Student))
+                await groupService.InviteStudent(firstGroup.Id, student.Email).ConfigureAwait(false);
         }
 
-        private static Course MakeCourse(string name, int maxScore, DateTime? deadline = null) => new Course
+        private static Course MakeCourse(string name, int maxScore) => new Course
         {
-            Name = $"❦ {name} ❦",
+            Name = $"{name}",
             DescriptionText = "Здесь могла быть ваша реклама",
             MaxScore = maxScore
         };
 
         private static CourseTask MakeTask(string namePrefix, int maxScore) => new CourseTask
         {
-            Name = $"💐 {namePrefix} task",
-            DescriptionText = $"{namePrefix} description",
+            Name = $"{namePrefix} задача",
+            DescriptionText = $"{namePrefix} описание",
             Deadline = new DateTime(2020, 6, 5),
             MaxScore = maxScore,
             RequirementList = new[]
             {
-                new RequirementStatus {Id = Guid.NewGuid(), Text = "☆ Requirement 1 ☆"},
-                new RequirementStatus {Id = Guid.NewGuid(), Text = "☆ Requirement 2 ☆"},
-                new RequirementStatus {Id = Guid.NewGuid(), Text = "☆ Requirement 3 ☆"},
-                new RequirementStatus {Id = Guid.NewGuid(), Text = "☆ Requirement 4 ☆"},
-                new RequirementStatus {Id = Guid.NewGuid(), Text = "☆ Requirement 5 ☆"}
+                new RequirementStatus {Id = Guid.NewGuid(), Text = "По времени O(logN)"},
+                new RequirementStatus {Id = Guid.NewGuid(), Text = "По памяти O(N)"},
+                new RequirementStatus {Id = Guid.NewGuid(), Text = "Не более 100 строк кода"},
+                new RequirementStatus {Id = Guid.NewGuid(), Text = "С комментариями"},
+                new RequirementStatus {Id = Guid.NewGuid(), Text = "CodeStyle УрФУ"}
             }
         };
 
