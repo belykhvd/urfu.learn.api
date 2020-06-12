@@ -97,7 +97,7 @@ namespace Core.Services
                 item.InviteList = (await conn.QueryAsync<StudentInvite>(
                     $@"select jsonb_build_object(
                                 'email', inv.email,
-                                'is_accepted', inv.is_accepted)
+                                'isAccepted', inv.is_accepted)
                        from {PgSchema.invite} inv
                        where inv.group_id = @GroupId", new {GroupId = group.Id}).ConfigureAwait(false)).ToArray();
 
