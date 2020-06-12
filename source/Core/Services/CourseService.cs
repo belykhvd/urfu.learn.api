@@ -89,7 +89,7 @@ namespace Core.Services
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
             return await conn.QueryAsync<Link>(
-                @$"select jsonb_build_object('id', id, 'text', name) from {PgSchema.course_index}").ConfigureAwait(false);
+                @$"select jsonb_build_object('id', id, 'name', name) from {PgSchema.course_index}").ConfigureAwait(false);
         }
 
         public async Task<Guid> AddTask(Guid courseId, CourseTask task)
