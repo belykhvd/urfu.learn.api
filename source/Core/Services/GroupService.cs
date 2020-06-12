@@ -80,23 +80,35 @@ namespace Core.Services
         public async Task<IEnumerable<GroupInviteItem>> GetInviteList()
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
-            var items = (await conn.QueryAsync<GroupInviteItem>(
-                $@"select gr.data || jsonb_build_object(
-                             'inviteList', jsonb_agg(jsonb_build_object('email', inv.email, 'is_accepted', inv.is_accepted))
-                          )
-                       from {PgSchema.invite} inv
-                       left join {PgSchema.group} gr
-                         on inv.group_id = gr.id
-                       group by group_id, data").ConfigureAwait(false)).ToArray();
+            var groups = await conn.QueryAsync<Group>(
+                $@"select data
+                       from {PgSchema.group}
+                       order by data->>'Name'").ConfigureAwait(false);
 
-            foreach (var item in items)
+            var items = new List<GroupInviteItem>();
+            foreach (var group in groups)
             {
+                var item = new GroupInviteItem
+                {
+                    Id = group.Id,
+                    Name = group.Name
+                };
+
+                item.InviteList = (await conn.QueryAsync<StudentInvite>(
+                    $@"select jsonb_build_object(
+                                'email', inv.email,
+                                'is_accepted', inv.is_accepted)
+                       from {PgSchema.invite} inv
+                       where inv.group_id = @GroupId", new {GroupId = group.Id}).ConfigureAwait(false)).ToArray();
+
                 item.CourseList = (await conn.QueryAsync<Link>(
                     $@"select jsonb_build_object('id', ci.id, 'name', ci.name) 
-                           from course_access ca
-                           left join course_index ci
+                           from {PgSchema.course_access} ca
+                           left join {PgSchema.course_index} ci
                              on ca.course_id = ci.id
                            where group_id = @GroupId", new {GroupId = item.Id}).ConfigureAwait(false)).ToArray();
+
+                items.Add(item);
             }
 
             return items;
@@ -107,7 +119,8 @@ namespace Core.Services
             await using var conn = new NpgsqlConnection(ConnectionString);
             var groups = await conn.QueryAsync<Group>(
                 $@"select data
-                       from {PgSchema.group}").ConfigureAwait(false);
+                       from {PgSchema.group}
+                       order by data->>'Name'").ConfigureAwait(false);
 
             var groupItems = new List<GroupItem>();
             foreach (var group in groups)
@@ -125,7 +138,8 @@ namespace Core.Services
                            left join user_index ui
                              on inv.student_id = ui.id
                            where is_accepted
-                           order by ui.fio").ConfigureAwait(false))
+                             and group_id = @GroupId
+                           order by ui.fio", new {GroupId = item.Id}).ConfigureAwait(false))
                     .ToArray();
 
                 groupItems.Add(item);
