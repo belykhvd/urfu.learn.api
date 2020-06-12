@@ -1,8 +1,10 @@
-﻿namespace Contracts.Types.Group.ViewModel
+﻿using Contracts.Types.Common;
+
+namespace Contracts.Types.Group.ViewModel
 {
-    public class GroupInviteItem
+    public class GroupInviteItem : Group
     {
-        public Group Group { get; set; }
-        public StudentInvite[] Invites { get; set; }
+        public StudentInvite[] InviteList { get; set; }
+        public Link[] CourseList { get; set; }
     }
 }

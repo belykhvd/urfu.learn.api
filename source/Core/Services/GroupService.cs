@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Contracts.Services;
+using Contracts.Types.Auth;
 using Contracts.Types.Common;
 using Contracts.Types.Group;
 using Contracts.Types.Group.ViewModel;
@@ -79,43 +80,97 @@ namespace Core.Services
         public async Task<IEnumerable<GroupInviteItem>> GetInviteList()
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
-            return await conn.QueryAsync<GroupInviteItem>(
-                $@"select jsonb_build_object(
-                             'group', gr.data,
-                             'invites', jsonb_agg(jsonb_build_object('email', inv.email, 'is_accepted', inv.is_accepted))
-                           )
+            var items = (await conn.QueryAsync<GroupInviteItem>(
+                $@"select gr.data || jsonb_build_object(
+                             'inviteList', jsonb_agg(jsonb_build_object('email', inv.email, 'is_accepted', inv.is_accepted))
+                          )
                        from {PgSchema.invite} inv
-                       left join ""group"" gr
+                       left join {PgSchema.group} gr
                          on inv.group_id = gr.id
-                       group by group_id, data").ConfigureAwait(false);
-        }
+                       group by group_id, data").ConfigureAwait(false)).ToArray();
 
-        public async Task<IEnumerable<GroupItem>> GetStudentList()
-        {
-            await using var conn = new NpgsqlConnection(ConnectionString);
-            var groupItems = await conn.QueryAsync<GroupItem>(
-                $@"select gr.data || jsonb_build_object('studentList', jsonb_agg(
-            case when inv.student_id is not null then jsonb_build_object('userId', inv.student_id, 'studentName', ui.fio)
-              else null end
-            )       
-                )
-                       from group_index gi
-                       left join ""group"" gr
-            on gi.id = gr.id
-            left join invite inv
-            on gi.id = inv.group_id
-            left join user_index ui
-            on inv.student_id = ui.id
-            where is_accepted
-            or inv.group_id is null
-            group by group_id, data").ConfigureAwait(false);
-
-            foreach (var item in groupItems)
+            foreach (var item in items)
             {
-                item.StudentList = item.StudentList.Where(x => x != null).ToArray();
+                item.CourseList = (await conn.QueryAsync<Link>(
+                    $@"select jsonb_build_object('id', ci.id, 'name', ci.name) 
+                           from course_access ca
+                           left join course_index ci
+                             on ca.course_id = ci.id
+                           where group_id = @GroupId", new {GroupId = item.Id}).ConfigureAwait(false)).ToArray();
             }
 
-            return groupItems;
+            return items;
+        }
+
+        public async Task<IEnumerable<GroupItem>> GetUsers()
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            var groups = await conn.QueryAsync<Group>(
+                $@"select data
+                       from {PgSchema.group}").ConfigureAwait(false);
+
+            var groupItems = new List<GroupItem>();
+            foreach (var group in groups)
+            {
+                var item = new GroupItem
+                {
+                    Id = group.Id,
+                    Name = group.Name,
+                    Year = group.Year
+                };
+
+                item.StudentList = (await conn.QueryAsync<StudentItem>(
+                    $@"select jsonb_build_object('userId', ui.id, 'studentName', ui.fio)
+                           from invite inv
+                           left join user_index ui
+                             on inv.student_id = ui.id
+                           where is_accepted
+                           order by ui.fio").ConfigureAwait(false))
+                    .ToArray();
+
+                groupItems.Add(item);
+            }
+            
+            // var groupItems_ = (await conn.QueryAsync<GroupItem>(
+            //     $@"select gr.data || jsonb_build_object('studentList', jsonb_agg(
+            // case when inv.student_id is not null then jsonb_build_object('userId', inv.student_id, 'studentName', ui.fio)
+            //   else null end
+            // )       
+            //     )
+            //            from group_index gi
+            //            left join {PgSchema.group} gr
+            // on gi.id = gr.id
+            // left join {PgSchema.invite} inv
+            // on gi.id = inv.group_id
+            // left join {PgSchema.user_index} ui
+            //   on inv.student_id = ui.id
+            // where is_accepted
+            //    or inv.group_id is null
+            // group by group_id, data").ConfigureAwait(false)).ToArray();
+            //
+            // foreach (var item in groupItems)
+            // {
+            //     item.StudentList = item.StudentList
+            //         .Where(x => x != null)
+            //         .OrderBy(x => x.StudentName)
+            //         .ToArray();
+            // }
+
+            var admins = await conn.QueryAsync<StudentItem>(
+                $@"select jsonb_build_object('userId', au.user_id, 'studentName', ui.fio)
+                       from {PgSchema.auth} au
+                       left join {PgSchema.user_index} ui
+                         on au.user_id = ui.id
+                       where role = @AdminRole
+                       order by ui.fio", new {AdminRole = UserRole.Admin}).ConfigureAwait(false);
+            
+            var adminGroupItem = new GroupItem
+            {
+                Name = "Преподаватели",
+                StudentList = admins.ToArray() 
+            };
+
+            return new[] {adminGroupItem}.Concat(groupItems.OrderBy(x => x.Name));
         }
 
         public async Task<IEnumerable<StudentList>> GetStudentList(int year, int semester)

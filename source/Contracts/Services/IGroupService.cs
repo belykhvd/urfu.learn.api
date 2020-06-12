@@ -16,9 +16,7 @@ namespace Contracts.Services
         Task<bool> AcceptInvite(Guid secret, Guid studentId);
         Task<IEnumerable<GroupInviteItem>> GetInviteList();
 
-        Task<IEnumerable<GroupItem>> GetStudentList();
-
-        Task<IEnumerable<StudentList>> GetStudentList(int year, int semester);
+        Task<IEnumerable<GroupItem>> GetUsers();
 
         Task<IEnumerable<Group>> List();
         Task<IEnumerable<StudentInvite>> GetStudents(Guid groupId);

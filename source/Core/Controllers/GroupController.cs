@@ -78,7 +78,7 @@ namespace Core.Controllers
             return Ok();
         }
 
-        [HttpPost]
+        [HttpGet]
         [Authorize]
         public async Task<IActionResult> AcceptInvite([FromQuery] Guid secret)
         {
@@ -100,9 +100,10 @@ namespace Core.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<GroupItem>> GetStudentList()
+        [Authorize]
+        public async Task<IEnumerable<GroupItem>> GetUserList()
         {
-            return await groupService.GetStudentList().ConfigureAwait(true);
+            return await groupService.GetUsers().ConfigureAwait(true);
         }
 
         [HttpPost]

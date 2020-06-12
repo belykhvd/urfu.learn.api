@@ -49,7 +49,7 @@ namespace TestDataGenerator
                 typeof(Requirement[]),
                 typeof(RequirementStatus[])
             };
-
+    
             foreach (var type in arrayTypes)
                 SqlMapper.AddTypeHandler(type, new DapperTypeHandler());
 
@@ -113,7 +113,7 @@ namespace TestDataGenerator
                 Timestamp = new DateTime(2020, 06, 03),
                 Author = commonAdminId
             };
-            await fileRepo.RegisterFile(commonAttachment).ConfigureAwait(false);
+            //await fileRepo.RegisterFile(commonAttachment).ConfigureAwait(false);
 
             var courses = new[]
             {
@@ -141,12 +141,12 @@ namespace TestDataGenerator
                     (await taskService.Get(taskId).ConfigureAwait(false)).Should().BeEquivalentTo(task);
 
                     await taskService.RegisterAttachment(taskId, commonAdminId, Guid.Empty, AttachmentType.Input).ConfigureAwait(false);
-                    (await taskService.GetInputAttachment(taskId).ConfigureAwait(false)).Should().BeEquivalentTo(commonAttachment);
+                    //(await taskService.GetInputAttachment(taskId).ConfigureAwait(false)).Should().BeEquivalentTo(commonAttachment);
 
                     foreach (var userId in userMap.Keys)
                     {
                         await taskService.RegisterAttachment(taskId, userId, Guid.Empty, AttachmentType.Solution).ConfigureAwait(false);
-                        (await taskService.GetSolutionAttachment(taskId, userId).ConfigureAwait(false)).Should().BeEquivalentTo(commonAttachment);
+                        //(await taskService.GetSolutionAttachment(taskId, userId).ConfigureAwait(false)).Should().BeEquivalentTo(commonAttachment);
                     }
                 }
             }
@@ -158,8 +158,8 @@ namespace TestDataGenerator
                 MakeGroup("КН-403")
             };
 
-            (await groupService.GetInviteList().ConfigureAwait(false)).Should().BeEquivalentTo();
-            (await groupService.GetStudentList().ConfigureAwait(false)).Should().BeEquivalentTo();
+            //(await groupService.GetInviteList().ConfigureAwait(false)).Should().BeEquivalentTo();
+            //(await groupService.GetStudentList().ConfigureAwait(false)).Should().BeEquivalentTo();
             
             foreach (var group in groups)
             {

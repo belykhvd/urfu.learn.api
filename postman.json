@@ -909,12 +909,12 @@
 			"name": "Студенты",
 			"item": [
 				{
-					"name": "🔒 Список студентов по группам",
+					"name": "🔒 Список пользователей",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/group/getStudentList",
+							"raw": "http://localhost:8080/group/getUserList",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -922,7 +922,7 @@
 							"port": "8080",
 							"path": [
 								"group",
-								"getStudentList"
+								"getUserList"
 							]
 						}
 					},
@@ -954,7 +954,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/group/inviteStudent?groupId=cc03cea09b094b31835c682c598387ba&email=wolf@urfu.ru",
+							"raw": "http://localhost:8080/group/inviteStudent?groupId=59a2849dbfb544c4918cc4d097abadd7&email=evan@urfu2.ru",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -967,11 +967,11 @@
 							"query": [
 								{
 									"key": "groupId",
-									"value": "cc03cea09b094b31835c682c598387ba"
+									"value": "59a2849dbfb544c4918cc4d097abadd7"
 								},
 								{
 									"key": "email",
-									"value": "wolf@urfu.ru"
+									"value": "evan@urfu2.ru"
 								}
 							]
 						}
@@ -984,7 +984,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/group/acceptInvite?secret=582150c2-c402-4a6b-ba95-9d1854e92914",
+							"raw": "http://localhost:8080/group/acceptInvite?secret=8f1b17b1-39c7-4693-9dd7-af976ea9e299",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -997,7 +997,7 @@
 							"query": [
 								{
 									"key": "secret",
-									"value": "582150c2-c402-4a6b-ba95-9d1854e92914"
+									"value": "8f1b17b1-39c7-4693-9dd7-af976ea9e299"
 								}
 							]
 						}

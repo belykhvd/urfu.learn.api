@@ -49,7 +49,7 @@ namespace Core.Services
             {
                 UserId = userId,
                 Role = authData.Role,
-                Fio = profile.Fio()
+                Fio = profile.Initials()
             };
         }
 

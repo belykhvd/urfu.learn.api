@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 using Repo;
@@ -47,7 +46,7 @@ namespace EmailService
 
             Console.WriteLine($"Sending invite to {email}");
 
-            var inviteUrl = $"http://localhost:8080/acceptInvite?secret={secret}";
+            var inviteUrl = $"http://localhost:8080/group/acceptInvite?secret={secret}";
             await emailSender.SendInvite(email, inviteUrl).ConfigureAwait(false);
 
             await using var conn2 = new NpgsqlConnection(ConnectionString);

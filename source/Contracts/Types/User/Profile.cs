@@ -9,6 +9,7 @@
         public string SecondName { get; set; }
         public string Group { get; set; }
 
-        public string Fio() => $"{Surname} {FirstName?.Substring(0, 1)}. {SecondName?.Substring(0, 1)}" + (SecondName?.Length > 0 ? "." : "");
+        public string Fio() => $"{Surname} {FirstName} {SecondName}"; 
+        public string Initials() => $"{Surname} {FirstName?.Substring(0, 1)}. {SecondName?.Substring(0, 1)}" + (SecondName?.Length > 0 ? "." : "");
     }
 }
