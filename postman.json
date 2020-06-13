@@ -55,7 +55,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"JavaScript\",\n\t\"descriptionText\": \"Основы ECMAScript 5.1\",\n\t\"maxScore\": 50\t\n}",
+							"raw": "{\n\t\"name\": \"?\",\n\t\"descriptionText\": \"Основы ECMAScript 5.1\",\n\t\"maxScore\": 50\t\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -84,7 +84,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Моделирование ракет\",\r\n    \"description\": \"К звездам\",\r\n    \"maxScore\": 100\r\n}",
+							"raw": "{\r\n    \"name\": \"Моделирование ракет\",\r\n    \"descriptionText\": \"К звездам\",\r\n    \"maxScore\": 100\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -92,7 +92,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/course/save?id=edbe8757-86b8-4e30-bc97-e72b2b5fce4b",
+							"raw": "http://localhost:8080/course/save?id=7a7019f71e004b2298bdd28fb0acb7aa",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -105,7 +105,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "edbe8757-86b8-4e30-bc97-e72b2b5fce4b"
+									"value": "7a7019f71e004b2298bdd28fb0acb7aa"
 								}
 							]
 						}
@@ -118,7 +118,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/course/get?id=edbe8757-86b8-4e30-bc97-e72b2b5fce4b",
+							"raw": "http://localhost:8080/course/get?id=7a7019f71e004b2298bdd28fb0acb7aa",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -131,7 +131,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "edbe8757-86b8-4e30-bc97-e72b2b5fce4b"
+									"value": "7a7019f71e004b2298bdd28fb0acb7aa"
 								}
 							]
 						}
@@ -693,51 +693,6 @@
 			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "Почта (админ)",
-			"item": [
-				{
-					"name": "Отправить текст",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "\"<html><body><p>Здравствуйте, коллеги!</p><p>Напоминаем вам, что в связи с прекращением существования нашей солнечной системы, корпорация ВкР перевозит свои сервера на ближайшую станцию в районе Альфы Центавра.</p><p>С уважением, Почтовая подсистема ВКР</p></body></html>\"",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/email/send?email=azakov31@gmail.com&subject=Вроде как SSL",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"email",
-								"send"
-							],
-							"query": [
-								{
-									"key": "email",
-									"value": "azakov31@gmail.com"
-								},
-								{
-									"key": "subject",
-									"value": "Вроде как SSL"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"protocolProfileBehavior": {}
-		},
-		{
 			"name": "Группы",
 			"item": [
 				{
@@ -1005,13 +960,13 @@
 					"response": []
 				},
 				{
-					"name": "Права группы на курсы",
+					"name": "★🔒 Права группы на курсы",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "[\"068d84c48efb4d60950c13327537c7fc\"]",
+							"raw": "[\"1a66aa20-5233-492a-b818-51ff264a28bb\", \"2a66aa20-5233-492a-b818-51ff264a28bb\"]",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1028,6 +983,41 @@
 							"path": [
 								"group",
 								"grantAccess"
+							],
+							"query": [
+								{
+									"key": "groupId",
+									"value": "7a66aa205233492ab81851ff264a28bb"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "★🔒 Отозвать права группы на курсы",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\"1a66aa20-5233-492a-b818-51ff264a28bb\", \"2a66aa20-5233-492a-b818-51ff264a28bb\"]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/group/revokeAccess?groupId=7a66aa205233492ab81851ff264a28bb",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"group",
+								"revokeAccess"
 							],
 							"query": [
 								{
