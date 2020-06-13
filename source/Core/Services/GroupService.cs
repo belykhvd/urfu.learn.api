@@ -59,13 +59,14 @@ namespace Core.Services
                 }).ConfigureAwait(false);
         }
 
-        // TODO: update on conflict (group_id, email) when is_accepted = false
-        public async Task InviteStudent(Guid groupId, string email)
+        public async Task<bool> InviteStudent(Guid groupId, string email)
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
-            await conn.ExecuteAsync(
+            return await conn.QuerySingleOrDefaultAsync<bool>(
                 $@"insert into {PgSchema.invite} (secret, group_id, email)
-                       values (@Secret, @GroupId, @Email)",
+                       values (@Secret, @GroupId, @Email)
+                       on conflict (group_id, email) do nothing
+                       returning true",
                 new
                 {
                     Secret = Guid.NewGuid(),

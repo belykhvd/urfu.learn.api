@@ -909,7 +909,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/group/inviteStudent?groupId=59a2849dbfb544c4918cc4d097abadd7&email=evan@urfu2.ru",
+							"raw": "http://localhost:8080/group/inviteStudent?groupId=59a2849d-bfb5-44c4-918c-c4d097abadd7&email=e@urfu2.ru",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -922,11 +922,11 @@
 							"query": [
 								{
 									"key": "groupId",
-									"value": "59a2849dbfb544c4918cc4d097abadd7"
+									"value": "59a2849d-bfb5-44c4-918c-c4d097abadd7"
 								},
 								{
 									"key": "email",
-									"value": "evan@urfu2.ru"
+									"value": "e@urfu2.ru"
 								}
 							]
 						}

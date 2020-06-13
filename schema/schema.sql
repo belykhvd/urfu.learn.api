@@ -124,6 +124,8 @@ create table if not exists invite
 	student_id uuid
 );
 
+create unique index if not exists idx_group_email on invite (group_id, email);
+
 create table if not exists attachment
 (
 	task_id uuid not null,

@@ -73,7 +73,9 @@ namespace Core.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState.Values);
 
-            await groupService.InviteStudent(groupId, email).ConfigureAwait(true);
+            var invited = await groupService.InviteStudent(groupId, email).ConfigureAwait(true);
+            if (!invited)
+                return BadRequest("Пользователю уже отправлено приглашение в данную группу");
 
             return Ok();
         }

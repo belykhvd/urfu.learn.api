@@ -12,7 +12,7 @@ namespace Contracts.Services
         Task GrantAccess(Guid groupId, Guid[] courseIds);
         Task RevokeAccess(Guid groupId, Guid[] courseIds);
 
-        Task InviteStudent(Guid groupId, string email);
+        Task<bool> InviteStudent(Guid groupId, string email);
         Task<bool> AcceptInvite(Guid secret, Guid studentId);
         Task<IEnumerable<GroupInviteItem>> GetInviteList();
 
