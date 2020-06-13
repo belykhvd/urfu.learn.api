@@ -80,6 +80,17 @@ namespace Core.Controllers
             return Ok();
         }
 
+        [HttpPost]
+        [Authorize(Roles = nameof(UserRole.Admin))]
+        public async Task<IActionResult> ExcludeStudent([FromQuery] Guid groupId, [FromQuery][EmailAddress] string email)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState.Values);
+
+            await groupService.ExcludeStudent(groupId, email).ConfigureAwait(true);
+            return Ok();
+        }
+
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> AcceptInvite([FromQuery] Guid secret)

@@ -13,10 +13,13 @@ namespace Contracts.Services
         Task RevokeAccess(Guid groupId, Guid[] courseIds);
 
         Task<bool> InviteStudent(Guid groupId, string email);
+        Task ExcludeStudent(Guid groupId, string email);
+
         Task<bool> AcceptInvite(Guid secret, Guid studentId);
-        Task<IEnumerable<GroupInviteItem>> GetInviteList();
 
         Task<IEnumerable<GroupItem>> GetUsers();
+        Task<IEnumerable<GroupInviteItem>> GetInviteList();
+        
 
         Task<IEnumerable<Group>> List();
         Task<IEnumerable<StudentInvite>> GetStudents(Guid groupId);

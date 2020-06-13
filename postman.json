@@ -934,6 +934,36 @@
 					"response": []
 				},
 				{
+					"name": "★🔒 Удалить студента из группы",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/group/excludeStudent?groupId=59a2849d-bfb5-44c4-918c-c4d097abadd7&email=evan@urfu2.ru",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"group",
+								"excludeStudent"
+							],
+							"query": [
+								{
+									"key": "groupId",
+									"value": "59a2849d-bfb5-44c4-918c-c4d097abadd7"
+								},
+								{
+									"key": "email",
+									"value": "evan@urfu2.ru"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "🔒 Принять инвайт",
 					"request": {
 						"method": "POST",

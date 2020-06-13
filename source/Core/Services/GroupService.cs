@@ -75,6 +75,20 @@ namespace Core.Services
                 }).ConfigureAwait(false);
         }
 
+        public async Task ExcludeStudent(Guid groupId, string email)
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            await conn.ExecuteAsync(
+                $@"delete from {PgSchema.invite}
+                       where group_id = @GroupId
+                         and email = @Email",
+                new
+                {
+                    groupId,
+                    email
+                }).ConfigureAwait(false);
+        }
+
         public async Task<bool> AcceptInvite(Guid secret, Guid studentId)
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
