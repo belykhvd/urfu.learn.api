@@ -59,9 +59,25 @@ namespace Core.Services
                 }).ConfigureAwait(false);
         }
 
-        public async Task<bool> InviteStudent(Guid groupId, string email)
+        public async Task<bool> InviteStudent(Guid groupId, string email, bool sendInvite = true)
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
+
+            if (!sendInvite)
+            {
+                return await conn.QuerySingleOrDefaultAsync<bool>(
+                    $@"insert into {PgSchema.invite} (secret, group_id, email, is_sent)
+                           values (@Secret, @GroupId, @Email, true)
+                       on conflict (group_id, email) do nothing
+                       returning true",
+                    new
+                    {
+                        Secret = Guid.NewGuid(),
+                        groupId,
+                        email
+                    }).ConfigureAwait(false);
+            }
+            
             return await conn.QuerySingleOrDefaultAsync<bool>(
                 $@"insert into {PgSchema.invite} (secret, group_id, email)
                        values (@Secret, @GroupId, @Email)
@@ -205,37 +221,27 @@ namespace Core.Services
             //         .ToArray();
             // }
 
-            var admins = await conn.QueryAsync<StudentItem>(
-                $@"select jsonb_build_object('userId', au.user_id, 'studentName', ui.fio)
-                       from {PgSchema.auth} au
-                       left join {PgSchema.user_index} ui
-                         on au.user_id = ui.id
-                       where role = @AdminRole
-                       order by ui.fio", new {AdminRole = UserRole.Admin}).ConfigureAwait(false);
-            
-            var adminGroupItem = new GroupItem
+            // var admins = await conn.QueryAsync<StudentItem>(
+            //     $@"select jsonb_build_object('userId', au.user_id, 'studentName', ui.fio)
+            //            from {PgSchema.auth} au
+            //            left join {PgSchema.user_index} ui
+            //              on au.user_id = ui.id
+            //            where role = @AdminRole
+            //            order by ui.fio", new {AdminRole = UserRole.Admin}).ConfigureAwait(false);
+            //
+            // var adminGroupItem = new GroupItem
+            // {
+            //     Name = "Преподаватели",
+            //     StudentList = admins.ToArray() 
+            // };
+
+            //return new[] {adminGroupItem}.Concat(groupItems.OrderBy(x => x.Name));
+            return groupItems.OrderBy(x =>
             {
-                Name = "Преподаватели",
-                StudentList = admins.ToArray() 
-            };
-
-            return new[] {adminGroupItem}.Concat(groupItems.OrderBy(x => x.Name));
-        }
-
-        public async Task<IEnumerable<StudentList>> GetStudentList(int year, int semester)
-        {
-            await using var conn = new NpgsqlConnection(ConnectionString);
-            return await conn.QueryAsync<StudentList>(
-               $@"select jsonb_build_object('id', group_id, 'text', gi.name) as group,
-                         jsonb_agg(jsonb_build_object('id', user_id, 'text', ui.fullname)) as users
-	                  from {PgSchema.group_membership} gm
-	                  join {PgSchema.group_index} gi
-	                    on gm.group_id = gi.id
-	                  join {PgSchema.user_index} ui
-	                    on gm.user_id = ui.id
-	                  where year = @Year
-	                    and semester = @Semester
-	                  group by group_id, gi.name", new { year, semester }).ConfigureAwait(false);
+                if (x.Id == Guid.Empty) return " ";
+                if (x.Id.ToString("N") == "00000000000000000000000000000001") return "  ";
+                return x.Name;
+            });
         }
 
         public async Task<IEnumerable<Group>> List()
@@ -243,71 +249,6 @@ namespace Core.Services
             await using var conn = new NpgsqlConnection(ConnectionString);
             return (await conn.QueryAsync<Group>(
                 $@"select data from {PgSchema.group}").ConfigureAwait(false)).ToArray();
-        }
-
-        public async Task<Result<StudentDescription[]>> ListMembers(int year, int semester, Guid groupId)
-        {
-            await using var conn = new NpgsqlConnection(ConnectionString);
-            return Result<StudentDescription[]>.Success(
-                (await conn.QueryAsync<StudentDescription>(
-                    $@"select ui.*
-	                       from group_membership gm
-                           join user_index ui
-	                         on gm.user_id = ui.id
-	                       where year = 2020
-	                         and semester = 8
-	                         and group_id = '00000000-0000-0000-0000-000000000001';").ConfigureAwait(false)).ToArray());
-            
-            return Result<StudentDescription[]>.Success(
-                (await conn.QueryAsync<StudentDescription>(
-                $@"select gm.user_id, pi.fullname
-	                   from {PgSchema.group_membership} gm
-	                   left join {PgSchema.user_index} pi on gm.user_id = pi.user_id
-	                   where group_id = @GroupId", new { groupId }).ConfigureAwait(false)).ToArray());
-        }
-
-        public async Task<Result> Include(int year, int semester, Guid groupId, Guid userId)
-        {
-            await using var conn = new NpgsqlConnection(ConnectionString);
-            await conn.ExecuteAsync(
-                $@"insert into {PgSchema.group_membership} (year, semester, group_id, user_id)
-                       values (@Year, @Semester, @GroupId, @UserId)",
-                           new {year, semester, groupId, userId}).ConfigureAwait(false);
-
-            return Result.Success;
-
-            var conflicted = await conn.QuerySingleOrDefaultAsync<Guid?>(
-                $@"insert into {PgSchema.group_membership} (year, semester, group_id, user_id)
-                       values (@UserId, @GroupId)
-                       on conflict (user_id) do update set group_id = {PgSchema.group_membership}.group_id
-                       returning group_id", new {groupId, userId}).ConfigureAwait(false);
-
-            return conflicted == null || conflicted.Value == groupId
-                ? Result.Success
-                : Result.Fail(OperationStatusCode.Conflict,
-                    "Студент уже числится в другой академической группе. Сначала исключите его из нее.");
-        }
-
-        public async Task<Result> Exclude(int year, int semester, Guid groupId, Guid userId)
-        {
-            await using var conn = new NpgsqlConnection(ConnectionString);
-            await conn.ExecuteAsync(
-                $@"delete from {PgSchema.group_membership}
-                       where year = @Year
-                         and semester = @Semester
-                         and group_id = @GroupId
-                         and user_id = @UserId", new {year, semester, groupId, userId}).ConfigureAwait(false);
-            return Result.Success;
-        }
-
-        public Task<GroupLink[]> Search(string prefix, int? limit)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IEnumerable<StudentInvite>> GetStudents(Guid groupId)
-        {
-            throw new NotImplementedException();
         }
 
         protected override async Task SaveIndex(NpgsqlConnection conn, Guid id, Group data)

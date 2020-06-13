@@ -64,16 +64,71 @@ namespace TestDataGenerator
             userService = new UserService(config, profileRepo);
         }
 
+        private async Task InitializeAdministrators()
+        {
+            var administratorGroup = new Group
+            {
+                Id = Guid.Empty,
+                Name = "Администраторы"
+            };
+
+            await groupService.Save(administratorGroup).ConfigureAwait(false);
+
+            var administrators = new[]
+            {
+                MakeUser("Казаков Михаил Альбертович", "azakov31@gmail.com", "12345", "Администраторы", UserRole.Moderator),
+                MakeUser("Белых Владислав Дмитриевич", "belykhvd@gmail.com", "12345", "Администраторы", UserRole.Moderator)
+            };
+
+            foreach (var admin in administrators)
+            {
+                var authResult = await authService.SignUp(admin).ConfigureAwait(false);
+                if (authResult == null)
+                    continue;
+
+                await groupService.InviteStudent(Guid.Empty, admin.Email, false).ConfigureAwait(false);
+                //await groupService.AcceptInvite(Guid.Empty, authResult.UserId).ConfigureAwait(false);
+            }
+        }
+
+        private async Task InitializeProfessors()
+        {
+            var professorsGroup = new Group
+            {
+                Id = Guid.Parse(Guid.Empty.ToString("N").Substring(0, 31) + "1"),
+                Name = "Преподаватели"
+            };
+
+            await groupService.Save(professorsGroup).ConfigureAwait(false);
+
+            var professors = new[]
+            {
+                MakeUser("Ландау Лев Давидович", "landau@urfu2.ru", "12345", "Преподаватели", UserRole.Admin)
+            };
+
+            foreach (var professor in professors)
+            {
+                var authResult = await authService.SignUp(professor).ConfigureAwait(false);
+                if (authResult == null)
+                    continue;
+
+                await groupService.InviteStudent(Guid.Parse(Guid.Empty.ToString("N").Substring(0, 31) + "1"), professor.Email, false).ConfigureAwait(false);
+                //await groupService.AcceptInvite(Guid.Empty, authResult.UserId).ConfigureAwait(false);
+            }
+        }
+
         [Test]
         public async Task Generate()
         {
+            await InitializeAdministrators().ConfigureAwait(false);
+            await InitializeProfessors().ConfigureAwait(false);
+
             var random = new Random();
 
             var users = new[]
             {
                 MakeUser("Иванович Иван Зарубин", "azakov@gmail.com", "12345", "", UserRole.Admin),
                 MakeUser("Иванович Иван Зарубин", "krivedina@gmail.com", "12345", "", UserRole.Student),
-                MakeUser("Белых Владислав Дмитриевич", "belykhvd@gmail.com", "123", "", UserRole.Admin),
                 MakeUser("Александров Александр Александрович", "alex@urfu2.ru", "123", "", UserRole.Admin),
                 MakeUser("Кириллов Кирилл Кириллович", "kir@urfu2.ru", "123", "", UserRole.Admin),
                 MakeUser("Иванов Иван Иванович", "evan@urfu2.ru", "123", "КН-402", UserRole.Student),

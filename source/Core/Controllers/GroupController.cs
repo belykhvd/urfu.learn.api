@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Contracts.Services;
-using Contracts.Types.Auth;
 using Contracts.Types.Group;
 using Contracts.Types.Group.ViewModel;
 using Microsoft.AspNetCore.Authorization;
@@ -23,7 +22,7 @@ namespace Core.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = nameof(UserRole.Admin))]
+        [Authorize(Roles = Constants.AdminModerator)]
         public async Task<ActionResult<Guid>> Save([FromBody][Required] Group group)
         {
             if (!ModelState.IsValid)
@@ -49,7 +48,7 @@ namespace Core.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = nameof(UserRole.Admin))]
+        [Authorize(Roles = Constants.AdminModerator)]
         public async Task Delete([FromQuery] Guid id)
         {
             await groupService.Delete(id).ConfigureAwait(false);
@@ -60,16 +59,14 @@ namespace Core.Controllers
         public async Task<IEnumerable<Group>> List()
             => await groupService.List().ConfigureAwait(false);
 
-        [HttpGet]
-        [Authorize]
-        public async Task<IEnumerable<StudentInvite>> GetStudents([FromQuery] Guid groupId)
-            => await groupService.GetStudents(groupId).ConfigureAwait(false);
-
 
         [HttpPost]
-        [Authorize(Roles = nameof(UserRole.Admin))]
+        [Authorize(Roles = Constants.AdminModerator)]
         public async Task<IActionResult> InviteStudent([FromQuery] Guid groupId, [FromQuery][EmailAddress] string email)
         {
+            if (!Guid.TryParse(HttpContext.User.Identity.Name, out var senderId))
+                return Unauthorized();
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState.Values);
 
@@ -81,7 +78,7 @@ namespace Core.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = nameof(UserRole.Admin))]
+        [Authorize(Roles = Constants.AdminModerator)]
         public async Task<IActionResult> ExcludeStudent([FromQuery] Guid groupId, [FromQuery][EmailAddress] string email)
         {
             if (!ModelState.IsValid)
@@ -106,7 +103,7 @@ namespace Core.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = nameof(UserRole.Admin))]
+        [Authorize(Roles = Constants.AdminModerator)]
         public async Task<IEnumerable<GroupInviteItem>> GetInviteList()
         {
             return await groupService.GetInviteList().ConfigureAwait(true);
@@ -120,14 +117,14 @@ namespace Core.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = nameof(UserRole.Admin))]
+        [Authorize(Roles = Constants.AdminModerator)]
         public async Task GrantAccess([FromQuery] Guid groupId, [FromBody][Required] Guid[] courseIds)
         {
             await groupService.GrantAccess(groupId, courseIds).ConfigureAwait(true);
         }
 
         [HttpPost]
-        [Authorize(Roles = nameof(UserRole.Admin))]
+        [Authorize(Roles = Constants.AdminModerator)]
         public async Task RevokeAccess([FromQuery] Guid groupId, [FromBody][Required] Guid[] courseIds)
         {
             await groupService.RevokeAccess(groupId, courseIds).ConfigureAwait(true);
