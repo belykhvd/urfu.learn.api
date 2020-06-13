@@ -112,5 +112,12 @@ namespace Core.Controllers
         {
             await groupService.GrantAccess(groupId, courseIds).ConfigureAwait(true);
         }
+
+        [HttpPost]
+        [Authorize(Roles = nameof(UserRole.Admin))]
+        public async Task RevokeAccess([FromQuery] Guid groupId, [FromBody][Required] Guid[] courseIds)
+        {
+            await groupService.RevokeAccess(groupId, courseIds).ConfigureAwait(true);
+        }
     }
 }

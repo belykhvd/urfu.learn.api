@@ -15,6 +15,12 @@ drop table if exists "group";
 drop table if exists group_index;
 drop table if exists file_index;
 drop table if exists attachment;
+drop table if exists invite;
+drop table if exists js_check_result;
+drop table if exists js_queue;
+drop table if exists course_access;
+
+drop index if exists idx_group_course;
 
 create table if not exists registration
 (
@@ -108,7 +114,6 @@ create table if not exists file_index
 	author uuid not null
 );
 
-drop table if exists invite;
 create table if not exists invite
 (
 	secret uuid primary key,
@@ -149,20 +154,13 @@ create table if not exists js_queue
     task_id uuid not null,
     solution_id uuid not null,
 	status int not null default 0
-);	
+);
 
-drop table if exists js_test;
-drop table if exists js_check_result;
-drop table if exists js_queue;
-
-
-drop table if exists course_access;
 create table if not exists course_access
 (
 	group_id uuid not null,
 	course_id uuid not null
 );
 
-drop index if exists idx_group_course;
 create index if not exists idx_group_course on course_access (group_id, course_id);
 

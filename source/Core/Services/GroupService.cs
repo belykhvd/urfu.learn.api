@@ -45,6 +45,20 @@ namespace Core.Services
             }
         }
 
+        public async Task RevokeAccess(Guid groupId, Guid[] courseIds)
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            await conn.ExecuteAsync(
+                $@"delete from {PgSchema.course_access}
+                       where group_id = @GroupId
+                         and course_id =any (@CourseIds)",
+                new
+                {
+                    groupId,
+                    courseIds
+                }).ConfigureAwait(false);
+        }
+
         // TODO: update on conflict (group_id, email) when is_accepted = false
         public async Task InviteStudent(Guid groupId, string email)
         {
