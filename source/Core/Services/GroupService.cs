@@ -157,7 +157,8 @@ namespace Core.Services
                            from {PgSchema.course_access} ca
                            left join {PgSchema.course_index} ci
                              on ca.course_id = ci.id
-                           where group_id = @GroupId", new {GroupId = item.Id}).ConfigureAwait(false)).ToArray();
+                           where group_id = @GroupId
+                             and ci.id is not null", new {GroupId = item.Id}).ConfigureAwait(false)).ToArray();
 
                 items.Add(item);
             }

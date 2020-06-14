@@ -71,7 +71,7 @@ namespace Core.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = nameof(UserRole.Admin))]
+        [Authorize(Roles = Constants.ProfessorAdmin)]
         [RequestSizeLimit(Constants._2GB)]
         [RequestFormLimits(MultipartBodyLengthLimit = Constants._2GB)]
         public async Task<ActionResult<Guid>> UploadInput([FromQuery] Guid taskId, [FromForm] IFormFile file)
