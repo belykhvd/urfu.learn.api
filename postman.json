@@ -55,7 +55,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"?\",\n\t\"descriptionText\": \"Основы ECMAScript 5.1\",\n\t\"maxScore\": 50\t\n}",
+							"raw": "{\n\t\"name\": \"TARDIS\",\n\t\"descriptionText\": \"Galiffrey\",\n\t\"maxScore\": 50\t\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -266,7 +266,7 @@
 							"response": []
 						},
 						{
-							"name": "🔒 Загрузить входные данные",
+							"name": "★🔒 Загрузить входные данные",
 							"request": {
 								"method": "POST",
 								"header": [],
@@ -372,7 +372,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/course/addtask?courseId=b22bfeb8c57d4cec9b4f3dfdc7f407bc",
+							"raw": "http://localhost:8080/course/addtask?courseId=059bda8a75e74b3f9dea638da779f083",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -385,7 +385,7 @@
 							"query": [
 								{
 									"key": "courseId",
-									"value": "b22bfeb8c57d4cec9b4f3dfdc7f407bc"
+									"value": "059bda8a75e74b3f9dea638da779f083"
 								}
 							]
 						}
@@ -398,7 +398,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/task/get?taskId=3b66a3b739d7416194e3a13b9ce41afe&userId=d44112a0a16b44869a48e4e46de7482d",
+							"raw": "http://localhost:8080/task/get?taskId=cf0f7071275f44b698a99a43f0c64aae&userId=db409f638a9247bbaf4c61df1d183c5c",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -411,11 +411,11 @@
 							"query": [
 								{
 									"key": "taskId",
-									"value": "3b66a3b739d7416194e3a13b9ce41afe"
+									"value": "cf0f7071275f44b698a99a43f0c64aae"
 								},
 								{
 									"key": "userId",
-									"value": "d44112a0a16b44869a48e4e46de7482d"
+									"value": "db409f638a9247bbaf4c61df1d183c5c"
 								}
 							]
 						}
@@ -452,7 +452,7 @@
 					"response": []
 				},
 				{
-					"name": "Удалить задачу из курса",
+					"name": "★🔒 Удалить задачу из курса",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -475,6 +475,41 @@
 								{
 									"key": "taskId",
 									"value": "d2d13dd7-4d0d-4842-87f6-4afe276ecadb"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "★🔒 Оценить решение студента",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"cf0f7071275f44b698a99a43f0c64aae\",\r\n    \"name\": \"Веселая задача\",\r\n    \"descriptionText\": \"Веселая описание\",\r\n    \"deadline\": \"05.06.2020\",\r\n    \"currentScore\": 1,\r\n    \"maxScore\": 2,\r\n    \"requirementList\": [\r\n        {\r\n            \"id\": \"37e1ee8538d446bab36ee0ad4c1cfd3e\",\r\n            \"text\": \"По времени O(logN)\",\r\n            \"status\": true\r\n        },\r\n        {\r\n            \"id\": \"9289385b45c14434b0725f1aa9af54e4\",\r\n            \"text\": \"По памяти O(N)\",\r\n            \"status\": false\r\n        },\r\n        {\r\n            \"id\": \"3ff3f5e4de66474693d14361a2e75ffd\",\r\n            \"text\": \"Не более 100 строк кода\",\r\n            \"status\": true\r\n        },\r\n        {\r\n            \"id\": \"887bb7ae3ed54e03a390e0ede7065765\",\r\n            \"text\": \"С комментариями\",\r\n            \"status\": false\r\n        },\r\n        {\r\n            \"id\": \"5540baa2135f40e09ea22be654c3e576\",\r\n            \"text\": \"CodeStyle УрФУ\",\r\n            \"status\": false\r\n        }\r\n    ],\r\n    \"input\": null,\r\n    \"status\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/task/rateSolution?studentId=db409f638a9247bbaf4c61df1d183c5c",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"task",
+								"rateSolution"
+							],
+							"query": [
+								{
+									"key": "studentId",
+									"value": "db409f638a9247bbaf4c61df1d183c5c"
 								}
 							]
 						}
@@ -522,7 +557,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": \"belykhvd@gmail.com\",\n\t\"password\": \"123\"\n}",
+							"raw": "{\n\t\"email\": \"kir@urfu2.ru\",\n\t\"password\": \"123\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
