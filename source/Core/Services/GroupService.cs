@@ -237,6 +237,12 @@ namespace Core.Services
             // };
 
             //return new[] {adminGroupItem}.Concat(groupItems.OrderBy(x => x.Name));
+            foreach (var item in groupItems)
+            {
+                if (item.Id != Guid.Empty && item.Id != Guid.Parse("00000000000000000000000000000001"))
+                    item.Name = $"🎓 {item.Name}";
+            }
+
             return groupItems.OrderBy(x =>
             {
                 if (x.Id == Guid.Empty) return " ";

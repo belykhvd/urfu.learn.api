@@ -123,8 +123,6 @@ namespace TestDataGenerator
             await InitializeAdministrators().ConfigureAwait(false);
             await InitializeProfessors().ConfigureAwait(false);
 
-            return;
-
             var random = new Random();
 
             var users = new[]

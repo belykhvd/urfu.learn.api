@@ -87,6 +87,23 @@ namespace Core.Services
             return task;
         }
 
+        public async Task RateSolution(Guid studentId, CourseTask task)
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            await conn.ExecuteAsync(
+                $@"insert into {PgSchema.task_progress} (user_id, task_id, score, done)
+                       values (@UserId, @TaskId, @Score, @Done)
+                       on conflict (user_id, task_id) do update set score = @Score,
+                                                                    done = @Done",
+                new
+                {
+                    UserId = studentId,
+                    TaskId = task.Id,
+                    Score = task.CurrentScore,
+                    Done = task.RequirementList?.Where(x => x.Status).Select(x => x.Id).ToArray() ?? new Guid[0]
+                }).ConfigureAwait(false);
+        }
+
         public async Task<TaskProgress> GetProgress(Guid taskId, Guid userId)
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
@@ -113,6 +130,7 @@ namespace Core.Services
                          on sol.attachment_id = fi.id
                        where sol.task_id = @TaskId
                          and sol.type = 0
+                         and fi.id is not null
                        order by sol.number desc
                        limit 1", new {taskId}).ConfigureAwait(false);
         }

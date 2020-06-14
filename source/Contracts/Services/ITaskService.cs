@@ -11,6 +11,8 @@ namespace Contracts.Services
         new Task<Guid> Save(CourseTask task);
         Task<CourseTask> Get(Guid taskId, Guid? userId);
 
+        Task RateSolution(Guid studentId, CourseTask task);
+
         Task<Attachment> GetInputAttachment(Guid taskId);
         Task<Attachment> GetSolutionAttachment(Guid taskId, Guid authorId);
         Task RegisterAttachment(Guid taskId, Guid authorId, Guid attachmentId, AttachmentType type);

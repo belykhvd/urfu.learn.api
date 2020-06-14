@@ -91,6 +91,8 @@ create table if not exists task_progress
 	done uuid[]
 );
 
+create unique index if not exists idx_user_task on task_progress (user_id, task_id);
+
 create table if not exists "group"
 (
 	id uuid primary key,

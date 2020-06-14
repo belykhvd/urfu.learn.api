@@ -25,8 +25,13 @@ namespace Core.Controllers
 
         [HttpPost]
         [Authorize(Roles = nameof(UserRole.Admin))]
-        public async Task<Guid> Save([FromBody] CourseTask course)
-            => await taskService.Save(course).ConfigureAwait(false);
+        public async Task<Guid> Save([FromBody] CourseTask task)
+            => await taskService.Save(task).ConfigureAwait(false);
+
+        [HttpPost]
+        [Authorize(Roles = Constants.ProfessorOrAdmin)]
+        public async Task RateSolution([FromQuery] Guid studentId, [FromBody] CourseTask task)
+            => await taskService.RateSolution(studentId, task).ConfigureAwait(false);
 
         [HttpGet]
         [Authorize]
@@ -71,7 +76,7 @@ namespace Core.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = Constants.ProfessorAdmin)]
+        [Authorize(Roles = Constants.ProfessorOrAdmin)]
         [RequestSizeLimit(Constants._2GB)]
         [RequestFormLimits(MultipartBodyLengthLimit = Constants._2GB)]
         public async Task<ActionResult<Guid>> UploadInput([FromQuery] Guid taskId, [FromForm] IFormFile file)
