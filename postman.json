@@ -557,7 +557,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": \"kir@urfu2.ru\",\n\t\"password\": \"123\"\n}",
+							"raw": "{\n\t\"email\": \"belykhvd@gmail.com\",\n\t\"password\": \"12345\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1088,6 +1088,81 @@
 								{
 									"key": "groupId",
 									"value": "7a66aa205233492ab81851ff264a28bb"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Чат",
+			"item": [
+				{
+					"name": "Отправить сообщение",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\"Сообщение\"",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/chat/sendMessage?taskId=cf0f7071275f44b698a99a43f0c64aae&studentId=41cbaceb8c6f431cb2054cf667387c94",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"chat",
+								"sendMessage"
+							],
+							"query": [
+								{
+									"key": "taskId",
+									"value": "cf0f7071275f44b698a99a43f0c64aae"
+								},
+								{
+									"key": "studentId",
+									"value": "41cbaceb8c6f431cb2054cf667387c94"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Получить все сообщения",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/chat/getMessages?taskId=cf0f7071275f44b698a99a43f0c64aae&studentId=41cbaceb8c6f431cb2054cf667387c94",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"chat",
+								"getMessages"
+							],
+							"query": [
+								{
+									"key": "taskId",
+									"value": "cf0f7071275f44b698a99a43f0c64aae"
+								},
+								{
+									"key": "studentId",
+									"value": "41cbaceb8c6f431cb2054cf667387c94"
 								}
 							]
 						}

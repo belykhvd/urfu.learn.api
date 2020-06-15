@@ -34,9 +34,6 @@ namespace Core.Controllers
                 return Unauthorized();
 
             var isAdmin = HttpContext.User.IsInRole(nameof(UserRole.Admin));
-            if (!isAdmin && userId != null && senderId != userId)
-                return Unauthorized();
-
             if (!isAdmin)
                 userId = senderId;
 
@@ -106,7 +103,7 @@ namespace Core.Controllers
             => await courseService.SelectLinks().ConfigureAwait(false);
 
         [HttpPost]
-        [Authorize(Roles = nameof(UserRole.Admin))]
+        [Authorize(Roles = Constants.ProfessorOrAdmin)]
         public async Task<Guid> Save([FromQuery] Guid? id, [FromBody] Course course)
         {
             if (id != null)
