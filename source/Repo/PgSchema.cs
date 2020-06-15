@@ -31,5 +31,7 @@ namespace Repo
         public const string js_test = nameof(js_test);
         public const string js_queue = nameof(js_queue);
         public const string js_check_result = nameof(js_check_result);
+
+        public const string chat = nameof(chat);
     }
 }

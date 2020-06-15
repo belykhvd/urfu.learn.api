@@ -22,14 +22,6 @@ drop table if exists course_access;
 
 drop index if exists idx_group_course;
 
-create table if not exists registration
-(
-	secret uuid primary key,
-	email text not null,
-	password_hash bytea not null,
-	sent bool not null default false
-);
-
 create table if not exists auth
 (
     email text primary key,
@@ -137,13 +129,6 @@ create table if not exists attachment
 	type int not null
 );
 
-create table if not exists js_test
-(
-	task_id uuid not null,
-	name text not null,
-	number int not null
-);
-
 create table if not exists js_check_result
 (
 	solution_id uuid primary key,
@@ -166,5 +151,17 @@ create table if not exists course_access
 	course_id uuid not null
 );
 
-create index if not exists idx_group_course on course_access (group_id, course_id);
+create unique index if not exists idx_group_course on course_access (group_id, course_id);
 
+drop table if exists chat;
+create table if not exists chat
+(
+	id uuid primary key,
+	task_id uuid not null,
+	student_id uuid not null,
+	timestamp timestamp not null,
+	sender_id uuid not null,
+	message text not null
+);
+
+create index if not exists idx_task_student on chat (task_id, student_id);

@@ -5,6 +5,8 @@
         public const long _2GB = 2147483648;
         public const int MultipartBoundaryLengthLimit = 70;
 
+        public const int ChatMessageMaxLength = 1024; 
+
         public const string ProfessorOrAdmin = "Admin,Moderator";
 
         public const string SolutionUploadError = "Ошибка загрузки решения";

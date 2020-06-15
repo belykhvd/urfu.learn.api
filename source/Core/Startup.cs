@@ -63,6 +63,7 @@ namespace Core
             services.AddSingleton<IGroupService, GroupService>();
             services.AddSingleton<ICourseService, CourseService>();
             services.AddSingleton<ITaskService, TaskService>();
+            services.AddSingleton<IChatService, ChatService>();
 
             services.AddSingleton<ProfileRepo>();
             services.AddSingleton<FileRepo>();

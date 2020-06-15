@@ -76,8 +76,8 @@ namespace TestDataGenerator
 
             var administrators = new[]
             {
-                MakeUser("Казаков Михаил Альбертович", "azakov31@gmail.com", "12345", "Администраторы", UserRole.Moderator),
-                MakeUser("Белых Владислав Дмитриевич", "belykhvd@gmail.com", "12345", "Администраторы", UserRole.Moderator)
+                MakeUser("Казаков Михаил Альбертович", "azakov31@gmail.com", "12345", "Администраторы", UserRole.Professor),
+                MakeUser("Белых Владислав Дмитриевич", "belykhvd@gmail.com", "12345", "Администраторы", UserRole.Professor)
             };
 
             foreach (var admin in administrators)
