@@ -34,8 +34,10 @@ namespace Core.Controllers
             if (!Guid.TryParse(HttpContext.User.Identity.Name, out var senderId))
                 return Unauthorized();
 
-            var isAdmin = HttpContext.User.IsInRole(nameof(UserRole.Admin));
-            if (!isAdmin)
+            var isProfessorOrAdmin =
+                HttpContext.User.IsInRole(nameof(UserRole.Professor)) ||
+                HttpContext.User.IsInRole(nameof(UserRole.Admin));
+            if (!isProfessorOrAdmin)
                 userId = senderId;
 
             var items = new List<CourseItem>();
