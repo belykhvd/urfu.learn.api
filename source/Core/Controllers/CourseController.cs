@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Core.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("[controller]/[action]")]
     public class CourseController : ControllerBase
     {
@@ -113,25 +114,33 @@ namespace Core.Controllers
         }
 
         [HttpGet]
-        public async Task<Course> Get([FromQuery] Guid id)
-            => await courseService.Get(id).ConfigureAwait(false);
+        public async Task<ActionResult<Course>> Get([FromQuery] Guid id)
+        {
+            var course = await courseService.Get(id).ConfigureAwait(false);
+            if (course == null)
+                return NotFound();
+
+            return course;
+        }
+            
 
         [HttpPost]
-        [Authorize(Roles = nameof(UserRole.Admin))]
+        [Authorize(Roles = Constants.ProfessorOrAdmin)]
         public async Task Delete([FromQuery] Guid id)
             => await courseService.Delete(id).ConfigureAwait(false);
 
         [HttpPost]
-        [Authorize(Roles = nameof(UserRole.Admin))]
+        [Authorize(Roles = Constants.ProfessorOrAdmin)]
         public async Task<Guid> AddTask([FromQuery] Guid courseId, [FromBody][Required] CourseTask task)
             => await courseService.AddTask(courseId, task).ConfigureAwait(false);
 
         [HttpPost]
-        [Authorize(Roles = nameof(UserRole.Admin))]
+        [Authorize(Roles = Constants.ProfessorOrAdmin)]
         public async Task DeleteTask([FromQuery] Guid courseId, [FromQuery] Guid taskId)
             => await courseService.DeleteTask(courseId, taskId).ConfigureAwait(false);
 
         [HttpGet]
+        [Authorize]
         public async Task<IEnumerable<Link>> SelectTasks([FromQuery] Guid courseId)
             => await courseService.SelectTasks(courseId).ConfigureAwait(false);
     }

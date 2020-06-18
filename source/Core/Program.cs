@@ -1,6 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 using Serilog;
 
 namespace Core
@@ -33,7 +34,11 @@ namespace Core
                 .UseSerilog()
                 .ConfigureWebHostDefaults(builder =>
                 {
-                    builder.UseKestrel(op => op.ListenAnyIP(8080))
+                    builder.UseKestrel(op =>
+                        {
+                            Console.WriteLine(JsonConvert.SerializeObject(op.Limits));
+                            op.ListenAnyIP(8080);
+                        })
                            .UseStartup<Startup>();
                 });
     }

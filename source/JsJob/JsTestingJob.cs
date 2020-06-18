@@ -50,6 +50,9 @@ namespace JsJob
         private async Task RunTests(Guid taskId, Guid solutionId)
         {
             var solutionSource = await fileRepo.ReadSourceCode(solutionId).ConfigureAwait(false);
+            if (solutionSource == null)
+                return;
+
             var testCases = (await fileRepo.ReadTests(taskId).ConfigureAwait(false)).ToArray();
 
             var firstFailedNumber = -1;

@@ -95,6 +95,9 @@ namespace Repo
         public async Task<string> ReadSourceCode(Guid fileId)
         {
             var stream = StreamFile(fileId);
+            if (stream == null)
+                return null;
+
             using var streamReader = new StreamReader(stream);
             return await streamReader.ReadToEndAsync().ConfigureAwait(false);
         }

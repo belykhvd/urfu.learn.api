@@ -141,5 +141,28 @@ namespace Core.Services
         {
             await conn.ExecuteAsync(@$"delete from {PgSchema.course_index} where id = @Id", new {id}).ConfigureAwait(false);
         }
+
+        public new async Task Delete(Guid id)
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            await conn.OpenAsync().ConfigureAwait(false);
+            var transaction = await conn.BeginTransactionAsync().ConfigureAwait(false);
+            await using (transaction)
+            {
+                await conn.ExecuteAsync($@"delete from {PgSchema.course} where id = @Id", new {id}).ConfigureAwait(false);
+                await conn.ExecuteAsync($@"delete from {PgSchema.course_index} where id = @Id", new {id}).ConfigureAwait(false);
+
+                var courseTaskIds = await conn.QueryAsync<Guid>(
+                    $@"select task_id
+                           from {PgSchema.course_tasks}
+                           where course_id = @Id", new {id}).ConfigureAwait(false);
+
+                foreach (var taskId in courseTaskIds)
+                    await taskService.Delete(taskId).ConfigureAwait(false);
+
+                await conn.ExecuteAsync($@"delete from {PgSchema.course_tasks} where course_id = @Id", new {id}).ConfigureAwait(false);
+                await transaction.CommitAsync().ConfigureAwait(false);
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Contracts.Services;
+using Contracts.Types.Auth;
 using Contracts.Types.Group;
 using Contracts.Types.Group.ViewModel;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Core.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("[controller]/[action]")]
     public class GroupController : ControllerBase
     {
@@ -49,16 +51,20 @@ namespace Core.Controllers
 
         [HttpPost]
         [Authorize(Roles = Constants.ProfessorOrAdmin)]
-        public async Task Delete([FromQuery] Guid id)
+        public async Task<IActionResult> Delete([FromQuery] Guid id)
         {
+            if (id == Guid.Empty)
+                return Unauthorized(Constants.ErrorCannotDeleteAdminGroup);
+
+            if (id == Constants.Guid_1 && !HttpContext.User.IsInRole(nameof(UserRole.Admin)))
+                return Unauthorized(Constants.ErrorCannotDeleteProfessorGroup);
+
             await groupService.Delete(id).ConfigureAwait(false);
+            return Ok();
         }
 
         [HttpGet]
-        [Authorize]
-        public async Task<IEnumerable<Group>> List()
-            => await groupService.List().ConfigureAwait(false);
-
+        public async Task<IEnumerable<Group>> List() => await groupService.List().ConfigureAwait(false);
 
         [HttpPost]
         [Authorize(Roles = Constants.ProfessorOrAdmin)]

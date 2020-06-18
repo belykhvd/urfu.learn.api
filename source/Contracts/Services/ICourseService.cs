@@ -12,6 +12,8 @@ namespace Contracts.Services
     public interface ICourseService : IRepo<Course>
     {
         new Task<Guid> Save(Course course);
+        new Task Delete(Guid id);
+
         Task<IEnumerable<Course>> Select(Guid? userId);
         Task<IEnumerable<CourseIndex>> SelectIndexes();
         Task<IEnumerable<TaskProgress>> GetProgress(Guid courseId, Guid? userId);

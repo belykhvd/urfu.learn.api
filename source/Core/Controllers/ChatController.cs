@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Core.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("[controller]/[action]")]
     public class ChatController : ControllerBase
     {
@@ -20,7 +21,6 @@ namespace Core.Controllers
             => this.chatService = chatService;
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> SendMessage([FromQuery] Guid taskId, [FromQuery] Guid studentId,
                                                      [FromBody][Required][MaxLength(Constants.ChatMessageMaxLength)] string message)
         {
@@ -35,7 +35,6 @@ namespace Core.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<ChatMessage>>> GetMessages([FromQuery] Guid taskId, [FromQuery] Guid studentId)
         {
             if (!Guid.TryParse(HttpContext.User.Identity.Name, out var senderId) ||

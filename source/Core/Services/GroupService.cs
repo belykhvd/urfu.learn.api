@@ -196,52 +196,6 @@ namespace Core.Services
 
                 groupItems.Add(item);
             }
-            
-            // var groupItems_ = (await conn.QueryAsync<GroupItem>(
-            //     $@"select gr.data || jsonb_build_object('studentList', jsonb_agg(
-            // case when inv.student_id is not null then jsonb_build_object('userId', inv.student_id, 'studentName', ui.fio)
-            //   else null end
-            // )       
-            //     )
-            //            from group_index gi
-            //            left join {PgSchema.group} gr
-            // on gi.id = gr.id
-            // left join {PgSchema.invite} inv
-            // on gi.id = inv.group_id
-            // left join {PgSchema.user_index} ui
-            //   on inv.student_id = ui.id
-            // where is_accepted
-            //    or inv.group_id is null
-            // group by group_id, data").ConfigureAwait(false)).ToArray();
-            //
-            // foreach (var item in groupItems)
-            // {
-            //     item.StudentList = item.StudentList
-            //         .Where(x => x != null)
-            //         .OrderBy(x => x.StudentName)
-            //         .ToArray();
-            // }
-
-            // var admins = await conn.QueryAsync<StudentItem>(
-            //     $@"select jsonb_build_object('userId', au.user_id, 'studentName', ui.fio)
-            //            from {PgSchema.auth} au
-            //            left join {PgSchema.user_index} ui
-            //              on au.user_id = ui.id
-            //            where role = @AdminRole
-            //            order by ui.fio", new {AdminRole = UserRole.Admin}).ConfigureAwait(false);
-            //
-            // var adminGroupItem = new GroupItem
-            // {
-            //     Name = "Преподаватели",
-            //     StudentList = admins.ToArray() 
-            // };
-
-            //return new[] {adminGroupItem}.Concat(groupItems.OrderBy(x => x.Name));
-            foreach (var item in groupItems)
-            {
-                if (item.Id != Guid.Empty && item.Id != Guid.Parse("00000000000000000000000000000001"))
-                    item.Name = $"🎓 {item.Name}";
-            }
 
             return groupItems.OrderBy(x =>
             {
@@ -269,6 +223,21 @@ namespace Core.Services
         protected override async Task DeleteIndex(NpgsqlConnection conn, Guid id)
         {
             await conn.ExecuteAsync(@$"delete from {PgSchema.group_index} where id = @Id", new {id}).ConfigureAwait(false);
+        }
+
+        public new async Task Delete(Guid id)
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            await conn.OpenAsync().ConfigureAwait(false);
+            var transaction = await conn.BeginTransactionAsync().ConfigureAwait(false);
+            await using (transaction)
+            {
+                await conn.ExecuteAsync($@"delete from {PgSchema.group} where id = @Id", new {id}).ConfigureAwait(false);
+                await conn.ExecuteAsync($@"delete from {PgSchema.group_index} where id = @Id", new {id}).ConfigureAwait(false);
+                await conn.ExecuteAsync($@"delete from {PgSchema.course_access} where group_id = @Id", new {id}).ConfigureAwait(false);
+                await conn.ExecuteAsync($@"delete from {PgSchema.invite} where group_id = @Id", new {id}).ConfigureAwait(false);
+                await transaction.CommitAsync().ConfigureAwait(false);
+            }
         }
     }
 }

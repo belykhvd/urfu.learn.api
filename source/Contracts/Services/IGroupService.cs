@@ -19,8 +19,9 @@ namespace Contracts.Services
 
         Task<IEnumerable<GroupItem>> GetUsers();
         Task<IEnumerable<GroupInviteItem>> GetInviteList();
-        
 
         Task<IEnumerable<Group>> List();
+
+        new Task Delete(Guid id);
     }
 }

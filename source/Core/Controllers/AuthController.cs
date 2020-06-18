@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Contracts.Services;
@@ -22,8 +23,11 @@ namespace Core.Controllers
 
         [HttpPost]
         [Route("signUp")]
-        public async Task<ActionResult<AuthResult>> SignUp([FromBody] RegistrationData registrationData)
+        public async Task<ActionResult<AuthResult>> SignUp([FromBody][Required] RegistrationData registrationData)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState.Values);
+
             var authResult = await authService.SignUp(registrationData).ConfigureAwait(false);
             if (authResult == null)
                 return Conflict();
